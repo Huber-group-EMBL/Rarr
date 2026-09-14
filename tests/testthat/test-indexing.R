@@ -93,4 +93,13 @@ test_that("out of order indices are handled correctly", {
     res3,
     res4[c(3, 2, 1), c(2, 1), c(3, 2, 1)]
   )
+
+  # Full read but out of order. Relevant to test shortcut when not subsetting
+  # the chunk.
+  # https://github.com/Huber-group-EMBL/Rarr/issues/241
+  res5 <- read_zarr_array(zarr_v2, list(30:1, 20:1, 10:1))
+  expect_identical(
+    res5,
+    read_zarr_array(zarr_v2)[c(30:1), c(20:1), c(10:1)]
+  )
 })
