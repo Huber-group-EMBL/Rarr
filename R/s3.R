@@ -127,7 +127,8 @@ parse_s3_path <- function(path) {
           anonymous = TRUE
         ),
         region = parsed_url$region,
-        endpoint = parsed_url$hostname
+        endpoint = parsed_url$hostname,
+        s3_force_path_style = TRUE
       )
     )
   }
@@ -146,7 +147,8 @@ parse_s3_path <- function(path) {
   s3_client <- s3(
     config = list(
       region = parsed_url$region,
-      endpoint = parsed_url$hostname
+      endpoint = parsed_url$hostname,
+      s3_force_path_style = TRUE
     )
   )
 
