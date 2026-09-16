@@ -114,7 +114,7 @@ parse_s3_path <- function(path) {
 }
 
 .call_with_args <- function(f, data) {
-  args <- methods::formalArgs(f)
+  args <- names(formals(f))
   if (is.null(args)) {
     return(f())
   }
