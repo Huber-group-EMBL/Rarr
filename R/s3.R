@@ -98,6 +98,7 @@ parse_s3_path <- function(path) {
 #' and is caught by `.check_credentials`.
 #'
 #' @keywords internal
+#' @noRd
 .get_credentials <- function(credentials, signing_name = NULL) {
   for (provider in credentials$provider) {
     # Use `call_with_args` to call providers with only the arguments they use.
