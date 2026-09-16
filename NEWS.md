@@ -81,7 +81,9 @@
 * Performance has been improved for writing and in the case where the `index`
   argument in `read_zarr_array()` is a continuous sequence. One such example
   is when the entire array is read (`index` argument missing).
-* Performance has been improved when reading 
+* Performance has been improved when reading
+* S3 access with credentials is now more robust and compatible with more
+  providers.
 
 ## Bug fixes
 
