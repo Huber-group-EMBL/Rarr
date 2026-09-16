@@ -133,7 +133,7 @@ credentials.  For example, lets try reading a file in a private S3 bucket:
 
 
 ``` r
-zarr_overview("https://s3.embl.de/rarr-testing/bzip2.zarr")
+zarr_overview("https://huber.buckets.embl.de/rarr-testing/bzip2.zarr")
 ```
 
 ```
@@ -149,15 +149,15 @@ we're now able to interrogate the files with functions in *Rarr*.
 
 ``` r
 Sys.setenv(
-  "AWS_ACCESS_KEY_ID" = "bYUBYVg1AsEreuDgtg5K",
-  "AWS_SECRET_ACCESS_KEY" = "r8FrLXc9dseD6V1P3htsu7ZBzP7Gszsd3sM1G4KX"
+  "AWS_ACCESS_KEY_ID" = "NFXMU48714DJHNGTB825",
+  "AWS_SECRET_ACCESS_KEY" = "FZ0_p4_NrrB_fnm_e1DEEP7g3772I9uP3igu5D_C"
 )
-zarr_overview("https://s3.embl.de/rarr-testing/bzip2.zarr")
+zarr_overview("https://huber.buckets.embl.de/rarr-testing/bzip2.zarr")
 ```
 
 ```
 ## Type: Array
-## Path: https://s3.embl.de/rarr-testing/bzip2.zarr
+## Path: https://huber.buckets.embl.de/rarr-testing/bzip2.zarr
 ## Shape: 20 x 10
 ## Chunk Shape: 10 x 10
 ## No. of Chunks: 2 (2 x 1)
