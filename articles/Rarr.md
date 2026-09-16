@@ -371,7 +371,7 @@ contents is as expected.
 
 ### Session info
 
-    ## R Under development (unstable) (2026-09-14 r90539)
+    ## R Under development (unstable) (2026-09-15 r90540)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.5 LTS
     ## 
@@ -392,7 +392,7 @@ contents is as expected.
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] Rarr_2.1.39      BiocStyle_2.40.0
+    ## [1] Rarr_2.1.40      BiocStyle_2.40.0
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] crayon_1.5.3        cli_3.6.6           knitr_1.52         
