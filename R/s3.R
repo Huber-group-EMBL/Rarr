@@ -98,20 +98,30 @@ parse_s3_path <- function(path) {
 #' and is caught by `.check_credentials`.
 #'
 #' @keywords internal
-.get_credentials <- function(credentials) {
+.get_credentials <- function(credentials, signing_name = NULL) {
   for (provider in credentials$provider) {
-    args <- names(formals(provider))
-    if (is.null(args)) {
-      creds <- provider()
-    } else {
-      creds <- do.call(provider, as.list(credentials)[args])
-    }
+    # Use `call_with_args` to call providers with only the arguments they use.
+    creds <- .call_with_args(
+      provider,
+      c(as.list(credentials), list(signing_name = signing_name))
+    )
     if (!is.null(creds)) {
       credentials$creds <- creds
       break
     }
   }
   return(credentials)
+}
+
+.call_with_args <- function(f, data) {
+  args <- methods::formalArgs(f)
+  if (is.null(args)) {
+    return(f())
+  }
+  if (!all(args %in% names(data))) {
+    stop("A parameter has no corresponding element in `data`.")
+  }
+  return(do.call(f, as.list(data)[args]))
 }
 
 .check_credentials <- function(s3_client, parsed_url) {
