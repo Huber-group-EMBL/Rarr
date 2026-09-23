@@ -439,17 +439,25 @@ update_zarr_array <- function(zarr_array_path, x, index) {
   )
   chunk_names <- names(chunk_positions)
 
+  chunk_exists <- .store_check_exist(
+    zarr_array_path,
+    chunk_names,
+    s3_client = NULL
+  )
+
   ## only update the chunks that need to be
   ## TODO: maybe this can be done in parallel is bpmapply() ?
-  res <- vapply(
-    chunk_names,
+  res <- mapply(
     .update_chunk,
-    x = x,
-    chunk_positions = chunk_positions,
-    zarr_array_path = zarr_array_path,
-    chunk_dim = chunk_dim,
-    metadata = metadata,
-    FUN.VALUE = logical(1L)
+    chunk_name = chunk_names,
+    chunk_exists = chunk_exists,
+    MoreArgs = list(
+      x = x,
+      chunk_positions = chunk_positions,
+      zarr_array_path = zarr_array_path,
+      chunk_dim = chunk_dim,
+      metadata = metadata
+    )
   )
 
   return(invisible(all(res)))
@@ -458,6 +466,7 @@ update_zarr_array <- function(zarr_array_path, x, index) {
 .update_chunk <- function(
   chunk_name,
   x,
+  chunk_exists,
   zarr_array_path,
   chunk_positions,
   chunk_dim,
@@ -470,7 +479,7 @@ update_zarr_array <- function(zarr_array_path, x, index) {
   idx_in_x <- chunk_info$positions
   idx_in_chunk <- chunk_info$index_in_chunk
 
-  if (.store_check_exist(zarr_array_path, chunk_name, s3_client = NULL)) {
+  if (chunk_exists) {
     raw_chunk <- .store_get_bytes(
       path = chunk_path,
       s3_client = NULL,
