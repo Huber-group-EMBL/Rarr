@@ -153,14 +153,14 @@ read_data <- function(
   ## predefine our array to be populated from the read chunks
   output <- array(metadata$fill_value, dim = lengths(index))
 
+  is_structured <- is.list(metadata$data_type) &&
+    metadata$data_type$name %in% c("struct", "structured")
+
   ## proceed in serial and update the output with each chunk selection in turn
   for (i in seq_along(chunk_selections)) {
     index_in_result <- chunk_selections[[i]][[2L]]
     rlang::inject(output[!!!index_in_result] <- chunk_selections[[i]][[1L]]) # nolint: implicit_assignment_linter.
-    if (
-      is.list(metadata$data_type) &&
-        metadata$data_type$name %in% c("struct", "structured")
-    ) {
+    if (is_structured) {
       # Assigning a list drops the dim attribute so we have to continuously add it again
       dim(output) <- lengths(index)
     }
