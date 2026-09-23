@@ -48,7 +48,12 @@ parse_s3_path <- function(path) {
   } else {
     # nocov start
     stop(
-      "Unknown AWS path style.  Please report this to the package maintainer."
+      "Unrecognized AWS S3 URL: '",
+      url,
+      "'. ",
+      "Please report this at https://github.com/Huber-group-EMBL/Rarr/issues,",
+      " including the URL you used.",
+      call. = FALSE
     )
     # nocov end
   }
