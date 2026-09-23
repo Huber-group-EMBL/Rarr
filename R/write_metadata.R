@@ -385,7 +385,11 @@ write_zarr_group <- function(
         .read_json_file(group_metadata)$node_type != "group"
     ) {
       stop(
-        "Cannot write group metadata to a non-group Zarr array",
+        "Cannot write group metadata to '",
+        group_path,
+        "' because it already contains an array",
+        " (its `zarr.json` does not have `node_type: 'group'`). ",
+        "Please provide the path to a group instead.",
         call. = FALSE
       )
     }

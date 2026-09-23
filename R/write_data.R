@@ -36,7 +36,14 @@
   if (data_type %notin% supported_types) {
     if (data_type %notin% r_base_types) {
       stop(
-        "Currently only able to write integer, double, character and logical arrays"
+        "Data type ",
+        data_type,
+        " is not supported. ",
+        "Only arrays of type 'integer', 'double', 'character' and ",
+        "'logical' can be written, or one of the equivalent Numpy ",
+        "formats: '|i1', '<i2', '<i4', '<i8', '|u1', '<u2', '<u4', ",
+        "'<u8', '<f4', '<f8', '|S', '<U', '|b1', '|O'.",
+        call. = FALSE
       )
     }
     data_type <- switch(
@@ -412,8 +419,19 @@ update_zarr_array <- function(zarr_array_path, x, index) {
     "unicode" = "character",
     NULL
   )
-  if (storage.mode(x) != existing_storage) {
-    stop("New data is not of the same type as the existing array.")
+  new_storage <- storage.mode(x)
+  if (new_storage != existing_storage) {
+    stop(
+      "New data is not of the same type as the existing array. ",
+      "The existing array has type '",
+      existing_storage,
+      "' but the new ",
+      "data has type '",
+      new_storage,
+      "'. ",
+      "Please convert your data to the array type.",
+      call. = FALSE
+    )
   }
 
   x <- .prepare_write_data(x, metadata)
@@ -543,7 +561,16 @@ update_zarr_array <- function(zarr_array_path, x, index) {
 
 .check_chunk_shape <- function(x_dim, chunk_dim) {
   if (length(x_dim) != length(chunk_dim)) {
-    stop("The dimensions of the chunk must equal the dimensions of the array.")
+    stop(
+      "The number of dimensions of the chunk (",
+      length(chunk_dim),
+      ") must equal the number of dimensions of the ",
+      "array (",
+      length(x_dim),
+      "). ",
+      "Please check the `chunk_dim` argument.",
+      call. = FALSE
+    )
   }
 
   oversized_chunk <- any(chunk_dim > x_dim)

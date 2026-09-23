@@ -78,7 +78,10 @@ use_blosc <- function(
 
   if (clevel < 0L || clevel > 9L) {
     stop(
-      "Blosc compresssion `clevel` value must be an integer between 0 and 9",
+      "Blosc compression `clevel` must be an integer between 0 and 9, but ",
+      "you provided ",
+      clevel,
+      ".",
       call. = FALSE
     )
   }

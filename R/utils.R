@@ -5,7 +5,13 @@ check_index <- function(index, metadata) {
   ## check we have the correct number of dimensions
   if (index_len != length(shape)) {
     stop(
-      "The number of dimensions provided to 'index' does not match the shape of the array"
+      "The number of dimensions provided to `index` (",
+      index_len,
+      ") does ",
+      "not match the number of dimensions of the array (",
+      length(shape),
+      "). Please check the `index` argument.",
+      call. = FALSE
     )
   }
 
@@ -26,10 +32,16 @@ check_index <- function(index, metadata) {
   }
 
   if (any(failed)) {
-    stop(sprintf(
-      "Selected indices for dimension(s) %s are out of range.",
-      paste(which(failed), collapse = " & ")
-    ))
+    stop(
+      "Selected indices for dimension(s) ",
+      paste(which(failed), collapse = " & "),
+      " are out of range. ",
+      "Each dimension of `index` must contain values between 1 and the ",
+      "size of that dimension of the array (",
+      paste(shape, collapse = ", "),
+      ").",
+      call. = FALSE
+    )
   }
 
   return(index)
@@ -107,14 +119,36 @@ check_index <- function(index, metadata) {
       )
     }
     # nocov start
-    stop("Unsupported data type: ", typestr$name, call. = FALSE)
+    stop(
+      "Unsupported data type: ",
+      typestr$name,
+      ". ",
+      "Supported types are: ",
+      paste0(names(SUPPORTED_V3_TYPES), collapse = ", "),
+      ". ",
+      "Please open an issue at ",
+      "https://github.com/Huber-group-EMBL/Rarr/issues if you need support ",
+      "for this type.",
+      call. = FALSE
+    )
     # nocov end
   }
 
   entry <- SUPPORTED_V3_TYPES[[typestr]]
   if (is.null(entry)) {
     # nocov start
-    stop("Unsupported data type: ", typestr, call. = FALSE)
+    stop(
+      "Unsupported data type: ",
+      typestr,
+      ". ",
+      "Supported types are: ",
+      paste0(names(SUPPORTED_V3_TYPES), collapse = ", "),
+      ". ",
+      "Please open an issue at ",
+      "https://github.com/Huber-group-EMBL/Rarr/issues if you need support ",
+      "for this type.",
+      call. = FALSE
+    )
     # nocov end
   }
   return(list(
