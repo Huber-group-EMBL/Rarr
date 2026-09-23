@@ -1,6 +1,7 @@
 #include "Rarr.h"
 #include "decompress.h"
 #include "compress.h"
+#include "type_conversion.h"
 #include "codec_vlen-utf8.h"
 #include "utils.h"
 
@@ -12,7 +13,8 @@ static const R_CallMethodDef callMethods[] = {
   {"compress_chunk_BLOSC", (DL_FUNC) &compress_chunk_BLOSC, 6},
   {"compress_chunk_LZ4", (DL_FUNC) &compress_chunk_LZ4, 1},
   {"compress_chunk_ZSTD", (DL_FUNC) &compress_chunk_ZSTD, 2},
-
+  
+  {"type_convert_bfloat", (DL_FUNC) &type_convert_bfloat, 4},
   {"codec_vlen_utf8_decode_c", (DL_FUNC) &codec_vlen_utf8_decode_c, 2},
 
   {"is_compact", (DL_FUNC) &is_compact, 1},
@@ -23,5 +25,5 @@ static const R_CallMethodDef callMethods[] = {
 void R_init_Rarr(DllInfo *info)
 {
   R_registerRoutines(info, NULL, callMethods, NULL, NULL);
-  R_useDynamicSymbols(info, TRUE);
+  R_useDynamicSymbols(info, FALSE);
 }
