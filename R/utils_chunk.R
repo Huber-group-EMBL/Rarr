@@ -58,54 +58,28 @@
   }
 
   # FIXME:
-  # - make this work for compat sequence that don't start at one
-  if (
-    all(vapply(
-      index,
-      function(x) is.compact(x) || is.scalar(x),
-      logical(1L)
-    )) &&
-      all(vapply(index, min, integer(1L)) == 1L)
-  ) {
-    per_dim <- mapply(
-      \(i, cs) {
-        res <- .Call(
-          "chop_vec",
-          i,
-          cs,
-          PACKAGE = "Rarr"
-        )
-        setNames(res, 0L:(length(res) - 1L))
-      },
-      index,
-      chunk_dim,
-      SIMPLIFY = FALSE
-    )
-    # Faster than nested lapply()
-    in_chunk <- rapply(per_dim, seq_along, how = "list")
-  } else {
-    # Work per-dimension directly, avoiding the unlist()/rep()/relist()
-    # round trip through a single flattened vector.
-    id_rem <- Map(
-      \(idx, cs) {
+  # - make this work for compact sequence that don't start at one
+  per_dim_in_chunk <- Map(
+    \(idx, cs) {
+      if ((is.compact(idx) || is.scalar(idx)) && min(idx) == 1L) {
+        res <- .Call("chop_vec", idx, cs, PACKAGE = "Rarr")
+        pd <- setNames(res, 0L:(length(res) - 1L))
+        list(per_dim = pd, in_chunk = lapply(pd, seq_along))
+      } else {
         zero0 <- reindex(idx, from = 1L, to = 0L)
         id <- zero0 %/% cs
         # We compute the remainder "manually" to avoid expensive %% call,
         # when %/% did all the work already
-        list(id = id, rem = zero0 - id * cs + 1L)
-      },
-      index,
-      chunk_dim
-    )
-    id <- lapply(id_rem, `[[`, "id")
-    rem <- lapply(id_rem, `[[`, "rem")
-    per_dim <- lapply(id, \(x) split(seq_along(x), x))
-    in_chunk <- Map(
-      \(rem, pd) lapply(pd, \(pos) rem[pos]),
-      rem,
-      per_dim
-    )
-  }
+        rem <- zero0 - id * cs + 1L
+        pd <- split(seq_along(id), id)
+        list(per_dim = pd, in_chunk = lapply(pd, \(pos) rem[pos]))
+      }
+    },
+    index,
+    chunk_dim
+  )
+  per_dim <- lapply(per_dim_in_chunk, `[[`, "per_dim")
+  in_chunk <- lapply(per_dim_in_chunk, `[[`, "in_chunk")
 
   chunk_keys <- do.call(expand.grid, lapply(per_dim, names))
   key_strings <- .create_chunk_names(chunk_keys, metadata)
