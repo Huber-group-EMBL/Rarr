@@ -59,7 +59,7 @@
 
   # FIXME:
   # - make this work for compact sequence that don't start at one
-  results_by_dim <- Map(
+  results_by_dim <- mapply(
     \(dim_index, chunk_size) {
       if (
         (is.compact(dim_index) || is.scalar(dim_index)) && min(dim_index) == 1L
@@ -84,7 +84,8 @@
       }
     },
     index,
-    chunk_dim
+    chunk_dim,
+    SIMPLIFY = FALSE
   )
   per_dim <- lapply(results_by_dim, `[[`, "per_dim")
   in_chunk <- lapply(results_by_dim, `[[`, "in_chunk")
@@ -94,17 +95,18 @@
   key_pos <- do.call(expand.grid, lapply(per_dim, seq_along))
 
   # Transpose the list to get the result per chunk, rather than per dimension.
-  positions_by_dim <- Map(\(d, kk) d[kk], per_dim, key_pos)
-  in_chunk_by_dim <- Map(\(d, kk) d[kk], in_chunk, key_pos)
+  positions_by_dim <- mapply(\(d, kk) d[kk], per_dim, key_pos, SIMPLIFY = FALSE)
+  in_chunk_by_dim <- mapply(\(d, kk) d[kk], in_chunk, key_pos, SIMPLIFY = FALSE)
 
   positions_per_chunk <- .mapply(list, positions_by_dim, NULL)
   in_chunk_per_chunk <- .mapply(list, in_chunk_by_dim, NULL)
 
   setNames(
-    Map(
+    mapply(
       \(pos, ic) list(positions = pos, index_in_chunk = ic),
       positions_per_chunk,
-      in_chunk_per_chunk
+      in_chunk_per_chunk,
+      SIMPLIFY = FALSE
     ),
     key_strings
   )
