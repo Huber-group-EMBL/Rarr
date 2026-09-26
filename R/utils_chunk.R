@@ -46,8 +46,6 @@
 #'   * `index_in_chunk`: a per-dimension list of 1-based integer vectors
 #'     giving the within-chunk coordinates corresponding to `positions`.
 #'
-#' @importFrom utils relist
-#'
 #' @keywords internal
 #' @noRd
 .chunk_positions_by_chunk <- function(
@@ -86,19 +84,26 @@
     # Faster than nested lapply()
     in_chunk <- rapply(per_dim, seq_along, how = "list")
   } else {
-    flat0 <- unlist(lapply(index, reindex, from = 1L, to = 0L))
-    cs <- rep(chunk_dim, times = lengths(index))
-    id <- flat0 %/% cs
-    # We compute the remainder "manually" to avoid expensive %% call,
-    # when %/% did all the work already
-    rem <- flat0 - id * cs
-    per_dim <- relist(id, index) |>
-      lapply(\(x) split(seq_along(x), x))
-    in_chunk <- mapply(
+    # Work per-dimension directly, avoiding the unlist()/rep()/relist()
+    # round trip through a single flattened vector.
+    id_rem <- Map(
+      \(idx, cs) {
+        zero0 <- reindex(idx, from = 1L, to = 0L)
+        id <- zero0 %/% cs
+        # We compute the remainder "manually" to avoid expensive %% call,
+        # when %/% did all the work already
+        list(id = id, rem = zero0 - id * cs + 1L)
+      },
+      index,
+      chunk_dim
+    )
+    id <- lapply(id_rem, `[[`, "id")
+    rem <- lapply(id_rem, `[[`, "rem")
+    per_dim <- lapply(id, \(x) split(seq_along(x), x))
+    in_chunk <- Map(
       \(rem, pd) lapply(pd, \(pos) rem[pos]),
-      relist(rem + 1L, index),
-      per_dim,
-      SIMPLIFY = FALSE
+      rem,
+      per_dim
     )
   }
 
