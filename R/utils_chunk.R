@@ -59,27 +59,35 @@
 
   # FIXME:
   # - make this work for compact sequence that don't start at one
-  per_dim_in_chunk <- Map(
-    \(idx, cs) {
-      if ((is.compact(idx) || is.scalar(idx)) && min(idx) == 1L) {
-        res <- .Call("chop_vec", idx, cs, PACKAGE = "Rarr")
-        pd <- setNames(res, 0L:(length(res) - 1L))
-        list(per_dim = pd, in_chunk = lapply(pd, seq_along))
+  results_by_dim <- Map(
+    \(dim_index, chunk_size) {
+      if (
+        (is.compact(dim_index) || is.scalar(dim_index)) && min(dim_index) == 1L
+      ) {
+        chopped <- .Call("chop_vec", dim_index, chunk_size, PACKAGE = "Rarr")
+        positions_by_chunk <- setNames(chopped, 0L:(length(chopped) - 1L))
+        list(
+          per_dim = positions_by_chunk,
+          in_chunk = lapply(positions_by_chunk, seq_along)
+        )
       } else {
-        zero0 <- reindex(idx, from = 1L, to = 0L)
-        id <- zero0 %/% cs
+        index0 <- reindex(dim_index, from = 1L, to = 0L)
+        chunk_id <- index0 %/% chunk_size
         # We compute the remainder "manually" to avoid expensive %% call,
         # when %/% did all the work already
-        rem <- zero0 - id * cs + 1L
-        pd <- split(seq_along(id), id)
-        list(per_dim = pd, in_chunk = lapply(pd, \(pos) rem[pos]))
+        index_in_chunk <- index0 - chunk_id * chunk_size + 1L
+        positions_by_chunk <- split(seq_along(chunk_id), chunk_id)
+        list(
+          per_dim = positions_by_chunk,
+          in_chunk = lapply(positions_by_chunk, \(pos) index_in_chunk[pos])
+        )
       }
     },
     index,
     chunk_dim
   )
-  per_dim <- lapply(per_dim_in_chunk, `[[`, "per_dim")
-  in_chunk <- lapply(per_dim_in_chunk, `[[`, "in_chunk")
+  per_dim <- lapply(results_by_dim, `[[`, "per_dim")
+  in_chunk <- lapply(results_by_dim, `[[`, "in_chunk")
 
   chunk_keys <- do.call(expand.grid, lapply(per_dim, names))
   key_strings <- .create_chunk_names(chunk_keys, metadata)
