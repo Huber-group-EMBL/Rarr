@@ -20,7 +20,12 @@
 
   if (length(array_bytes_codecs) != 1L) {
     stop(
-      "A single 'bytes-array' codec must be provided",
+      "A Zarr array must define exactly one 'array-bytes' codec (",
+      paste0(CODEC_ARRAY_BYTES, collapse = ", "),
+      "), but found ",
+      length(array_bytes_codecs),
+      " in the array metadata: ",
+      paste0(codecs_names, collapse = ", "),
       call. = FALSE
     )
   }
@@ -36,7 +41,11 @@
   if (length(unsupported_codecs) > 0L) {
     stop(
       "The following codecs are not supported: ",
-      toString(unsupported_codecs)
+      toString(unsupported_codecs),
+      ". ",
+      "Please open an issue requesting support at ",
+      "https://github.com/Huber-group-EMBL/Rarr/issues.",
+      call. = FALSE
     )
   }
 

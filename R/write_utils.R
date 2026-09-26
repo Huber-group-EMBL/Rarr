@@ -46,7 +46,14 @@
   if (any(positive_overflow | negative_overflow)) {
     warning(
       "Some values in 'x' are too large to be represented by the ",
-      "specified data type. They will be truncated when written.",
+      "specified data type and will be truncated to the type range ",
+      "(",
+      min_value,
+      " to ",
+      max_value,
+      ") when written. ",
+      "To avoid this, use a wider data type or check that 'x' does ",
+      "not contain out-of-range values.",
       call. = FALSE
     )
     storage.mode(max_value) <- storage.mode(x)
