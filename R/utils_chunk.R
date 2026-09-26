@@ -94,14 +94,18 @@
   key_pos <- do.call(expand.grid, lapply(per_dim, seq_along))
 
   # Transpose the list to get the result per chunk, rather than per dimension.
+  positions_by_dim <- Map(\(d, kk) d[kk], per_dim, key_pos)
+  in_chunk_by_dim <- Map(\(d, kk) d[kk], in_chunk, key_pos)
+
+  positions_per_chunk <- .mapply(list, positions_by_dim, NULL)
+  in_chunk_per_chunk <- .mapply(list, in_chunk_by_dim, NULL)
+
   setNames(
-    lapply(seq_len(nrow(key_pos)), \(i) {
-      k <- key_pos[i, ]
-      list(
-        positions = mapply(\(d, kk) d[[kk]], per_dim, k, SIMPLIFY = FALSE),
-        index_in_chunk = mapply(\(d, kk) d[[kk]], in_chunk, k, SIMPLIFY = FALSE)
-      )
-    }),
+    Map(
+      \(pos, ic) list(positions = pos, index_in_chunk = ic),
+      positions_per_chunk,
+      in_chunk_per_chunk
+    ),
     key_strings
   )
 }
