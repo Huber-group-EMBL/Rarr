@@ -46,8 +46,6 @@
 #'   * `index_in_chunk`: a per-dimension list of 1-based integer vectors
 #'     giving the within-chunk coordinates corresponding to `positions`.
 #'
-#' @importFrom utils relist
-#'
 #' @keywords internal
 #' @noRd
 .chunk_positions_by_chunk <- function(
@@ -60,61 +58,56 @@
   }
 
   # FIXME:
-  # - make this work for compat sequence that don't start at one
-  if (
-    all(vapply(
-      index,
-      function(x) is.compact(x) || is.scalar(x),
-      logical(1L)
-    )) &&
-      all(vapply(index, min, integer(1L)) == 1L)
-  ) {
-    per_dim <- mapply(
-      \(i, cs) {
-        res <- .Call(
-          "chop_vec",
-          i,
-          cs,
-          PACKAGE = "Rarr"
+  # - make this work for compact sequence that don't start at one
+  results_by_dim <- mapply(
+    \(dim_index, chunk_size) {
+      if (
+        (is.compact(dim_index) || is.scalar(dim_index)) && min(dim_index) == 1L
+      ) {
+        chopped <- .Call("chop_vec", dim_index, chunk_size, PACKAGE = "Rarr")
+        positions_by_chunk <- setNames(chopped, 0L:(length(chopped) - 1L))
+        list(
+          per_dim = positions_by_chunk,
+          in_chunk = lapply(positions_by_chunk, seq_along)
         )
-        setNames(res, 0L:(length(res) - 1L))
-      },
-      index,
-      chunk_dim,
-      SIMPLIFY = FALSE
-    )
-    # Faster than nested lapply()
-    in_chunk <- rapply(per_dim, seq_along, how = "list")
-  } else {
-    flat0 <- unlist(lapply(index, reindex, from = 1L, to = 0L))
-    cs <- rep(chunk_dim, times = lengths(index))
-    id <- flat0 %/% cs
-    # We compute the remainder "manually" to avoid expensive %% call,
-    # when %/% did all the work already
-    rem <- flat0 - id * cs
-    per_dim <- relist(id, index) |>
-      lapply(\(x) split(seq_along(x), x))
-    in_chunk <- mapply(
-      \(rem, pd) lapply(pd, \(pos) rem[pos]),
-      relist(rem + 1L, index),
-      per_dim,
-      SIMPLIFY = FALSE
-    )
-  }
+      } else {
+        index0 <- reindex(dim_index, from = 1L, to = 0L)
+        chunk_id <- index0 %/% chunk_size
+        # We compute the remainder "manually" to avoid expensive %% call,
+        # when %/% did all the work already
+        index_in_chunk <- index0 - chunk_id * chunk_size + 1L
+        positions_by_chunk <- split(seq_along(chunk_id), chunk_id)
+        list(
+          per_dim = positions_by_chunk,
+          in_chunk = lapply(positions_by_chunk, \(pos) index_in_chunk[pos])
+        )
+      }
+    },
+    index,
+    chunk_dim,
+    SIMPLIFY = FALSE
+  )
+  per_dim <- lapply(results_by_dim, `[[`, "per_dim")
+  in_chunk <- lapply(results_by_dim, `[[`, "in_chunk")
 
   chunk_keys <- do.call(expand.grid, lapply(per_dim, names))
   key_strings <- .create_chunk_names(chunk_keys, metadata)
   key_pos <- do.call(expand.grid, lapply(per_dim, seq_along))
 
   # Transpose the list to get the result per chunk, rather than per dimension.
+  positions_by_dim <- mapply(\(d, kk) d[kk], per_dim, key_pos, SIMPLIFY = FALSE)
+  in_chunk_by_dim <- mapply(\(d, kk) d[kk], in_chunk, key_pos, SIMPLIFY = FALSE)
+
+  positions_per_chunk <- .mapply(list, positions_by_dim, NULL)
+  in_chunk_per_chunk <- .mapply(list, in_chunk_by_dim, NULL)
+
   setNames(
-    lapply(seq_len(nrow(key_pos)), \(i) {
-      k <- key_pos[i, ]
-      list(
-        positions = mapply(\(d, kk) d[[kk]], per_dim, k, SIMPLIFY = FALSE),
-        index_in_chunk = mapply(\(d, kk) d[[kk]], in_chunk, k, SIMPLIFY = FALSE)
-      )
-    }),
+    mapply(
+      \(pos, ic) list(positions = pos, index_in_chunk = ic),
+      positions_per_chunk,
+      in_chunk_per_chunk,
+      SIMPLIFY = FALSE
+    ),
     key_strings
   )
 }
