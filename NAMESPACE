@@ -31,7 +31,6 @@ importFrom(paws.storage,s3)
 importFrom(stats,setNames)
 importFrom(utils,
   modifyList,
-  relist,
   tail
 )
 useDynLib(Rarr)
