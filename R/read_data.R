@@ -115,39 +115,21 @@ read_data <- function(
   existing_idx <- which(chunk_exists)
 
   warnings <- list()
-  ## hopefully we can eventually do this in parallel
-  chunk_selections <- withCallingHandlers(
-    lapply(
-      # We skip missing chunks here since they will just be filled with the fill value
-      # when initializing the consolidated array.
-      existing_idx,
-      function(i) {
-        .extract_elements(
-          chunk_name = chunk_names[i],
-          current_chunk_path = chunk_paths[i],
-          metadata = metadata,
-          chunk_dim = chunk_dim,
-          s3_client = s3_client,
-          s3_bucket = bucket,
-          chunk_positions = chunk_positions
-        )
-      }
-    ),
-    warning = function(w) {
-      warnings <<- c(warnings, list(w)) # nolint: undesirable_operator_linter.
-      invokeRestart("muffleWarning")
-    }
-  )
-  for (w in unique(warnings)) {
-    warning(w)
-  }
 
-  if (length(chunk_selections) == 1L && all(chunk_dim == lengths(index))) {
+  if (length(existing_idx) == 1L && identical(chunk_dim, lengths(index))) {
     # If the chunk shape is the same as the requested shape, we can just return the
     # single chunk that was read.
     # This saves us from having to allocate a new array and copy the chunk into it.
     # This is a common scenario in anndata.
-    return(chunk_selections[[1L]][[1L]])
+    return(.extract_elements(
+      chunk_name = chunk_names[existing_idx[1L]],
+      current_chunk_path = chunk_paths[existing_idx[1L]],
+      metadata = metadata,
+      chunk_dim = chunk_dim,
+      s3_client = s3_client,
+      s3_bucket = bucket,
+      chunk_positions = chunk_positions
+    )[[1L]])
   }
 
   ## predefine our array to be populated from the read chunks
@@ -156,15 +138,40 @@ read_data <- function(
   is_structured <- is.list(metadata$data_type) &&
     metadata$data_type$name %in% c("struct", "structured")
 
-  ## proceed in serial and update the output with each chunk selection in turn
-  for (i in seq_along(chunk_selections)) {
-    index_in_result <- chunk_selections[[i]][[2L]]
-    rlang::inject(output[!!!index_in_result] <- chunk_selections[[i]][[1L]]) # nolint: implicit_assignment_linter.
-    if (is_structured) {
-      # Assigning a list drops the dim attribute so we have to continuously add it again
-      dim(output) <- lengths(index)
+  ## If we attempt to use parallel processing later, we have to change the
+  ## approach since we cannot write to `output` in parallel.  For now, we just use a single thread.
+  withCallingHandlers(
+    {
+      for (i in existing_idx) {
+        chunk_and_idx <- .extract_elements(
+          # We skip missing chunks here since they will just be filled with the fill value
+          # when initializing the consolidated array.
+          chunk_name = chunk_names[i],
+          current_chunk_path = chunk_paths[i],
+          metadata = metadata,
+          chunk_dim = chunk_dim,
+          s3_client = s3_client,
+          s3_bucket = bucket,
+          chunk_positions = chunk_positions
+        )
+        index_in_result <- chunk_and_idx[[2L]]
+        rlang::inject(output[!!!index_in_result] <- chunk_and_idx[[1L]]) # nolint: implicit_assignment_linter.
+        if (is_structured) {
+          # Assigning a list drops the dim attribute so we have to continuously add it again
+          dim(output) <- lengths(index)
+        }
+      }
+    },
+    warning = function(w) {
+      warnings <<- c(warnings, list(w)) # nolint: undesirable_operator_linter.
+      invokeRestart("muffleWarning")
     }
+  )
+
+  for (w in unique(warnings)) {
+    warning(w)
   }
+
   return(output)
 }
 
