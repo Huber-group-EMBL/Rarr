@@ -49,7 +49,7 @@ test_that("blosc works with variable length types", {
 test_that("error when setting up compressors with invalid level", {
   expect_error(
     use_blosc(clevel = 30),
-    "`clevel` value must be an integer between 0 and 9"
+    "`clevel` must be an integer between 0 and 9"
   )
   expect_warning(
     use_zstd(level = 30),
