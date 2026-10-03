@@ -326,19 +326,20 @@ write_zarr_array <- function(
     p <- function(...) NULL
   }
   ## iterate over each chunk
-  ## TODO: maybe this can be done in parallel with bpmapply() ?
-  res <- mapply(
+  ## Safe to parallelize because chunks are independent of each other
+  res <- future.apply::future_mapply(
     FUN = function(chunk_path, chunk_name, ...) {
       p(sprintf("Writing chunk %s", chunk_name))
       .write_chunk(chunk_path = chunk_path, chunk_name = chunk_name, ...)
     },
-    chunk_path = chunk_paths,
-    chunk_name = chunk_names,
+    chunk_paths,
+    chunk_names,
     MoreArgs = list(
       x = x,
       chunk_positions = chunk_positions,
       metadata = metadata
-    )
+    ),
+    future.globals = FALSE
   )
 
   return(invisible(all(res)))
@@ -486,8 +487,8 @@ update_zarr_array <- function(zarr_array_path, x, index) {
   }
 
   ## only update the chunks that need to be
-  ## TODO: maybe this can be done in parallel is bpmapply() ?
-  res <- mapply(
+  ## Safe to parallelize because chunks are independent of each other
+  res <- future.apply::future_mapply(
     FUN = function(chunk_name, chunk_exists, ...) {
       p(sprintf("Updating chunk %s", chunk_name))
       .update_chunk(
@@ -504,7 +505,8 @@ update_zarr_array <- function(zarr_array_path, x, index) {
       zarr_array_path = zarr_array_path,
       chunk_dim = chunk_dim,
       metadata = metadata
-    )
+    ),
+    future.globals = FALSE
   )
 
   return(invisible(all(res)))
