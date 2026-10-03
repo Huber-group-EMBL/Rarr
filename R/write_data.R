@@ -316,8 +316,8 @@ write_zarr_array <- function(
   chunk_paths <- paste0(path, chunk_names)
 
   ## iterate over each chunk
-  ## TODO: maybe this can be done in parallel with bpmapply() ?
-  res <- mapply(
+  ## Safe to parallelize because chunks are independent of each other
+  res <- future.apply::future_mapply(
     FUN = .write_chunk,
     chunk_paths,
     chunk_names,
@@ -325,7 +325,8 @@ write_zarr_array <- function(
       x = x,
       chunk_positions = chunk_positions,
       metadata = metadata
-    )
+    ),
+    future.globals = FALSE
   )
 
   return(invisible(all(res)))
@@ -464,8 +465,8 @@ update_zarr_array <- function(zarr_array_path, x, index) {
   )
 
   ## only update the chunks that need to be
-  ## TODO: maybe this can be done in parallel is bpmapply() ?
-  res <- mapply(
+  ## Safe to parallelize because chunks are independent of each other
+  res <- future.apply::future_mapply(
     .update_chunk,
     chunk_name = chunk_names,
     chunk_exists = chunk_exists,
@@ -475,7 +476,8 @@ update_zarr_array <- function(zarr_array_path, x, index) {
       zarr_array_path = zarr_array_path,
       chunk_dim = chunk_dim,
       metadata = metadata
-    )
+    ),
+    future.globals = FALSE
   )
 
   return(invisible(all(res)))
