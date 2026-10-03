@@ -371,7 +371,7 @@ contents is as expected.
 
 ### Session info
 
-    ## R Under development (unstable) (2026-09-29 r90598)
+    ## R Under development (unstable) (2026-09-30 r90605)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.5 LTS
     ## 
