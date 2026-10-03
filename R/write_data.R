@@ -305,13 +305,15 @@ write_zarr_array <- function(
     operation = "encode"
   )
 
-  x <- .prepare_write_data(x, metadata)
+  x <- .prepare_write_data(x, metadata) |>
+    mori::share()
 
   ## build index covering the entire array
   index <- lapply(dim(x), seq_len)
 
   ## precompute, for each chunk, the positions in `index` that belong to it
-  chunk_positions <- .chunk_positions_by_chunk(index, metadata, chunk_dim)
+  chunk_positions <- .chunk_positions_by_chunk(index, metadata, chunk_dim) |>
+    mori::share()
   chunk_names <- names(chunk_positions)
   chunk_paths <- paste0(path, chunk_names)
 
