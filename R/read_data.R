@@ -15,6 +15,12 @@
 #'   extent of each dimension will correspond to the length of the values
 #'   provided to the `index` argument.
 #'
+#' @details
+#' This function makes use of the \pkg{progressr} package to signal progress.
+#' For large / complex arrays, users may want to enable the progress bar with
+#' [progressr::handlers()].
+#'
+#'
 #' @examples
 #'
 #' ## Using a local file provided with the package
@@ -138,6 +144,12 @@ read_data <- function(
   is_structured <- is.list(metadata$data_type) &&
     metadata$data_type$name %in% c("struct", "structured")
 
+  if (requireNamespace("progressr", quietly = TRUE)) {
+    p <- progressr::progressor(along = existing_idx)
+  } else {
+    p <- function(...) NULL
+  }
+
   ## If we attempt to use parallel processing later, we have to change the
   ## approach since we cannot write to `output` in parallel.  For now, we just use a single thread.
   withCallingHandlers(
@@ -160,6 +172,7 @@ read_data <- function(
           # Assigning a list drops the dim attribute so we have to continuously add it again
           dim(output) <- lengths(index)
         }
+        p(sprintf("Reading chunk %s", chunk_names[i])) # update progress
       }
     },
     warning = function(w) {

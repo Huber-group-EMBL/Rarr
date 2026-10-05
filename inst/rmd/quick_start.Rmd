@@ -24,7 +24,17 @@ library(Rarr)
 **Rarr** can be used to read files either on local disk or on remote S3 storage
 systems.  First lets take a look at reading from a local file.
 
+**Rarr** uses the [progressr](https://cran.r-project.org/package=progressr) package to provide progress updates when reading or writing Zarr arrays.  If you want to see the progress updates, you need to set up a progress handler.  The simplest way to do this is with the `handlers()` function:
+
+```{r, progress-handler}
+library(progressr)
+old_handlers <- handlers("txtprogressbar")
+# Remove the progress bar setting when exiting this session
+on.exit(handlers(old_handlers))
+```
+
 ## Reading a from a local Zarr array
+
 To demonstrate reading a local file, we'll pick the example file containing
 32-bit integers arranged in the "column first" ordering.
 

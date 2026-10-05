@@ -24,6 +24,11 @@ disk. Returns (invisibly) \code{TRUE} if the array is successfully updated.
 \description{
 Update (a subset of) an existing Zarr array
 }
+\details{
+This function makes use of the \pkg{progressr} package to signal progress.
+For large / complex arrays, users may want to enable the progress bar with
+\code{\link[progressr:handlers]{progressr::handlers()}}.
+}
 \examples{
 
 ## first create a new, empty, Zarr array

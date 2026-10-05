@@ -65,6 +65,11 @@ disk. Returns (invisibly) \code{TRUE} if the array is successfully written.
 \description{
 Write an R array to Zarr
 }
+\details{
+This function makes use of the \pkg{progressr} package to signal progress.
+For large / complex arrays, users may want to enable the progress bar with
+\code{\link[progressr:handlers]{progressr::handlers()}}.
+}
 \note{
 If \code{x} has \code{dimnames}, \code{names(dimnames(x))} will be stored as the
 \code{dimension_names} field in the Zarr metadata.

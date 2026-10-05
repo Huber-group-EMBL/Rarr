@@ -242,6 +242,11 @@ create_empty_zarr_array <- function(
 #' @returns The function is primarily called for the side effect of writing to
 #'   disk. Returns (invisibly) `TRUE` if the array is successfully written.
 #'
+#' @details
+#' This function makes use of the \pkg{progressr} package to signal progress.
+#' For large / complex arrays, users may want to enable the progress bar with
+#' [progressr::handlers()].
+#'
 #' @examples
 #'
 #' new_zarr_array <- file.path(tempdir(), "integer.zarr")
@@ -315,12 +320,20 @@ write_zarr_array <- function(
   chunk_names <- names(chunk_positions)
   chunk_paths <- paste0(path, chunk_names)
 
+  if (requireNamespace("progressr", quietly = TRUE)) {
+    p <- progressr::progressor(along = chunk_names)
+  } else {
+    p <- function(...) NULL
+  }
   ## iterate over each chunk
   ## TODO: maybe this can be done in parallel with bpmapply() ?
   res <- mapply(
-    FUN = .write_chunk,
-    chunk_paths,
-    chunk_names,
+    FUN = function(chunk_path, chunk_name, ...) {
+      p(sprintf("Writing chunk %s", chunk_name))
+      .write_chunk(chunk_path = chunk_path, chunk_name = chunk_name, ...)
+    },
+    chunk_path = chunk_paths,
+    chunk_name = chunk_names,
     MoreArgs = list(
       x = x,
       chunk_positions = chunk_positions,
@@ -379,6 +392,11 @@ write_zarr_array <- function(
 #'
 #' @returns The function is primarily called for the side effect of writing to
 #'   disk. Returns (invisibly) `TRUE` if the array is successfully updated.
+#'
+#' @details
+#' This function makes use of the \pkg{progressr} package to signal progress.
+#' For large / complex arrays, users may want to enable the progress bar with
+#' [progressr::handlers()].
 #'
 #' @examples
 #'
@@ -463,10 +481,23 @@ update_zarr_array <- function(zarr_array_path, x, index) {
     s3_client = NULL
   )
 
+  if (requireNamespace("progressr", quietly = TRUE)) {
+    p <- progressr::progressor(along = chunk_names)
+  } else {
+    p <- function(...) NULL
+  }
+
   ## only update the chunks that need to be
   ## TODO: maybe this can be done in parallel is bpmapply() ?
   res <- mapply(
-    .update_chunk,
+    FUN = function(chunk_name, chunk_exists, ...) {
+      p(sprintf("Updating chunk %s", chunk_name))
+      .update_chunk(
+        chunk_name = chunk_name,
+        chunk_exists = chunk_exists,
+        ...
+      )
+    },
     chunk_name = chunk_names,
     chunk_exists = chunk_exists,
     MoreArgs = list(

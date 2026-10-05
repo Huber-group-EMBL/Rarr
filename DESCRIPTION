@@ -32,6 +32,7 @@ Imports:
 Suggests:
     BiocStyle,
     knitr,
+    progressr,
     rmarkdown,
     testthat (>= 3.0.0),
     withr

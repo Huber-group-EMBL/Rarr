@@ -28,6 +28,11 @@ provided to the \code{index} argument.
 \description{
 Read a Zarr array
 }
+\details{
+This function makes use of the \pkg{progressr} package to signal progress.
+For large / complex arrays, users may want to enable the progress bar with
+\code{\link[progressr:handlers]{progressr::handlers()}}.
+}
 \examples{
 
 ## Using a local file provided with the package
