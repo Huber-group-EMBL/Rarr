@@ -279,3 +279,26 @@ z = zarr.create_array(
 z[:] = 0
 z[0, :, 0] = np.arange(start=1, stop=21)
 z[:, 0, 0] = 1
+
+# Sharded 1D array with a single inner chunk per shard (all inner chunks
+# decode to the same length) and no explicit transpose codec
+z = zarr.create_array(
+    'inst/extdata/zarr_examples/sharding/int32_sharded_1d.zarr',
+    shape=(5,),
+    chunks=(5,),
+    shards=(5,),
+    dtype='i4',
+    overwrite=True
+)
+z[:] = np.arange(start=1, stop=6)
+
+# Sharded 2D array without explicit transpose codec (C-ordered inner chunks)
+z = zarr.create_array(
+    'inst/extdata/zarr_examples/sharding/int32_sharded_2d.zarr',
+    shape=(6, 4),
+    chunks=(3, 2),   # inner chunk shape within each shard
+    shards=(3, 4),   # shard shape
+    dtype='i4',
+    overwrite=True
+)
+z[:] = np.arange(24).reshape(6, 4) + 1

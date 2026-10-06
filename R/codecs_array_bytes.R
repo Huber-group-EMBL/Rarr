@@ -124,13 +124,24 @@ codec_sharding_indexed_decode <- function(
   dim(index) <- index_shape
   index <- codec_transpose_decode(index, c(1L, rev(seq_len(nb_dims) + 1L)))
 
-  configured_decoders <- config$codecs |>
+  inner_codecs <- config$codecs |>
     setNames(vapply(
       config$codecs,
       function(x) x$name,
       FUN.VALUE = character(1L)
-    )) |>
-    .configure_codecs(operation = "decode")
+    ))
+  # Inner chunks are C-ordered like any other chunk, so inject the same default
+  # transpose codec that is added for unsharded arrays.
+  if (is.null(inner_codecs[["transpose"]])) {
+    inner_codecs <- c(
+      list(transpose = list(
+        name = "transpose",
+        configuration = list(order = seq_along(chunk_dim) - 1L)
+      )),
+      inner_codecs
+    )
+  }
+  configured_decoders <- .configure_codecs(inner_codecs, operation = "decode")
 
   chunks <- apply(
     index,
@@ -155,7 +166,8 @@ codec_sharding_indexed_decode <- function(
         datatype = datatype,
         fill_value = fill_value
       )
-    }
+    },
+    simplify = FALSE
   )
   shard <- array(fill_value, dim = outer_chunk_dim)
   non_empty_coords <- which(

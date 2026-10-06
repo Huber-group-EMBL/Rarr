@@ -106,6 +106,10 @@
   (#136).
 * Rarr now compiles properly on Window ARM64, thanks a to report and patch from
   Jeroen Ooms (#224).
+* Arrays using the `sharding_indexed` codec are now decoded correctly when
+  all inner chunks have the same length, and when the inner codecs have no
+  explicit `transpose` codec (C order), as written by default by zarr-python 3
+  and anndata >= 0.13 (#253).
 
 ## Internal changes
 
