@@ -58,6 +58,10 @@
 * The `read_zarr_consolidated_metadata()` function is now exported, fulfilling
   the request from Sharla Gelfand in #116.
 * The new `bfloat16` data type is now supported for reading.
+* `read_zarr_array()`, `write_zarr_array()` and `update_zarr_array()` now
+  integrate the `{progressr}` package for optional and customizable progress
+  report feedback when reading or writing large / complex arrays. Progress
+  can be enabled via the `progressr::handlers()` function.
 
 ## Minor improvements
 
