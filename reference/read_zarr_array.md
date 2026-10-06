@@ -37,6 +37,12 @@ An array with the same number of dimensions as the input array. The
 extent of each dimension will correspond to the length of the values
 provided to the `index` argument.
 
+## Details
+
+This function makes use of the progressr package to signal progress. For
+large / complex arrays, users may want to enable the progress bar with
+[`progressr::handlers()`](https://progressr.futureverse.org/reference/handlers.html).
+
 ## Examples
 
 ``` r

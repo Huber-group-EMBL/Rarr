@@ -31,6 +31,12 @@ update_zarr_array(zarr_array_path, x, index)
 The function is primarily called for the side effect of writing to disk.
 Returns (invisibly) `TRUE` if the array is successfully updated.
 
+## Details
+
+This function makes use of the progressr package to signal progress. For
+large / complex arrays, users may want to enable the progress bar with
+[`progressr::handlers()`](https://progressr.futureverse.org/reference/handlers.html).
+
 ## Examples
 
 ``` r

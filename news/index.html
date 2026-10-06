@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.43</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.44</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,6 +71,8 @@
 <li>A new <code><a href="../reference/write_zarr_group.html">write_zarr_group()</a></code> function is available, based on a request and initial draft from Artür Manukyan in <a href="https://github.com/Huber-group-EMBL/Rarr/issues/18" class="external-link">#18</a>.</li>
 <li>The <code><a href="../reference/read_zarr_consolidated_metadata.html">read_zarr_consolidated_metadata()</a></code> function is now exported, fulfilling the request from Sharla Gelfand in <a href="https://github.com/Huber-group-EMBL/Rarr/issues/116" class="external-link">#116</a>.</li>
 <li>The new <code>bfloat16</code> data type is now supported for reading.</li>
+<li>
+<code><a href="../reference/read_zarr_array.html">read_zarr_array()</a></code>, <code><a href="../reference/write_zarr_array.html">write_zarr_array()</a></code> and <code><a href="../reference/update_zarr_array.html">update_zarr_array()</a></code> now integrate the <a href="https://progressr.futureverse.org" class="external-link">progressr</a> package for optional and customizable progress report feedback when reading or writing large / complex arrays. Progress can be enabled via the <code><a href="https://progressr.futureverse.org/reference/handlers.html" class="external-link">progressr::handlers()</a></code> function.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-improvements-2-1">Minor improvements<a class="anchor" aria-label="anchor" href="#minor-improvements-2-1"></a></h3>

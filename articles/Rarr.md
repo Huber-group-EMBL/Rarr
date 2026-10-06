@@ -76,6 +76,22 @@ library(Rarr)
 **Rarr** can be used to read files either on local disk or on remote S3
 storage systems. First lets take a look at reading from a local file.
 
+**Rarr** uses the
+[progressr](https://cran.r-project.org/package=progressr) package to
+provide progress updates when reading or writing Zarr arrays. If you
+want to see the progress updates, you need to set up a progress handler.
+The simplest way to do this is with the
+[`handlers()`](https://progressr.futureverse.org/reference/handlers.html)
+function:
+
+``` r
+
+library(progressr)
+old_handlers <- handlers("txtprogressbar")
+# Remove the progress bar setting when exiting this session
+on.exit(handlers(old_handlers))
+```
+
 ### Reading a from a local Zarr array
 
 To demonstrate reading a local file, we’ll pick the example file
@@ -371,7 +387,7 @@ contents is as expected.
 
 ### Session info
 
-    ## R Under development (unstable) (2026-09-30 r90605)
+    ## R Under development (unstable) (2026-10-03 r90638)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.5 LTS
     ## 
@@ -392,7 +408,7 @@ contents is as expected.
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] Rarr_2.1.43      BiocStyle_2.40.0
+    ## [1] progressr_1.0.0  Rarr_2.1.44      BiocStyle_2.40.0
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] crayon_1.5.3        cli_3.6.6           knitr_1.52         
@@ -405,7 +421,7 @@ contents is as expected.
     ## [22] BiocManager_1.30.27 compiler_4.7.0      fs_2.1.0           
     ## [25] Rcpp_1.1.2          R.oo_1.27.1         R.utils_2.13.0     
     ## [28] systemfonts_1.3.2   digest_0.6.39       R6_2.6.1           
-    ## [31] curl_8.0.0          paws.common_0.8.10  paws.storage_0.10.0
+    ## [31] curl_8.0.0          paws.common_0.9.0   paws.storage_0.10.0
     ## [34] magrittr_2.0.5      R.methodsS3_1.8.2   bslib_0.12.0       
     ## [37] tools_4.7.0         pkgdown_2.2.1       cachem_1.1.0       
     ## [40] desc_1.4.3

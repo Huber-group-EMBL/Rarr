@@ -85,6 +85,16 @@
   function is now exported, fulfilling the request from Sharla Gelfand
   in [\#116](https://github.com/Huber-group-EMBL/Rarr/issues/116).
 - The new `bfloat16` data type is now supported for reading.
+- [`read_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/read_zarr_array.md),
+  [`write_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/write_zarr_array.md)
+  and
+  [`update_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/update_zarr_array.md)
+  now integrate the [progressr](https://progressr.futureverse.org)
+  package for optional and customizable progress report feedback when
+  reading or writing large / complex arrays. Progress can be enabled via
+  the
+  [`progressr::handlers()`](https://progressr.futureverse.org/reference/handlers.html)
+  function.
 
 ### Minor improvements
 
