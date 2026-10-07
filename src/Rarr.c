@@ -3,6 +3,7 @@
 #include "compress.h"
 #include "type_conversion.h"
 #include "codec_vlen-utf8.h"
+#include "fast_transpose.h"
 #include "utils.h"
 
 static const R_CallMethodDef callMethods[] = {
@@ -16,6 +17,8 @@ static const R_CallMethodDef callMethods[] = {
   
   {"type_convert_bfloat", (DL_FUNC) &type_convert_bfloat, 4},
   {"codec_vlen_utf8_decode_c", (DL_FUNC) &codec_vlen_utf8_decode_c, 2},
+
+  {"fast_transpose", (DL_FUNC) &fast_transpose, 1},
 
   {"is_compact", (DL_FUNC) &is_compact, 1},
   {"chop_vec", (DL_FUNC) &chop_vec, 2},
