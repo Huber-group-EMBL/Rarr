@@ -387,7 +387,7 @@ contents is as expected.
 
 ### Session info
 
-    ## R Under development (unstable) (2026-10-03 r90638)
+    ## R Under development (unstable) (2026-10-05 r90641)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.5 LTS
     ## 
