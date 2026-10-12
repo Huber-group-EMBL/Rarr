@@ -7,6 +7,9 @@
     )
     # nocov end
   }
+  if (metadata$zarr_format == version_to) {
+    return(metadata)
+  }
 
   dt <- metadata$datatype
 
@@ -17,7 +20,7 @@
 
   metadata_v3 <- list(
     node_type = "array",
-    zarr_format = 2L,
+    zarr_format = version_from,
     datatype = dt,
     data_type = .convert_dtype_version(
       dt$base_type,

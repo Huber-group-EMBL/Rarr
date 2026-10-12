@@ -149,6 +149,7 @@ zarr_overview <- function(
 
   res <- data.frame(
     path = paste0(.normalize_array_path(zarr_array_path), array_name),
+    zarr_format = array_metadata$zarr_format,
     data_type = if (is.list(array_metadata$data_type)) {
       array_metadata$data_type$name
     } else {
@@ -169,6 +170,7 @@ zarr_overview <- function(
 .print_array_metadata <- function(array_metadata_df, indent = "") {
   fields <- c(
     "Path",
+    "Zarr Format",
     "Shape",
     "Chunk Shape",
     "No. of Chunks",
@@ -183,6 +185,7 @@ zarr_overview <- function(
   formatted <- sprintf(
     paste(fields, collapse = "\n"),
     array_metadata_df$path,
+    array_metadata_df$zarr_format,
     vapply(
       array_metadata_df$dim,
       function(x) {
