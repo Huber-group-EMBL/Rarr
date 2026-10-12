@@ -54,7 +54,7 @@
   Thanks to William Colgan for early testing, reporting issues and providing
   bug fixes (#254).
 * `zarr_overview()` now returns a new logical field `attributes` indicating
-  whether each array has associated attributes.
+  whether each array or group has associated attributes.
 * A new `write_zarr_group()` function is available, based on a request and
   initial draft from Artür Manukyan in #18.
 * The `read_zarr_consolidated_metadata()` function is now exported, fulfilling
@@ -64,6 +64,10 @@
   integrate the `{progressr}` package for optional and customizable progress
   report feedback when reading or writing large / complex arrays. Progress
   can be enabled via the `progressr::handlers()` function.
+* `zarr_overview()` now returns the `zarr_version` of the array or group, based
+  on a request from Artür Manukyan.
+* `zarr_overview()` now works on groups with non-consolidated metadata, based
+  a request from Artür Manukyan.
 
 ## Minor improvements
 
