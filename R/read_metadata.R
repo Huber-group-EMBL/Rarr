@@ -55,11 +55,36 @@ zarr_overview <- function(
   zarr_array_path <- .normalize_array_path(zarr_array_path)
   s3_client <- s3_client %||% .create_s3_client(path = zarr_array_path)
 
-  dot_zmeta <- read_zarr_consolidated_metadata(
-    zarr_path = zarr_array_path,
+  exists_metadata <- .store_check_exist(
+    zarr_array_path,
+    files = c(METADATA_V2_FILES, METADATA_V3_FILES),
     s3_client = s3_client
   )
-  if (!is.null(dot_zmeta)) {
+  if (exists_metadata[".zarray"]) {
+    type <- "array"
+  } else if (any(exists_metadata[c(".zgroup", ".zmetadata")])) {
+    type <- "group"
+  } else if (exists_metadata["zarr.json"]) {
+    type <- .read_json_file(
+      paste0(zarr_array_path, "zarr.json"),
+      s3_client = s3_client
+    )$node_type
+  } else {
+    stop(
+      "The path does not contain any metadata files.",
+      call. = FALSE
+    )
+  }
+
+  if (type == "group") {
+    dot_zmeta <- read_zarr_consolidated_metadata(
+      zarr_path = zarr_array_path,
+      s3_client = s3_client
+    )
+    group_attrs <- read_zarr_attributes(
+      zarr_path = zarr_array_path,
+      s3_client = s3_client
+    )
     is_array <- vapply(
       dot_zmeta,
       function(x) x$node_type == "array",
@@ -88,8 +113,16 @@ zarr_overview <- function(
       "\n",
       sep = ""
     )
-    cat("Arrays:\n---\n")
-    .print_array_metadata(res, indent = "  ")
+    cat(
+      "Attributes: ",
+      if (length(group_attrs) > 0L) "yes" else "no",
+      "\n",
+      sep = ""
+    )
+    if (NROW(res) > 0L) {
+      cat("Arrays:\n---\n")
+      .print_array_metadata(res, indent = "  ")
+    }
     invisible(TRUE)
   } else {
     array_metadata <- .read_array_metadata(

@@ -130,8 +130,11 @@ test_that("zarr_overview doesn't choke on empty consolidated metadata", {
     "empty_consolidated.zarr",
     package = "Rarr"
   )
-  zarr_overview(zarr_empty_consolidated) |>
-    expect_warning("The consolidated metadata file was found but was empty.")
+  expect_snapshot(
+    zarr_overview(zarr_empty_consolidated),
+    # "Path" is absolute path so will differ between systems
+    transform = function(x) gsub("^(  )?Path: .*", "Path: <path>", x)
+  )
 })
 
 test_that("zarr_overview console output matches snapshot for v3 metadata", {

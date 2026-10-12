@@ -477,6 +477,7 @@
     Output
       Type: Group of Arrays
       Path: <path>
+      Attributes: no
       Arrays:
       ---
       Path: <path>
@@ -516,6 +517,7 @@
     Output
       Type: Group of Arrays
       Path: <path>
+      Attributes: yes
       Arrays:
       ---
       Path: <path>
@@ -987,6 +989,18 @@
         Endianness: NA
         Compressor: zstd
         Attributes: yes
+
+# zarr_overview doesn't choke on empty consolidated metadata
+
+    Code
+      zarr_overview(zarr_empty_consolidated)
+    Condition
+      Warning:
+      The consolidated metadata file was found but was empty. Consider filling it with `zarr_consolidate_metadata()`.
+    Output
+      Type: Group of Arrays
+      Path: <path>
+      Attributes: no
 
 # zarr_overview console output matches snapshot for v3 metadata
 
