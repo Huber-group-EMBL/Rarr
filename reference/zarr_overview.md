@@ -74,6 +74,7 @@ z1 <- system.file("extdata", "zarr_examples", "row-first",
 zarr_overview(zarr_array_path = z1)
 #> Type: Array
 #> Path: /home/runner/work/_temp/Library/Rarr/extdata/zarr_examples/row-first/int32.zarr
+#> Zarr Format: 2
 #> Shape: 30 x 20 x 10
 #> Chunk Shape: 10 x 10 x 5
 #> No. of Chunks: 12 (3 x 2 x 2)
@@ -88,6 +89,7 @@ z2 <- "https://noaa-nwm-retro-v2-zarr-pds.s3.amazonaws.com/feature_id/"
 zarr_overview(z2)
 #> Type: Array
 #> Path: https://noaa-nwm-retro-v2-zarr-pds.s3.amazonaws.com/feature_id
+#> Zarr Format: 2
 #> Shape: 2729077
 #> Chunk Shape: 2729077
 #> No. of Chunks: 1 (1)

@@ -76,7 +76,7 @@
   ([\#254](https://github.com/Huber-group-EMBL/Rarr/issues/254)).
 - [`zarr_overview()`](https://huber-group-embl.github.io/Rarr/reference/zarr_overview.md)
   now returns a new logical field `attributes` indicating whether each
-  array has associated attributes.
+  array or group has associated attributes.
 - A new
   [`write_zarr_group()`](https://huber-group-embl.github.io/Rarr/reference/write_zarr_group.md)
   function is available, based on a request and initial draft from Artür
@@ -97,6 +97,12 @@
   the
   [`progressr::handlers()`](https://progressr.futureverse.org/reference/handlers.html)
   function.
+- [`zarr_overview()`](https://huber-group-embl.github.io/Rarr/reference/zarr_overview.md)
+  now returns the `zarr_version` of the array or group, based on a
+  request from Artür Manukyan.
+- [`zarr_overview()`](https://huber-group-embl.github.io/Rarr/reference/zarr_overview.md)
+  now works on groups with non-consolidated metadata, based a request
+  from Artür Manukyan.
 
 ### Minor improvements
 

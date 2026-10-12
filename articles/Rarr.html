@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.45</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.46</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@
                         <h4 data-toc-skip class="author">Mike L.
 Smith</h4>
                         
-            <h4 data-toc-skip class="date">7 October 2026</h4>
+            <h4 data-toc-skip class="date">12 October 2026</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Huber-group-EMBL/Rarr/blob/devel/vignettes/Rarr.Rmd" class="external-link"><code>vignettes/Rarr.Rmd</code></a></small>
       <div class="d-none name"><code>Rarr.Rmd</code></div>
@@ -184,6 +184,7 @@ if present in the case of a Zarr group.&lt;/p&gt;"><sup>2</sup></a>.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/zarr_overview.html">zarr_overview</a></span><span class="op">(</span><span class="va">zarr_example</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Type: Array</span></span>
 <span><span class="co">## Path: /home/runner/work/_temp/Library/Rarr/extdata/zarr_examples/column-first/int32.zarr</span></span>
+<span><span class="co">## Zarr Format: 2</span></span>
 <span><span class="co">## Shape: 30 x 20 x 10</span></span>
 <span><span class="co">## Chunk Shape: 10 x 10 x 5</span></span>
 <span><span class="co">## No. of Chunks: 12 (3 x 2 x 2)</span></span>
@@ -286,8 +287,10 @@ containing the array details.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/zarr_overview.html">zarr_overview</a></span><span class="op">(</span><span class="va">zarr_example</span>, as_data_frame <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##                                                                                 path</span></span>
 <span><span class="co">## 1 /home/runner/work/_temp/Library/Rarr/extdata/zarr_examples/column-first/int32.zarr</span></span>
-<span><span class="co">##   data_type endianness compressor        dim chunk_dim nchunks attributes</span></span>
-<span><span class="co">## 1     int32     little       zstd 30, 20, 10 10, 10, 5 3, 2, 2      FALSE</span></span></code></pre>
+<span><span class="co">##   zarr_format data_type endianness compressor        dim chunk_dim nchunks</span></span>
+<span><span class="co">## 1           2     int32     little       zstd 30, 20, 10 10, 10, 5 3, 2, 2</span></span>
+<span><span class="co">##   attributes</span></span>
+<span><span class="co">## 1      FALSE</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="writing-subsets-of-data">Writing subsets of data<a class="anchor" aria-label="anchor" href="#writing-subsets-of-data"></a>
@@ -400,7 +403,7 @@ expected.</p>
 <div class="section level3">
 <h3 class="unnumbered" id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h3>
-<pre><code><span><span class="co">## R Under development (unstable) (2026-10-05 r90641)</span></span>
+<pre><code><span><span class="co">## R Under development (unstable) (2026-10-10 r90659)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
 <span><span class="co">## Running under: Ubuntu 24.04.5 LTS</span></span>
 <span><span class="co">## </span></span>
@@ -421,7 +424,7 @@ expected.</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] progressr_1.0.0  Rarr_2.1.45      BiocStyle_2.40.0</span></span>
+<span><span class="co">## [1] progressr_1.0.0  Rarr_2.1.46      BiocStyle_2.40.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] crayon_1.5.3        cli_3.6.6           knitr_1.52         </span></span>
@@ -434,7 +437,7 @@ expected.</p>
 <span><span class="co">## [22] BiocManager_1.30.27 compiler_4.7.0      fs_2.1.0           </span></span>
 <span><span class="co">## [25] Rcpp_1.1.2          R.oo_1.27.1         R.utils_2.13.0     </span></span>
 <span><span class="co">## [28] systemfonts_1.3.2   digest_0.6.39       R6_2.6.1           </span></span>
-<span><span class="co">## [31] curl_8.0.0          paws.common_0.9.0   paws.storage_0.10.0</span></span>
+<span><span class="co">## [31] curl_8.0.0          paws.common_0.9.0   paws.storage_0.11.0</span></span>
 <span><span class="co">## [34] magrittr_2.0.5      R.methodsS3_1.8.2   bslib_0.12.0       </span></span>
 <span><span class="co">## [37] tools_4.7.0         pkgdown_2.2.1       cachem_1.1.0       </span></span>
 <span><span class="co">## [40] desc_1.4.3</span></span></code></pre>

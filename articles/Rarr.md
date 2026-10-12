@@ -121,6 +121,7 @@ zarr_overview(zarr_example)
 
     ## Type: Array
     ## Path: /home/runner/work/_temp/Library/Rarr/extdata/zarr_examples/column-first/int32.zarr
+    ## Zarr Format: 2
     ## Shape: 30 x 20 x 10
     ## Chunk Shape: 10 x 10 x 5
     ## No. of Chunks: 12 (3 x 2 x 2)
@@ -247,8 +248,10 @@ zarr_overview(zarr_example, as_data_frame = TRUE)
 
     ##                                                                                 path
     ## 1 /home/runner/work/_temp/Library/Rarr/extdata/zarr_examples/column-first/int32.zarr
-    ##   data_type endianness compressor        dim chunk_dim nchunks attributes
-    ## 1     int32     little       zstd 30, 20, 10 10, 10, 5 3, 2, 2      FALSE
+    ##   zarr_format data_type endianness compressor        dim chunk_dim nchunks
+    ## 1           2     int32     little       zstd 30, 20, 10 10, 10, 5 3, 2, 2
+    ##   attributes
+    ## 1      FALSE
 
 ### Writing subsets of data
 
@@ -387,7 +390,7 @@ contents is as expected.
 
 ### Session info
 
-    ## R Under development (unstable) (2026-10-05 r90641)
+    ## R Under development (unstable) (2026-10-10 r90659)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.5 LTS
     ## 
@@ -408,7 +411,7 @@ contents is as expected.
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] progressr_1.0.0  Rarr_2.1.45      BiocStyle_2.40.0
+    ## [1] progressr_1.0.0  Rarr_2.1.46      BiocStyle_2.40.0
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] crayon_1.5.3        cli_3.6.6           knitr_1.52         
@@ -421,7 +424,7 @@ contents is as expected.
     ## [22] BiocManager_1.30.27 compiler_4.7.0      fs_2.1.0           
     ## [25] Rcpp_1.1.2          R.oo_1.27.1         R.utils_2.13.0     
     ## [28] systemfonts_1.3.2   digest_0.6.39       R6_2.6.1           
-    ## [31] curl_8.0.0          paws.common_0.9.0   paws.storage_0.10.0
+    ## [31] curl_8.0.0          paws.common_0.9.0   paws.storage_0.11.0
     ## [34] magrittr_2.0.5      R.methodsS3_1.8.2   bslib_0.12.0       
     ## [37] tools_4.7.0         pkgdown_2.2.1       cachem_1.1.0       
     ## [40] desc_1.4.3
