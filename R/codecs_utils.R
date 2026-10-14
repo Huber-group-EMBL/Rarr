@@ -88,19 +88,14 @@
       candidate_codec <- switch(
         candidate_codec,
         "numcodecs.lz4" = "lz4",
-        "zstd" = if (
-          !is.na(extSoftVersion()["zstd"]) && nzchar(extSoftVersion()["zstd"])
-        ) {
+        "zstd" = if (has_zstd()) {
           "zstd_base"
         } else {
           "zstd_custom"
         },
         candidate_codec
       )
-      if (
-        candidate_codec == "zstd_custom" &&
-          !identical(Sys.getenv("OLDREL_TESTS"), "true")
-      ) {
+      if (candidate_codec == "zstd_custom") {
         w <- warningCondition(
           paste0(
             "Rarr now relies on the base R `memCompress()` and `memDecompress()` ",

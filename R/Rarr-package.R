@@ -16,6 +16,21 @@ NULL
   match(x, table, nomatch = 0L) == 0L
 }
 
+# "Backport" from R 4.6.0
+has_zstd <- function() {
+  if (getRversion() < "4.6.0") {
+    # From https://bugs.r-project.org/show_bug.cgi?id=18914&_ts=1791986101
+    return(tryCatch(
+      {
+        zstdfile("")
+        TRUE
+      },
+      error = function(e) FALSE
+    ))
+  }
+  return(nzchar(extSoftVersion()["zstd"]))
+}
+
 # Backport from R 4.7.0
 Partial <- function(f, ...) {
   f <- match.fun(f)
