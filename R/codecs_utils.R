@@ -101,16 +101,22 @@
         candidate_codec == "zstd_custom" &&
           !identical(Sys.getenv("OLDREL_TESTS"), "true")
       ) {
-        warning(
-          "Rarr now relies on the base R memCompress() and memDecompress() ",
-          "functions for zstd with the expectation it is available everywhere. ",
-          "If you are seeing this warning, it means your R installation does ",
-          "not have zstd support. Please report at ",
-          "https://github.com/Huber-group-EMBL/Rarr/issues. ",
-          "If no reports are received, this support will be removed in a ",
-          "future release.",
-          call. = FALSE
+        w <- warningCondition(
+          paste0(
+            "Rarr now relies on the base R `memCompress()` and `memDecompress()` ",
+            "functions for zstd with the expectation it is available everywhere. ",
+            "If you are seeing this warning, it means your R installation does ",
+            "not have zstd support. Please report at ",
+            "https://github.com/Huber-group-EMBL/Rarr/issues.\n",
+            "If no reports are received, this support will be removed in a ",
+            "future release.\n",
+            "You can silence this warning by setting ",
+            "`globalCallingHandlers(RarrZstdMissingWarning = ",
+            "function(w) invokeRestart(\"muffleWarning\"))`."
+          ),
+          class = "RarrZstdMissingWarning"
         )
+        warning(w)
       }
       func_name <- paste(
         "codec",
