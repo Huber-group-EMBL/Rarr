@@ -142,3 +142,24 @@
     )
   }
 }
+
+#' Check whether every element of a chunk equals the fill value
+#'
+#' Exit early where possible.
+#'
+#' @keywords internal
+.is_all_fill <- function(x, fill) {
+  if (is.na(fill)) {
+    return(all(is.na(x)))
+  }
+  if (is.na(x[1]) || x[1] != fill) {
+    return(FALSE)
+  }
+  if (anyNA(x)) {
+    return(FALSE)
+  }
+  if (is.numeric(x) || is.logical(x)) {
+    return(min(x) == fill && max(x) == fill)
+  }
+  all(x == fill)
+}
