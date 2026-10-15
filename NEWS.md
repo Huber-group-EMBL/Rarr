@@ -68,6 +68,8 @@
   on a request from Artür Manukyan.
 * `zarr_overview()` now works on groups with non-consolidated metadata, based
   a request from Artür Manukyan.
+* `update_zarr_array()` no longer writes chunks filled with the fill value, and
+  no longer overwrites chunks that wouldn't be modified.
 
 ## Minor improvements
 
