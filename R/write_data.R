@@ -532,7 +532,7 @@ update_zarr_array <- function(zarr_array_path, x, index) {
       s3_client = NULL,
       s3_bucket = NULL
     )
-    chunk_in_mem <- read_chunk(
+    orig_chunk <- chunk_in_mem <- read_chunk(
       chunk_bytes = raw_chunk,
       chunk_dim = chunk_dim,
       decoders = metadata$configured_decoders,
@@ -548,6 +548,15 @@ update_zarr_array <- function(zarr_array_path, x, index) {
 
   ## extract the new values from x and insert them into the chunk
   rlang::inject(chunk_in_mem[!!!idx_in_chunk] <- x[!!!idx_in_x]) # nolint: implicit_assignment_linter.
+
+  ## if the chunk didn't change, we can skip writing it
+  if (chunk_exists && identical(orig_chunk, chunk_in_mem)) {
+    return(invisible(TRUE))
+  }
+  ## if the chunk only contains the fill value, we can skip writing it
+  if (.is_all_fill(chunk_in_mem, metadata$fill_value)) {
+    return(invisible(TRUE))
+  }
   ## re-compress updated chunk and write back to disk
   .compress_and_write_chunk(
     input_chunk = chunk_in_mem,
