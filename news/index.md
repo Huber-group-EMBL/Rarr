@@ -103,6 +103,9 @@
 - [`zarr_overview()`](https://huber-group-embl.github.io/Rarr/reference/zarr_overview.md)
   now works on groups with non-consolidated metadata, based a request
   from Artür Manukyan.
+- [`update_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/update_zarr_array.md)
+  no longer writes chunks filled with the fill value, and no longer
+  overwrites chunks that wouldn’t be modified.
 
 ### Minor improvements
 
