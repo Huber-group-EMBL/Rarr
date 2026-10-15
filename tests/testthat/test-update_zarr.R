@@ -216,3 +216,18 @@ test_that("update existing chunk", {
     read_zarr_array(zarr_path)
   )
 })
+
+test_that("update_chunk() skips fill value chunks", {
+  zarr_path <- tempfile(fileext = ".zarr")
+  create_empty_zarr_array(
+    zarr_path,
+    dim = c(8, 10),
+    chunk_dim = c(4, 5),
+    data_type = "integer"
+  )
+  data <- matrix(0L, nrow = 4, ncol = 5)
+  expect_no_condition(
+    update_zarr_array(zarr_path, data, index = list(1:4, 1:5))
+  )
+  expect_identical(list.files(zarr_path), "zarr.json")
+})
