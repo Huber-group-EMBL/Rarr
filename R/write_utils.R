@@ -145,21 +145,9 @@
 
 #' Check whether every element of a chunk equals the fill value
 #'
-#' Exit early where possible.
+#' Implemented in C so it exits at the first mismatch without allocating.
 #'
 #' @keywords internal
 .is_all_fill <- function(x, fill) {
-  if (is.na(fill)) {
-    return(all(is.na(x)))
-  }
-  if (is.na(x[1]) || x[1] != fill) {
-    return(FALSE)
-  }
-  if (anyNA(x)) {
-    return(FALSE)
-  }
-  if (is.numeric(x) || is.logical(x)) {
-    return(min(x) == fill && max(x) == fill)
-  }
-  all(x == fill)
+  .Call("is_all_fill", x, fill, PACKAGE = "Rarr")
 }

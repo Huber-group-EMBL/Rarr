@@ -19,6 +19,7 @@ static const R_CallMethodDef callMethods[] = {
 
   {"is_compact", (DL_FUNC) &is_compact, 1},
   {"chop_vec", (DL_FUNC) &chop_vec, 2},
+  {"is_all_fill", (DL_FUNC) &is_all_fill, 2},
   {NULL, NULL, 0}
 };
 
