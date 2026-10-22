@@ -231,3 +231,53 @@ test_that("update_chunk() skips fill value chunks", {
   )
   expect_identical(list.files(zarr_path), "zarr.json")
 })
+
+test_that("consecutive runs that don't start at 1 are written and read", {
+  # the expected array is built in base R, independently of the chunk mapping
+  check_run <- function(index, dim, chunk_dim, info) {
+    path <- withr::local_tempfile(fileext = ".zarr")
+    create_empty_zarr_array(
+      path,
+      dim = dim,
+      chunk_dim = chunk_dim,
+      data_type = "integer",
+      fill_value = 0L,
+      zarr_version = 3
+    )
+    x <- array(seq_len(prod(lengths(index))), dim = lengths(index))
+    update_zarr_array(path, x = x, index = index)
+
+    expected <- array(0L, dim = dim)
+    expected <- do.call(`[<-`, c(list(expected), index, list(value = x)))
+    expect_identical(read_zarr_array(path), expected, info = info)
+    expect_identical(read_zarr_array(path, index = index), x, info = info)
+  }
+
+  runs <- list(
+    unaligned = 6:11,
+    within_one_chunk = 6:7,
+    spanning_chunks = 3:22,
+    final_partial_chunk = 17:23,
+    single = 10L,
+    decreasing = 7:5,
+    decreasing_from_1 = 3:1,
+    materialised = c(6L, 7L, 8L, 9L)
+  )
+  for (name in names(runs)) {
+    check_run(list(runs[[name]]), 23, 2, name)
+    check_run(list(runs[[name]]), 23, 4, name)
+  }
+  check_run(list(3:9, 4:6), c(10, 8), c(4, 3), "2D")
+  check_run(list(3:9, c(2L, 7L, 5L)), c(10, 8), c(4, 3), "2D, mixed")
+})
+
+test_that("is.consecutive() accepts only increasing runs of consecutive values", {
+  expect_true(is.consecutive(5:9))
+  expect_true(is.consecutive(c(5L, 6L, 7L)))
+  expect_true(is.consecutive(3))
+  expect_false(is.consecutive(9:5))
+  expect_false(is.consecutive(c(5L, 5L, 7L)))
+  expect_false(is.consecutive(c(5L, 7L, 6L)))
+  expect_false(is.consecutive(c(5L, NA, 7L)))
+  expect_false(is.consecutive(integer(0)))
+})

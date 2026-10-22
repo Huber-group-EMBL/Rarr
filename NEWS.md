@@ -83,6 +83,9 @@
 * More blosc options (`clevel`, `shuffle`, etc.) are exposed via `use_blosc()`.
 * Reading VLen-UTF8 arrays (used by default for `string` in v3) in now much 
   faster after rewriting the vlen-utf8 codec in C.
+* `read_zarr_array()` and `update_zarr_array()` are faster when an `index` is
+  a run of consecutive positions that doesn't start at 1, as when an array is
+  read or written one chunk at a time (#260).
 * Unsupported data types are now caught explicitly and early early in the 
   reading pipeline rather than potentially failing or returning incorrect
   output later.
