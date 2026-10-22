@@ -50,3 +50,57 @@ SEXP codec_vlen_utf8_decode_c(SEXP input, SEXP chunk_dim) {
   UNPROTECT(1);
   return data;
 }
+
+/* Encode a character vector as vlen-utf8 (numcodecs VLenUTF8 format), in the
+ * layout read by codec_vlen_utf8_decode_c() above. As in the previous R
+ * encoder (charToRaw(enc2utf8(x))), strings are converted to UTF-8, strings
+ * marked as "bytes" are written unchanged, and NA is written as "NA".
+ */
+static void write_uint32_le(unsigned char *p, uint32_t v) {
+  p[0] = (unsigned char)(v & 0xFF);
+  p[1] = (unsigned char)((v >> 8) & 0xFF);
+  p[2] = (unsigned char)((v >> 16) & 0xFF);
+  p[3] = (unsigned char)((v >> 24) & 0xFF);
+}
+
+SEXP codec_vlen_utf8_encode_c(SEXP input) {
+
+  if (!isString(input))
+    error("vlen-utf8 encoding needs a character vector");
+
+  const R_xlen_t n = xlength(input);
+  if ((double)n > (double)UINT32_MAX)
+    error("vlen-utf8 encoding of more than %u strings in one chunk", UINT32_MAX);
+
+  /* First pass: the UTF-8 bytes of each string and the total size */
+  const char **strings = (const char **)R_alloc((size_t)n, sizeof(char *));
+  uint32_t *nbytes = (uint32_t *)R_alloc((size_t)n, sizeof(uint32_t));
+  double total = 4;
+  for (R_xlen_t i = 0; i < n; i++) {
+    const SEXP el = STRING_ELT(input, i);
+    const char *s = getCharCE(el) == CE_BYTES ? CHAR(el) : translateCharUTF8(el);
+    size_t len = strlen(s);
+    if ((double)len > (double)UINT32_MAX)
+      error("vlen-utf8 encoding of a string longer than %u bytes", UINT32_MAX);
+    strings[i] = s;
+    nbytes[i] = (uint32_t)len;
+    total += 4 + (double)len;
+  }
+  if (total > (double)R_XLEN_T_MAX)
+    error("vlen-utf8 encoding larger than a raw vector can hold");
+
+  /* Second pass: nvalues, then each length and its bytes */
+  SEXP out = PROTECT(allocVector(RAWSXP, (R_xlen_t)total));
+  unsigned char *pos = RAW(out);
+  write_uint32_le(pos, (uint32_t)n);
+  pos += 4;
+  for (R_xlen_t i = 0; i < n; i++) {
+    write_uint32_le(pos, nbytes[i]);
+    pos += 4;
+    memcpy(pos, strings[i], nbytes[i]);
+    pos += nbytes[i];
+  }
+
+  UNPROTECT(1);
+  return out;
+}
