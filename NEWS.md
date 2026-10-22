@@ -83,6 +83,10 @@
 * More blosc options (`clevel`, `shuffle`, etc.) are exposed via `use_blosc()`.
 * Reading VLen-UTF8 arrays (used by default for `string` in v3) in now much 
   faster after rewriting the vlen-utf8 codec in C.
+* Writing VLen-UTF8 arrays is now much faster after rewriting the vlen-utf8
+  encoder in C as well (#262). String lengths are now always written in
+  little-endian byte order, as the format requires, also on big-endian
+  platforms.
 * Unsupported data types are now caught explicitly and early early in the 
   reading pipeline rather than potentially failing or returning incorrect
   output later.
