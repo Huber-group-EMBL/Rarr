@@ -70,7 +70,9 @@ SEXP codec_vlen_utf8_encode_c(SEXP input) {
 
   const R_xlen_t n = xlength(input);
   if ((double)n > (double)UINT32_MAX)
-    error("vlen-utf8 encoding of more than %u strings in one chunk", UINT32_MAX);
+    error("vlen-utf8 encoding of more than %u strings in one chunk (got %lld). "
+          "Try using a smaller chunk shape.",
+          UINT32_MAX, (long long)n);
 
   /* First pass: the UTF-8 bytes of each string and the total size */
   const char **strings = (const char **)R_alloc((size_t)n, sizeof(char *));
@@ -81,13 +83,16 @@ SEXP codec_vlen_utf8_encode_c(SEXP input) {
     const char *s = getCharCE(el) == CE_BYTES ? CHAR(el) : translateCharUTF8(el);
     size_t len = strlen(s);
     if ((double)len > (double)UINT32_MAX)
-      error("vlen-utf8 encoding of a string longer than %u bytes", UINT32_MAX);
+      error("vlen-utf8 encoding of a string longer than %u bytes (got %zu)",
+            UINT32_MAX, len);
     strings[i] = s;
     nbytes[i] = (uint32_t)len;
     total += 4 + (double)len;
   }
   if (total > (double)R_XLEN_T_MAX)
-    error("vlen-utf8 encoding larger than a raw vector can hold");
+    error("vlen-utf8 encoding larger than a raw vector can hold (%.0f > %.0f "
+          "bytes). Try using a smaller chunk shape.",
+          total, (double)R_XLEN_T_MAX);
 
   /* Second pass: nvalues, then each length and its bytes */
   SEXP out = PROTECT(allocVector(RAWSXP, (R_xlen_t)total));
