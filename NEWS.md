@@ -81,10 +81,9 @@
   are no longer written by `write_zarr_array()`, saving disk space, and 
   improving performance when reading it back.
 * More blosc options (`clevel`, `shuffle`, etc.) are exposed via `use_blosc()`.
-* Reading VLen-UTF8 arrays (used by default for `string` in v3) in now much 
-  faster after rewriting the vlen-utf8 codec in C.
-* Writing VLen-UTF8 arrays is now much faster after rewriting the vlen-utf8
-  encoder in C as well (#262). String lengths are now always written in
+* Writing & reading VLen-UTF8 arrays (used by default for `string` in v3) is 
+  now much faster after rewriting the vlen-utf8 codec in C.
+* When writing VLen-UTF8 arrays, string lengths are now always written in
   little-endian byte order, as the format requires, also on big-endian
   platforms.
 * Unsupported data types are now caught explicitly and early early in the 
