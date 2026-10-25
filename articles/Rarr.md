@@ -390,7 +390,7 @@ contents is as expected.
 
 ### Session info
 
-    ## R Under development (unstable) (2026-10-13 r90668)
+    ## R Under development (unstable) (2026-10-23 r90760)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.5 LTS
     ## 
@@ -411,11 +411,11 @@ contents is as expected.
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] progressr_1.0.0  Rarr_2.1.48      BiocStyle_2.40.0
+    ## [1] progressr_1.1.0  Rarr_2.1.49      BiocStyle_2.40.0
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] crayon_1.5.3        cli_3.6.6           knitr_1.52         
-    ##  [4] rlang_1.3.0         xfun_0.61           otel_0.2.0         
+    ##  [4] rlang_1.3.0         xfun_0.62           otel_0.2.0         
     ##  [7] textshaping_1.0.5   jsonlite_2.0.0      glue_1.8.1         
     ## [10] grumpy_0.1.1        htmltools_0.5.9     ragg_1.5.2         
     ## [13] sass_0.4.10         rmarkdown_2.32      evaluate_1.0.5     
