@@ -41,6 +41,15 @@
   max_value <- 2L^(nbytes * 8L - 1L) - 1L
   min_value <- -max_value - 1L
 
+  # Fast path: min()/max() avoid allocating logical vectors. All-NA input
+  # gives Inf/-Inf (with a warning) and correctly takes the early return.
+  in_range <- suppressWarnings(
+    min(x, na.rm = TRUE) >= min_value && max(x, na.rm = TRUE) <= max_value
+  )
+  if (in_range) {
+    return(x)
+  }
+
   positive_overflow <- x > max_value
   negative_overflow <- x < min_value
   if (any(positive_overflow | negative_overflow)) {
