@@ -220,7 +220,8 @@ read_data <- function(
     chunk_dim = chunk_dim,
     decoders = metadata$configured_decoders,
     datatype = metadata$datatype,
-    fill_value = metadata$fill_value
+    fill_value = metadata$fill_value,
+    index_in_chunk = index_in_chunk
   )
 
   # Extract the required elements from the chunk if not a full read.
@@ -247,8 +248,16 @@ read_chunk <- function(
   chunk_dim,
   decoders,
   datatype,
-  fill_value
+  fill_value,
+  index_in_chunk = NULL
 ) {
+  # Array -> Array codecs (e.g. transpose) may reorder elements, so the index
+  # no longer matches the layout of the decoded bytes.
+  # We have to read everything.
+  if (length(decoders[["array_array"]]) > 0L) {
+    index_in_chunk <- NULL
+  }
+
   # Bytes -> Bytes codecs
   for (codec in decoders[["bytes_bytes"]]) {
     chunk_bytes <- codec(
@@ -262,7 +271,8 @@ read_chunk <- function(
       input = chunk_bytes,
       outer_chunk_dim = chunk_dim,
       datatype = datatype,
-      fill_value = fill_value
+      fill_value = fill_value,
+      index_in_chunk = index_in_chunk
     )
   }
   # Array -> Array codecs

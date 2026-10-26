@@ -15,7 +15,7 @@ static const R_CallMethodDef callMethods[] = {
   {"compress_chunk_ZSTD", (DL_FUNC) &compress_chunk_ZSTD, 2},
   
   {"type_convert_bfloat", (DL_FUNC) &type_convert_bfloat, 4},
-  {"codec_vlen_utf8_decode_c", (DL_FUNC) &codec_vlen_utf8_decode_c, 2},
+  {"codec_vlen_utf8_decode_c", (DL_FUNC) &codec_vlen_utf8_decode_c, 3},
   {"codec_vlen_utf8_encode_c", (DL_FUNC) &codec_vlen_utf8_encode_c, 1},
 
   {"chop_vec", (DL_FUNC) &chop_vec, 2},

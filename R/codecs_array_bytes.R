@@ -63,8 +63,28 @@ codec_bytes_encode <- function(input, datatype, endian) {
   .Call("codec_vlen_utf8_encode_c", input, PACKAGE = "Rarr")
 }
 
-`codec_vlen-utf8_decode` <- function(input, outer_chunk_dim, ...) {
-  .Call("codec_vlen_utf8_decode_c", input, outer_chunk_dim, PACKAGE = "Rarr")
+`codec_vlen-utf8_decode` <- function(
+  input,
+  outer_chunk_dim,
+  index_in_chunk = NULL,
+  ...
+) {
+  # Strings after the last required element (in column-major order) are
+  # discarded later in the reading pipeline, so there is no need to decode
+  # them.
+  n_needed <- NULL
+  if (!is.null(index_in_chunk)) {
+    last <- vapply(index_in_chunk, max, integer(1L))
+    strides <- cumprod(c(1L, outer_chunk_dim[-length(outer_chunk_dim)]))
+    n_needed <- sum((last - 1L) * strides) + 1L
+  }
+  .Call(
+    "codec_vlen_utf8_decode_c",
+    input,
+    outer_chunk_dim,
+    n_needed,
+    PACKAGE = "Rarr"
+  )
 }
 
 codec_sharding_indexed_decode <- function(
@@ -117,10 +137,12 @@ codec_sharding_indexed_decode <- function(
   # transpose codec that is added for unsharded arrays.
   if (is.null(inner_codecs[["transpose"]])) {
     inner_codecs <- c(
-      list(transpose = list(
-        name = "transpose",
-        configuration = list(order = seq_along(chunk_dim) - 1L)
-      )),
+      list(
+        transpose = list(
+          name = "transpose",
+          configuration = list(order = seq_along(chunk_dim) - 1L)
+        )
+      ),
       inner_codecs
     )
   }

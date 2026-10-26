@@ -8,8 +8,11 @@
  *   repeated nvalues times:
  *     [4 bytes] nbytes_i
  *     [nbytes_i bytes] utf-8 string data (no NUL terminator)
+ *
+ * Only the first `n_needed` strings are decoded (NULL means all). The rest are
+ * left as "" since they are discarded later in the reading pipeline.
  */
-SEXP codec_vlen_utf8_decode_c(SEXP input, SEXP chunk_dim) {
+SEXP codec_vlen_utf8_decode_c(SEXP input, SEXP chunk_dim, SEXP n_needed) {
 
   const unsigned char *buf = RAW_RO(input);
   const R_xlen_t buf_len = xlength(input);
@@ -26,7 +29,14 @@ SEXP codec_vlen_utf8_decode_c(SEXP input, SEXP chunk_dim) {
   const unsigned char *pos = buf + 4;
   const unsigned char *end = buf + buf_len;
 
-  for (uint32_t i = 0; i < nvalues; i++) {
+  uint32_t n_decode = nvalues;
+  if (!isNull(n_needed)) {
+    double n = asReal(n_needed);
+    if (!ISNAN(n) && n >= 0 && n < (double)nvalues)
+      n_decode = (uint32_t)n;
+  }
+
+  for (uint32_t i = 0; i < n_decode; i++) {
 
     if (pos + 4 > end)
       error("vlen-utf8 buffer too short reading length of element %u", i);
