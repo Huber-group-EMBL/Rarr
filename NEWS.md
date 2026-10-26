@@ -86,9 +86,6 @@
 * When writing VLen-UTF8 arrays, string lengths are now always written in
   little-endian byte order, as the format requires, also on big-endian
   platforms.
-* `read_zarr_array()` and `update_zarr_array()` are faster when an `index` is
-  a run of consecutive positions that doesn't start at 1, as when an array is
-  read or written one chunk at a time (#260).
 * Unsupported data types are now caught explicitly and early early in the 
   reading pipeline rather than potentially failing or returning incorrect
   output later.
@@ -98,7 +95,8 @@
   it doesn't have any effect because level 0 currently corresponds to level 3.
 * Performance has been improved for writing and in the case where the `index`
   argument in `read_zarr_array()` is a continuous sequence. One such example
-  is when the entire array is read (`index` argument missing).
+  is when the entire array is read (`index` argument missing). Improvements to
+  the first draft contributed by Patrick Ellis in #260.
 * Performance has been improved when reading
 * S3 access with credentials is now more robust and compatible with more
   providers.
