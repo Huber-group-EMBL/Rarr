@@ -3,6 +3,7 @@
 #include "compress.h"
 #include "type_conversion.h"
 #include "codec_vlen-utf8.h"
+#include "codec_gzip.h"
 #include "utils.h"
 
 static const R_CallMethodDef callMethods[] = {
@@ -17,6 +18,7 @@ static const R_CallMethodDef callMethods[] = {
   {"type_convert_bfloat", (DL_FUNC) &type_convert_bfloat, 4},
   {"codec_vlen_utf8_decode_c", (DL_FUNC) &codec_vlen_utf8_decode_c, 2},
   {"codec_vlen_utf8_encode_c", (DL_FUNC) &codec_vlen_utf8_encode_c, 1},
+  {"gzip_trailer_c", (DL_FUNC) &gzip_trailer_c, 1},
 
   {"chop_vec", (DL_FUNC) &chop_vec, 2},
   {"is_all_fill", (DL_FUNC) &is_all_fill, 2},
@@ -27,4 +29,5 @@ void R_init_Rarr(DllInfo *info)
 {
   R_registerRoutines(info, NULL, callMethods, NULL, NULL);
   R_useDynamicSymbols(info, FALSE);
+  make_crc32_table();
 }
