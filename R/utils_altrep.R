@@ -1,23 +1,31 @@
-is.compact <- function(x) {
-  .Call("is_compact", x, PACKAGE = "Rarr")
-}
 is.scalar <- function(x) {
   is.atomic(x) && length(x) == 1L
 }
-# An increasing run of consecutive integers, such as 5:9. is.compact() alone is
-# not enough: it is TRUE for decreasing sequences such as 3:1 and for any ALTREP
-# vector, such as the result of sort().
-is.consecutive <- function(x) {
+
+is.consecutive <- function(
+  x,
+  direction = c("increasing", "decreasing", "either")
+) {
   n <- length(x)
-  n > 0L &&
+  res <- n > 0L &&
     !anyNA(x) &&
-    as.double(x[n]) - x[1L] == n - 1L &&
-    !is.unsorted(x, strictly = TRUE)
+    as.double(x[n]) - x[1L] == n - 1L
+  direction <- match.arg(direction)
+  switch(
+    direction,
+    increasing = return(res && !is.unsorted(x, strictly = TRUE)),
+    decreasing = return(res && !is.unsorted(rev(x), strictly = TRUE)),
+    either = return(
+      res &&
+        (!is.unsorted(x, strictly = TRUE) ||
+          !is.unsorted(rev(x), strictly = TRUE))
+    )
+  )
 }
 
 reindex <- function(x, from = 1L, to = 0L) {
   offset <- from - to
-  if (is.compact(x)) {
+  if (is.consecutive(x, direction = "either")) {
     res <- (x[1L] - offset):(x[length(x)] - offset)
   } else {
     res <- x - offset

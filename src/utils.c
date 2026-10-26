@@ -1,12 +1,5 @@
 #include "utils.h"
 
-SEXP is_compact(SEXP x) {
-  if (ALTREP(x)) {
-    return ScalarLogical(TRUE);
-  }
-  return ScalarLogical(FALSE);
-}
-
 SEXP chop_vec(SEXP x, SEXP _size) {
   R_xlen_t n = XLENGTH(x);
   int size = INTEGER(_size)[0];
