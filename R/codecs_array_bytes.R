@@ -90,6 +90,7 @@ codec_bytes_encode <- function(input, datatype, endian) {
 codec_sharding_indexed_decode <- function(
   input,
   outer_chunk_dim,
+  index_in_chunk,
   datatype,
   fill_value,
   ...
@@ -147,6 +148,19 @@ codec_sharding_indexed_decode <- function(
     )
   }
   configured_decoders <- .configure_codecs(inner_codecs, operation = "decode")
+
+  # Inner chunks that don't overlap `index_in_chunk` will be discarded by the
+  # caller, so mark them as empty (-1) to skip reading and decoding them. They stay
+  # as `fill_value` in the returned shard.
+  if (!is.null(index_in_chunk)) {
+    needed <- lapply(seq_len(nb_dims), function(d) {
+      flag <- logical(index_shape[[d + 1L]])
+      flag[(index_in_chunk[[d]] - 1L) %/% chunk_dim[[d]] + 1L] <- TRUE
+      flag
+    })
+    needed <- Reduce(function(a, b) outer(a, b, `&`), needed)
+    index[rep(!as.vector(needed), each = 2L)] <- -1L
+  }
 
   chunks <- apply(
     index,
