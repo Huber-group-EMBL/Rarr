@@ -275,6 +275,7 @@ test_that("is.consecutive() accepts only increasing runs of consecutive values",
   expect_true(is.consecutive(5:9))
   expect_true(is.consecutive(c(5L, 6L, 7L)))
   expect_true(is.consecutive(3))
+  expect_false(is.consecutive(sort(c(1L, 3L:10L))))
   expect_false(is.consecutive(9:5))
   expect_false(is.consecutive(c(5L, 5L, 7L)))
   expect_false(is.consecutive(c(5L, 7L, 6L)))
