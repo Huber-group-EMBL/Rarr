@@ -136,7 +136,9 @@
   `index` argument in
   [`read_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/read_zarr_array.md)
   is a continuous sequence. One such example is when the entire array is
-  read (`index` argument missing).
+  read (`index` argument missing). Improvements to the first draft
+  contributed by Patrick Ellis in
+  [\#260](https://github.com/Huber-group-EMBL/Rarr/issues/260).
 - Performance has been improved when reading
 - S3 access with credentials is now more robust and compatible with more
   providers.
