@@ -57,9 +57,18 @@
     chunk_dim <- as.integer(chunk_dim)
   }
 
+  # We try 3 approaches, from the most efficient / most specific to the least
+  # efficient / most general:
+  # 1. The index is a run of consecutive integers starting at 1: we can chop it
+  #    directly into the chunk positions.
+  # 2. The index is a run of consecutive integers starting anywhere: we can
+  #    compute chunk positions without expanding potentially compact sequences.
+  # 3. The index is arbitrary: we fall back to computing the modulus for each
+  #    element.
   results_by_dim <- mapply(
     \(dim_index, chunk_size) {
-      consecutive <- is.consecutive(dim_index)
+      # FIXME: add a fast path for decreasing consecutive sequences.
+      consecutive <- is.consecutive(dim_index, direction = "increasing")
       if (consecutive && dim_index[1L] == 1L) {
         chopped <- .Call("chop_vec", dim_index, chunk_size, PACKAGE = "Rarr")
         positions_by_chunk <- setNames(chopped, 0L:(length(chopped) - 1L))
@@ -68,8 +77,6 @@
           in_chunk = lapply(positions_by_chunk, seq_along)
         )
       } else if (consecutive) {
-        # a run of consecutive indices starting anywhere: the chunks it covers
-        # follow from its first index and its length
         n <- length(dim_index)
         start0 <- dim_index[1L] - 1L
         first_chunk <- start0 %/% chunk_size
@@ -78,15 +85,14 @@
         rest <- n - first_len
         lens <- c(
           first_len,
-          rep.int(chunk_size, rest %/% chunk_size),
-          if (rest %% chunk_size) rest %% chunk_size
+          rep.int(chunk_size, rest %/% chunk_size)
         )
+        last_len <- rest %% chunk_size
+        if (last_len > 0L) {
+          lens <- c(lens, last_len)
+        }
         starts <- cumsum(c(1L, lens[-length(lens)]))
-        ids <- format(
-          first_chunk + seq_along(lens) - 1L,
-          scientific = FALSE,
-          trim = TRUE
-        )
+        ids <- first_chunk + seq_along(lens) - 1L
         list(
           per_dim = setNames(
             mapply(seq.int, starts, length.out = lens, SIMPLIFY = FALSE),
