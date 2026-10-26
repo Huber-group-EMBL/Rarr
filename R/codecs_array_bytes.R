@@ -73,7 +73,10 @@ codec_bytes_encode <- function(input, datatype, endian) {
   # discarded later in the reading pipeline, so there is no need to decode
   # them.
   n_needed <- NULL
-  if (!is.null(index_in_chunk)) {
+  if (
+    !is.null(index_in_chunk) &&
+      !identical(index_in_chunk, lapply(outer_chunk_dim, seq_len))
+  ) {
     last <- vapply(index_in_chunk, max, integer(1L))
     strides <- cumprod(c(1L, outer_chunk_dim[-length(outer_chunk_dim)]))
     n_needed <- sum((last - 1L) * strides) + 1L
@@ -152,7 +155,10 @@ codec_sharding_indexed_decode <- function(
   # Inner chunks that don't overlap `index_in_chunk` will be discarded by the
   # caller, so mark them as empty (-1) to skip reading and decoding them. They stay
   # as `fill_value` in the returned shard.
-  if (!is.null(index_in_chunk)) {
+  if (
+    !is.null(index_in_chunk) &&
+      !identical(index_in_chunk, lapply(outer_chunk_dim, seq_len))
+  ) {
     needed <- lapply(seq_len(nb_dims), function(d) {
       flag <- logical(index_shape[[d + 1L]])
       flag[(index_in_chunk[[d]] - 1L) %/% chunk_dim[[d]] + 1L] <- TRUE
