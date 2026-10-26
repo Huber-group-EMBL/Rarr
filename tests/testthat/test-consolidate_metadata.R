@@ -49,3 +49,17 @@ test_that("zarr_consoliate_metadata() on v3", {
     transform = function(x) gsub("^(  )?Path: .*", "Path: <path>", x)
   )
 })
+
+test_that("zarr_consolidate_metadata() writes empty v3 attributes as an object", {
+  zarr_v3 <- withr::local_tempfile(fileext = ".zarr")
+  write_zarr_group(zarr_v3, "", zarr_version = 3L)
+  write_zarr_array(
+    array(1:4, dim = c(2, 2)),
+    file.path(zarr_v3, "array1"),
+    chunk_dim = c(1, 2),
+    zarr_version = 3L
+  )
+  zarr_consolidate_metadata(zarr_v3)
+  metadata <- jsonlite::read_json(file.path(zarr_v3, "zarr.json"))
+  expect_identical(metadata$attributes, setNames(list(), character(0L)))
+})

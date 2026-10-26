@@ -295,6 +295,9 @@ zarr_consolidate_metadata <- function(
     consolidated_path <- paste0(zarr_store_path, ".zmetadata")
   } else {
     attrs <- read_zarr_attributes(zarr_store_path, s3_client = s3_client)
+    # Empty attributes need names to be written as a JSON object (`{}`)
+    # rather than an array (`[]`)
+    names(attrs) <- names(attrs) %||% character(0L)
     res <- list(
       zarr_format = 3L,
       node_type = "group",

@@ -103,6 +103,8 @@
 
 ## Bug fixes
 
+* `zarr_consolidate_metadata()` now writes empty Zarr v3 root attributes as
+  `{}` rather than `[]`, so zarr-python can open the consolidated store (#271).
 * Using blosc compression via variable-length types such as when using the 
   vlen-utf8 filter / codec, is no longer causing R to crash.
 * `zarr_overview()` and `read_zarr_array()` on Zarr v3 files hosted on S3. 

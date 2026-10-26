@@ -119,7 +119,7 @@
       [1] "group"
       
       $attributes
-      list()
+      named list()
       
       $consolidated_metadata
       $consolidated_metadata$kind
