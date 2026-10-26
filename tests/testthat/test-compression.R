@@ -5,35 +5,12 @@ test_that("blosc works with variable length types", {
     c("Paris", "London", "Berlin", "Madrid"),
     nrow = 2
   )
-  # TODO: update this to the canonical way to write vlen-utf8 once we have it.
-  # It's this way only because the vlen-utf8 interface has not been created yet.
   create_empty_zarr_array(
     blosc_vlen_zarr,
     dim = dim(x),
     chunk_dim = c(2, 2),
     data_type = "|O",
-    compressor = use_blosc()
-  )
-  zarr_json_path <- file.path(blosc_vlen_zarr, "zarr.json")
-  zarr_json <- jsonlite::read_json(zarr_json_path)
-  zarr_json$data_type <- "string"
-  # There should be only one bytes-array codec
-  zarr_json$codecs <- lapply(
-    zarr_json$codecs,
-    function(codec) {
-      if (codec$name == "bytes") {
-        list(name = "vlen-utf8", configuration = list())
-      } else {
-        codec
-      }
-    }
-  )
-  jsonlite::write_json(
-    zarr_json,
-    zarr_json_path,
-    auto_unbox = TRUE,
-    pretty = TRUE,
-    null = "null"
+    codecs = list(use_vlen_utf8(), use_blosc())
   )
 
   expect_no_condition(

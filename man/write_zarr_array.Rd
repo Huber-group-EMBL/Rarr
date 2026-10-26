@@ -14,7 +14,8 @@ write_zarr_array(
   fill_value = NULL,
   nchar,
   dimension_separator = if (zarr_version == 2L) "." else "/",
-  zarr_version = 3L
+  zarr_version = 3L,
+  codecs = NULL
 )
 }
 \arguments{
@@ -29,7 +30,8 @@ with the same length as the \code{dim} argument.}
 \item{data_type}{Character vector giving the data type of the new array.
 Valid options are: "integer", "double", "character", "logical", which are
 based on standard R data types. You can also use the analogous Numpy
-formats: "|i1", "<i2", "<i4", "<f4", "<f8", "|S", "|b1".
+formats: "|i1", "<i2", "<i4", "<f4", "<f8", "|S", "|b1", and "|O" for
+variable-length strings (written with \code{\link[=use_vlen_utf8]{use_vlen_utf8()}}).
 If this argument isn't provided the \code{fill_value} will be used to determine
 the datatype.}
 
@@ -57,6 +59,11 @@ in the names of the chunk files.  Valid options are limited to "." and "/".}
 
 \item{zarr_version}{The version of the Zarr specification to use. Currently,
 either \code{2} or \code{3}. The default is \code{3}.}
+
+\item{codecs}{Optional list of codecs, in the order they are applied when
+writing: an 'array-to-bytes' codec such as \code{\link[=use_vlen_utf8]{use_vlen_utf8()}}, then any
+number of \link{compressors} (at most one for Zarr v2). Replaces \code{compressor},
+so the two cannot both be given. See \link{codecs} for more details.}
 }
 \value{
 The function is primarily called for the side effect of writing to
