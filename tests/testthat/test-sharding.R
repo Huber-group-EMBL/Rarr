@@ -71,3 +71,27 @@ test_that("read sharded 2D array without explicit transpose codec", {
   read_zarr_array(sharded, index = list(2:5, 2:3)) |>
     expect_identical(expected[2:5, 2:3])
 })
+
+test_that("reading a small slice of a sharded array matches the full read", {
+  sharded <- system.file(
+    "extdata",
+    "zarr_examples",
+    "sharding",
+    "int32_sharded.zarr",
+    package = "Rarr"
+  )
+  full <- read_zarr_array(sharded)
+
+  # Slices that touch only some inner chunks (and, for the last, are strided)
+  indices <- list(
+    list(1L, 1L, 1L),
+    list(1L:3L, 1L:2L, 1L),
+    list(30L, 20L, 10L),
+    list(c(1L, 15L, 30L), seq(1L, 20L, by = 4L), c(2L, 10L))
+  )
+  for (index in indices) {
+    expected <- do.call(`[`, c(list(full), index, drop = FALSE))
+    read_zarr_array(sharded, index = index) |>
+      expect_identical(expected)
+  }
+})
