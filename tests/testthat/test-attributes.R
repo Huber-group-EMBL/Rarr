@@ -135,7 +135,7 @@ test_that("v3 zarr attributes work correctly", {
         package = "Rarr"
       )
     ),
-    list()
+    NULL
   )
 })
 

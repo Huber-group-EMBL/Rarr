@@ -136,12 +136,13 @@ write_zarr_attributes <- function(
     paste0(zarr_path, "zarr.json")
   }
 
-  if ("" %in% names(new.zattrs)) {
+  if (!all(nzchar(names(new.zattrs)))) {
     message("Ignoring unnamed list elements")
     new.zattrs <- new.zattrs[nzchar(names(new.zattrs))]
   }
 
-  old.zattrs <- read_zarr_attributes(zarr_path)
+  # modifyList() wants an actual list, not NULL
+  old.zattrs <- read_zarr_attributes(zarr_path) %||% list()
 
   new.zattrs <- if (overwrite) {
     modifyList(old.zattrs, new.zattrs)

@@ -613,13 +613,13 @@ read_zarr_consolidated_metadata <- function(
 #' @inheritParams .read_array_metadata
 #' @param missing A character vector of length 1. This determines the behaviour
 #'   when no file containing attributes is found. This can be one of:
-#'  - "ignore" (the default): an empty list is returned silently
-#'  - "warning": a warning is issued and an empty list is returned.
+#'  - "ignore" (the default): `NULL` is returned silently
+#'  - "warning": a warning is issued and `NULL` is returned.
 #'  - "error": an error is raised.
 #'
 #' @returns A list containing the attributes. If the file containing attributes
 #' (`.zattrs` for Zarr v2 or `zarr.json` for Zarr v3) exists but no attributes
-#' are provided, an empty list is returned.
+#' are provided, `NULL` is returned.
 #'
 #' @examples
 #' read_zarr_attributes(
@@ -655,7 +655,7 @@ read_zarr_attributes <- function(
     if (missing == "warning") {
       warning(msg, call. = FALSE)
     }
-    return(list())
+    return(NULL)
   }
   if (all(exists_attribute_files)) {
     stop(
@@ -678,7 +678,7 @@ read_zarr_attributes <- function(
 
   # Normalize cases of empty named list vs empty list vs NULL
   if (length(zattrs) == 0L) {
-    return(list())
+    return(NULL)
   }
 
   return(zattrs)

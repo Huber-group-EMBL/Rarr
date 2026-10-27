@@ -21,15 +21,15 @@ by \code{\link[paws.storage:s3]{paws.storage::s3()}}.}
 \item{missing}{A character vector of length 1. This determines the behaviour
 when no file containing attributes is found. This can be one of:
 \itemize{
-\item "ignore" (the default): an empty list is returned silently
-\item "warning": a warning is issued and an empty list is returned.
+\item "ignore" (the default): \code{NULL} is returned silently
+\item "warning": a warning is issued and \code{NULL} is returned.
 \item "error": an error is raised.
 }}
 }
 \value{
 A list containing the attributes. If the file containing attributes
 (\code{.zattrs} for Zarr v2 or \code{zarr.json} for Zarr v3) exists but no attributes
-are provided, an empty list is returned.
+are provided, \code{NULL} is returned.
 }
 \description{
 Read the attributes associated with a Zarr array or group

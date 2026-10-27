@@ -119,7 +119,7 @@
       [1] "group"
       
       $attributes
-      list()
+      NULL
       
       $consolidated_metadata
       $consolidated_metadata$kind
