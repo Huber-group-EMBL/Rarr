@@ -35,6 +35,8 @@
 * Functions related to the `DelayedArray` backend have been dropped entirely 
   after being deprecated in the previous release. To use the `DelayedArray`
   backend, or lazy reading or Zarr datasets, look at the `ZarrArray` package.
+* Empty or missing attributes are now returned as `NULL` instead of an empty
+  list by `read_zarr_attributes()`.
 
 ## New features
 
