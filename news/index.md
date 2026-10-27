@@ -49,6 +49,9 @@
   entirely after being deprecated in the previous release. To use the
   `DelayedArray` backend, or lazy reading or Zarr datasets, look at the
   `ZarrArray` package.
+- Empty or missing attributes are now returned as `NULL` instead of an
+  empty list by
+  [`read_zarr_attributes()`](https://huber-group-embl.github.io/Rarr/reference/read_zarr_attributes.md).
 
 ### New features
 

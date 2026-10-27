@@ -30,9 +30,9 @@ read_zarr_attributes(
   A character vector of length 1. This determines the behaviour when no
   file containing attributes is found. This can be one of:
 
-  - "ignore" (the default): an empty list is returned silently
+  - "ignore" (the default): `NULL` is returned silently
 
-  - "warning": a warning is issued and an empty list is returned.
+  - "warning": a warning is issued and `NULL` is returned.
 
   - "error": an error is raised.
 
@@ -40,7 +40,7 @@ read_zarr_attributes(
 
 A list containing the attributes. If the file containing attributes
 (`.zattrs` for Zarr v2 or `zarr.json` for Zarr v3) exists but no
-attributes are provided, an empty list is returned.
+attributes are provided, `NULL` is returned.
 
 ## Examples
 
