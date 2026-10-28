@@ -125,11 +125,13 @@ if test -z "$HAVE_BLOSC"; then
     AX_CHECK_COMPILE_FLAG([-mavx2], [MAVX2=true], [MAVX2=false])
   fi
   
+  # 4th element used during cross-compilation (WASM)
   AC_RUN_IFELSE(
         [AC_LANG_PROGRAM([#include <stdlib.h>],
           [__builtin_cpu_init ();])
         ],
         [ax_cv_gcc_check_x86_cpu_init=true],
+        [ax_cv_gcc_check_x86_cpu_init=false],
         [ax_cv_gcc_check_x86_cpu_init=false])
   
   ## check CPU supports sse2 and avx2
