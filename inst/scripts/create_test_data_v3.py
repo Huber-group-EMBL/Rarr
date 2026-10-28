@@ -187,6 +187,12 @@ z = zarr.create_array('inst/extdata/zarr_examples/compression/zlib_v3.zarr', sha
 z[0, :] = np.arange(start=1, stop=11)
 z[:, 0] = np.arange(start=1, stop=60, step=3)
 
+compressor = zarr.codecs.GzipCodec()
+z = zarr.create_array('inst/extdata/zarr_examples/compression/gzip_v3.zarr', shape=(20, 10),
+              chunks=(10, 10), dtype='i4', filters = (zarr.codecs.TransposeCodec(order = [1, 0])), compressors=compressor, overwrite=True)
+z[0, :] = np.arange(start=1, stop=11)
+z[:, 0] = np.arange(start=1, stop=60, step=3)
+
 compressor = numcodecs.zarr3.BZ2(level = 6)
 z = zarr.create_array('inst/extdata/zarr_examples/compression/bzip2_v3.zarr', shape=(20, 10),
               chunks=(10, 10), dtype='i4', filters = (zarr.codecs.TransposeCodec(order = [1, 0])), compressors=compressor, overwrite=True)

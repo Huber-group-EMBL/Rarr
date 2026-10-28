@@ -56,3 +56,20 @@ test_that("error when setting up compressors with invalid level", {
     "`level` value is ignored"
   )
 })
+
+test_that("gzip codec writes the gzip format", {
+  x <- charToRaw("123456789")
+  gz <- codec_gzip_encode(x)
+  # gzip magic bytes and deflate method
+  expect_identical(gz[1:3], as.raw(c(0x1f, 0x8b, 0x08)))
+  # CRC-32 check value for "123456789" (0xCBF43926) and the length, little-endian
+  expect_identical(
+    gz[length(gz) - 7:0],
+    as.raw(c(0x26, 0x39, 0xf4, 0xcb, 0x09, 0x00, 0x00, 0x00))
+  )
+  expect_identical(codec_gzip_decode(gz), x)
+  expect_identical(codec_gzip_decode(codec_gzip_encode(raw(0))), raw(0))
+
+  # zlib keeps writing the zlib format
+  expect_identical(codec_zlib_encode(x)[1:2], as.raw(c(0x78, 0x9c)))
+})

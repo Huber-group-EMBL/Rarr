@@ -96,3 +96,28 @@ test_that("compressed zarr arrays (zstd) can be read correctly", {
 
   expect_identical(data_vlen, array(as.character(0:5), dim = 6))
 })
+
+test_that("compressed zarr arrays (gzip) can be read correctly", {
+  zarr_v2 <- system.file(
+    "extdata",
+    "zarr_examples",
+    "compression",
+    "gzip.zarr",
+    package = "Rarr"
+  )
+  zarr_v3 <- system.file(
+    "extdata",
+    "zarr_examples",
+    "compression",
+    "gzip_v3.zarr",
+    package = "Rarr"
+  )
+
+  expect_silent(data_v2 <- read_zarr_array(zarr_v2))
+  expect_silent(data_v3 <- read_zarr_array(zarr_v3))
+
+  expect_identical(data_v2, data_v3)
+
+  expect_identical(data_v2[1, ], 1:10)
+  expect_true(all(data_v2[, 1] == seq(1, 60, 3)))
+})

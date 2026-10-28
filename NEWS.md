@@ -105,6 +105,9 @@
 
 ## Bug fixes
 
+* `use_gzip()` now writes the gzip format. It previously wrote the zlib
+  format, which other implementations such as zarr-python cannot read as gzip
+  (#269).
 * Using blosc compression via variable-length types such as when using the 
   vlen-utf8 filter / codec, is no longer causing R to crash.
 * `zarr_overview()` and `read_zarr_array()` on Zarr v3 files hosted on S3. 

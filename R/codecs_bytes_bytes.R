@@ -31,10 +31,27 @@ codec_zlib_decode <- codec_gzip_decode <- function(bytes, ...) {
   )
 }
 
-codec_zlib_encode <- codec_gzip_encode <- function(bytes, ...) {
+codec_zlib_encode <- function(bytes, ...) {
   memCompress(
     from = bytes,
     type = "gzip"
+  )
+}
+
+codec_gzip_encode <- function(bytes, ...) {
+  # memCompress(type = "gzip") writes the zlib format (RFC 1950): a 2-byte
+  # header, the deflate data and a 4-byte Adler-32 checksum. The gzip format
+  # (RFC 1952) wraps the same deflate data in its own header and trailer.
+  zlib <- memCompress(
+    from = bytes,
+    type = "gzip"
+  )
+  deflate <- zlib[3L:(length(zlib) - 4L)]
+  c(
+    # ID1, ID2, CM (deflate), FLG, MTIME (4 bytes), XFL, OS (unknown)
+    as.raw(c(0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff)),
+    deflate,
+    .Call("gzip_trailer_c", bytes, PACKAGE = "Rarr")
   )
 }
 

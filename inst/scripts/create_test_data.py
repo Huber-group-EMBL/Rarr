@@ -186,6 +186,11 @@ z = zarr.open('inst/extdata/zarr_examples/compression/zlib.zarr', mode='w', shap
 z[0, :] = np.arange(start=1, stop=11)
 z[:, 0] = np.arange(start=1, stop=60, step=3)
 
+z = zarr.open('inst/extdata/zarr_examples/compression/gzip.zarr', mode='w', shape=(20, 10),
+              chunks=(10, 10), dtype='i4', order="F", compressor=numcodecs.GZip(level=6), zarr_format=2)
+z[0, :] = np.arange(start=1, stop=11)
+z[:, 0] = np.arange(start=1, stop=60, step=3)
+
 z = zarr.open('inst/extdata/zarr_examples/compression/bzip2.zarr', mode='w', shape=(20, 10),
               chunks=(10, 10), dtype='i4', order="F", compressor=numcodecs.BZ2(level=6), zarr_format=2)
 z[0, :] = np.arange(start=1, stop=11)
