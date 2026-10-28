@@ -109,6 +109,8 @@
 - [`update_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/update_zarr_array.md)
   no longer writes chunks filled with the fill value, and no longer
   overwrites chunks that wouldn’t be modified.
+- This package now compiles on WASM, making it available in webR
+  (shinylive, etc.)
 
 ### Minor improvements
 
