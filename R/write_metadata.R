@@ -7,20 +7,21 @@
   chunk_shape,
   data_type,
   fill_value,
-  compressor,
+  codecs,
   dimension_separator = ".",
   order = "C",
   zarr_version = 3L
 ) {
   .check_node_name(basename(array_path))
 
-  if (!is.null(compressor$id) && compressor$id == "blosc") {
-    nbytes <- parse_npy_datatype(data_type)$nbytes
-    compressor$typesize <- compressor$typesize %||% nbytes
-    if (is.na(compressor$typesize)) {
-      # e.g., vlen-utf8
-      compressor$typesize <- 1L
-    }
+  # Zarr v2 records the VLen-UTF8 codec as a filter, and one compressor
+  filters <- NULL
+  if (codecs$array_bytes$id == "vlen-utf8") {
+    filters <- list(codecs$array_bytes)
+  }
+  compressor <- NULL
+  if (length(codecs$bytes_bytes) > 0L) {
+    compressor <- codecs$bytes_bytes[[1L]]
   }
 
   metadata_v2 <- list(
@@ -32,7 +33,7 @@
     dimension_separator = dimension_separator,
     order = order,
     zarr_format = 2L,
-    filters = NULL,
+    filters = filters,
     compressor = compressor
   )
 
@@ -62,7 +63,14 @@
       metadata_v3$dimension_names <- dimension_names
     }
     # FIXME: get rid of these directly in the internal
-    metadata_v3$codecs <- unname(metadata_v3$codecs)
+    # The conversion records at most one compressor, so the compressors are
+    # taken from `codecs` directly.
+    codec_names <- names(metadata_v3$codecs)
+    metadata_v3$codecs <- c(
+      unname(metadata_v3$codecs[codec_names %in% CODEC_ARRAY_ARRAY]),
+      unname(metadata_v3$codecs[codec_names %in% CODEC_ARRAY_BYTES]),
+      lapply(codecs$bytes_bytes, .codec_v3)
+    )
     metadata_v3$datatype <- NULL
     write_json(
       metadata_v3,

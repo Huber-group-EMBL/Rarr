@@ -105,3 +105,197 @@ test_that("unsupported codec", {
     "not supported: unsupported_codec"
   )
 })
+
+test_that("codec: |O arrays are written with vlen-utf8 by default", {
+  x <- array(c("a", "bb", "", "dddd", "é"), dim = 5)
+
+  path <- withr::local_tempfile(fileext = ".zarr")
+  write_zarr_array(x, path, chunk_dim = 2, data_type = "|O", zarr_version = 2L)
+  expect_identical(
+    jsonlite::read_json(file.path(path, ".zarray"))$filters,
+    list(list(id = "vlen-utf8"))
+  )
+  expect_identical(read_zarr_array(path), x)
+
+  path <- withr::local_tempfile(fileext = ".zarr")
+  write_zarr_array(x, path, chunk_dim = 2, data_type = "|O", zarr_version = 3L)
+  metadata <- jsonlite::read_json(file.path(path, "zarr.json"))
+  expect_identical(metadata$data_type, "string")
+  expect_identical(metadata$codecs[[1]], list(name = "vlen-utf8"))
+  expect_identical(read_zarr_array(path), x)
+
+  for (zarr_version in 2:3) {
+    path <- withr::local_tempfile(fileext = ".zarr")
+    create_empty_zarr_array(
+      path,
+      dim = 5,
+      chunk_dim = 2,
+      data_type = "|O",
+      zarr_version = zarr_version
+    )
+    update_zarr_array(path, c("a", "bb"), index = list(2:3))
+    expect_identical(
+      read_zarr_array(path),
+      array(c("", "a", "bb", "", ""), dim = 5)
+    )
+  }
+})
+
+test_that("codec: chains of compressors are written and read in order", {
+  x <- array(c("a", "bb", "", "dddd", "é"), dim = 5)
+  path <- withr::local_tempfile(fileext = ".zarr")
+  write_zarr_array(
+    x,
+    path,
+    chunk_dim = 2,
+    data_type = "|O",
+    codecs = list(use_vlen_utf8(), use_blosc(), use_zstd())
+  )
+  codecs <- jsonlite::read_json(file.path(path, "zarr.json"))$codecs
+  expect_identical(
+    vapply(codecs, `[[`, character(1L), "name"),
+    c("vlen-utf8", "blosc", "zstd")
+  )
+  expect_identical(read_zarr_array(path), x)
+
+  # Names of the list are dropped, as the metadata needs a JSON array
+  m <- matrix(runif(20), nrow = 4)
+  path <- withr::local_tempfile(fileext = ".zarr")
+  write_zarr_array(
+    m,
+    path,
+    chunk_dim = c(2, 3),
+    codecs = list(a = use_zstd(), b = use_blosc())
+  )
+  codecs <- jsonlite::read_json(file.path(path, "zarr.json"))$codecs
+  expect_null(names(codecs))
+  expect_identical(read_zarr_array(path), m)
+
+  path <- withr::local_tempfile(fileext = ".zarr")
+  write_zarr_array(m, path, chunk_dim = c(2, 3), codecs = list())
+  expect_identical(read_zarr_array(path), m)
+})
+
+test_that("codec: positional arguments are unchanged by `codecs`", {
+  path <- withr::local_tempfile(fileext = ".zarr")
+  write_zarr_array(array(1:4 + 0.5), path, 2, "double", "F", use_zstd(), -1)
+  expect_equal(jsonlite::read_json(file.path(path, "zarr.json"))$fill_value, -1)
+
+  path <- withr::local_tempfile(fileext = ".zarr")
+  create_empty_zarr_array(path, 4, 2, "double", "F", use_zstd(), -1)
+  expect_equal(jsonlite::read_json(file.path(path, "zarr.json"))$fill_value, -1)
+})
+
+test_that("codec: invalid codec lists are rejected before writing", {
+  m <- matrix(runif(20), nrow = 4)
+  x <- array(c("a", "bb"), dim = 2)
+  path <- withr::local_tempfile(fileext = ".zarr")
+  expect_error(
+    write_zarr_array(m, path, chunk_dim = c(2, 3), codecs = use_zstd()),
+    "must be a list of codecs"
+  )
+  expect_error(
+    write_zarr_array(
+      m,
+      path,
+      chunk_dim = c(2, 3),
+      compressor = use_blosc(),
+      codecs = list(use_zstd())
+    ),
+    "Only one of `compressor` and `codecs`"
+  )
+  expect_error(
+    write_zarr_array(
+      m,
+      path,
+      chunk_dim = c(2, 3),
+      codecs = list(use_vlen_utf8())
+    ),
+    "requires `data_type = \"|O\"`",
+    fixed = TRUE
+  )
+  expect_error(
+    write_zarr_array(
+      x,
+      path,
+      chunk_dim = 2,
+      data_type = "|O",
+      codecs = list(list(id = "bytes"))
+    ),
+    "need a variable-length codec"
+  )
+  expect_error(
+    write_zarr_array(
+      x,
+      path,
+      chunk_dim = 2,
+      data_type = "|O",
+      codecs = list(use_zstd(), use_vlen_utf8())
+    ),
+    "must come before the compressors"
+  )
+  expect_error(
+    write_zarr_array(
+      m,
+      path,
+      chunk_dim = c(2, 3),
+      codecs = list(use_zstd(), use_zstd())
+    ),
+    "only be given once"
+  )
+  expect_error(
+    write_zarr_array(
+      m,
+      path,
+      chunk_dim = c(2, 3),
+      codecs = list(use_zstd(), use_blosc()),
+      zarr_version = 2L
+    ),
+    "at most one compressor"
+  )
+  expect_error(
+    write_zarr_array(
+      m,
+      path,
+      chunk_dim = c(2, 3),
+      codecs = list(list(id = "bytes", endian = "big"))
+    ),
+    "takes no options"
+  )
+  expect_error(
+    write_zarr_array(
+      m,
+      path,
+      chunk_dim = c(2, 3),
+      codecs = list(list(id = "crc32c"))
+    ),
+    "not supported for writing: crc32c"
+  )
+  expect_error(
+    write_zarr_array(
+      m,
+      path,
+      chunk_dim = c(2, 3),
+      codecs = list(list(id = "transpose", order = 1:0))
+    ),
+    "set with `order`"
+  )
+  expect_error(
+    write_zarr_array(
+      m,
+      path,
+      chunk_dim = c(2, 3),
+      codecs = list(use_lz4(), list(id = "numcodecs.lz4"))
+    ),
+    "only be given once"
+  )
+  expect_error(
+    write_zarr_array(m, path, chunk_dim = c(2, 3), compressor = "zstd"),
+    "`compressor` must be a compressor"
+  )
+  expect_error(
+    write_zarr_array(array(1:2), path, chunk_dim = 2, data_type = "|O"),
+    "is for character arrays"
+  )
+  expect_false(file.exists(path))
+})

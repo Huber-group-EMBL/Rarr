@@ -40,6 +40,13 @@
 
 ## New features
 
+* `write_zarr_array()` and `create_empty_zarr_array()` gain a `codecs`
+  argument taking the list of codecs applied when writing, such as
+  `list(use_vlen_utf8(), use_zstd())`. Zarr v3 arrays can chain several
+  compressors. The new `use_vlen_utf8()` writes VLen-UTF8 strings and is the
+  default for `data_type = "|O"`, which previously wrote arrays that could not
+  be read (#111, #261). Code that added the VLen-UTF8 filter to `"|O"` arrays
+  itself should stop doing so, or Zarr v2 arrays record it twice.
 * [Zarr v3 struct datatype](https://github.com/zarr-developers/zarr-extensions/tree/main/data-types/struct)
   (equivalent to Zarr v2 structured datatype) is now supported. 
   [Deprecated Zarr v3 structured datatype](https://github.com/zarr-developers/zarr-extensions/tree/main/data-types/structured) is implemented as well, but only for reading, as per specification for a deprecated type.
@@ -105,6 +112,8 @@
 
 ## Bug fixes
 
+* Arrays with several compressors, as written by other implementations such
+  as zarr-python, are now decoded in the right order.
 * Using blosc compression via variable-length types such as when using the 
   vlen-utf8 filter / codec, is no longer causing R to crash.
 * `zarr_overview()` and `read_zarr_array()` on Zarr v3 files hosted on S3. 

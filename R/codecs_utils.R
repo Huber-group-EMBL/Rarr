@@ -124,6 +124,11 @@
     )
   }
 
+  if (operation == "decode") {
+    # Compressors are undone in the reverse of the order they were applied
+    bytes_bytes_env <- rev(bytes_bytes_env)
+  }
+
   return(
     list(
       array_array = array_array_env,

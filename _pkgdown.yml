@@ -19,6 +19,6 @@ reference:
       - zarr_consolidate_metadata
       - read_zarr_consolidated_metadata
       - write_zarr_group
-  - title: "Compression helpers"
+  - title: "Codecs and compression"
     contents:
       - starts_with("use_")
