@@ -72,6 +72,8 @@
   a request from Artür Manukyan.
 * `update_zarr_array()` no longer writes chunks filled with the fill value, and
   no longer overwrites chunks that wouldn't be modified.
+* This package now compiles on WASM, making it available in webR (shinylive, 
+  etc.)
 
 ## Minor improvements
 
