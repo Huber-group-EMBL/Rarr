@@ -19,10 +19,13 @@ NULL
 # "Backport" from R 4.6.0
 has_zstd <- function() {
   r_ver <- getRversion()
-  if (r_ver < "4.5.0") {
-    return(FALSE)
+  if (r_ver >= "4.7.0") {
+    return(capabilities("zstd"))
   }
-  if (r_ver < "4.6.0") {
+  if (r_ver >= "4.6.0") {
+    return(nzchar(extSoftVersion()["zstd"]))
+  }
+  if (r_ver >= "4.5.0") {
     # From https://bugs.r-project.org/show_bug.cgi?id=18914&_ts=1791986101
     return(tryCatch(
       {
@@ -32,7 +35,7 @@ has_zstd <- function() {
       error = function(e) FALSE
     ))
   }
-  return(nzchar(extSoftVersion()["zstd"]))
+  return(FALSE)
 }
 
 # Backport from R 4.7.0
