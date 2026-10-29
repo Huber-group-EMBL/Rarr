@@ -32,7 +32,10 @@ has_zstd <- function() {
       error = function(e) FALSE
     ))
   }
-  return(nzchar(extSoftVersion()["zstd"]))
+  if (r_ver < "4.7.0") {
+    return(nzchar(extSoftVersion()["zstd"]))
+  }
+  return(capabilities("zstd"))
 }
 
 # Backport from R 4.7.0
