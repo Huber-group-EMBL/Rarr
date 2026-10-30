@@ -152,9 +152,9 @@ codec_sharding_indexed_decode <- function(
   }
   configured_decoders <- .configure_codecs(inner_codecs, operation = "decode")
 
-  # Inner chunks that don't overlap `index_in_chunk` will be discarded by the
-  # caller, so mark them as empty (-1) to skip reading and decoding them. They stay
-  # as `fill_value` in the returned shard.
+  # Inner chunks that don't overlap `index_in_chunk` are discarded by the
+  # caller, so skip reading and decoding them. They stay as `fill_value`.
+  needed <- TRUE
   if (
     !is.null(index_in_chunk) &&
       !identical(index_in_chunk, lapply(outer_chunk_dim, seq_len))
@@ -164,54 +164,34 @@ codec_sharding_indexed_decode <- function(
       flag[(index_in_chunk[[d]] - 1L) %/% chunk_dim[[d]] + 1L] <- TRUE
       flag
     })
-    needed <- Reduce(function(a, b) outer(a, b, `&`), needed)
-    index[rep(!as.vector(needed), each = 2L)] <- -1L
+    needed <- as.vector(Reduce(function(a, b) outer(a, b, `&`), needed))
   }
 
-  chunks <- apply(
-    index,
-    seq_len(nb_dims) + 1L,
-    function(x) {
-      chunk_offset <- x[[1L]]
-      chunk_nbytes <- x[[2L]]
-      if (chunk_nbytes <= 0L) {
-        return()
-      }
-      # Offset caused by index being at the start is already contained in the
-      # offset returned by index.
-      chunk_raw <- input[seq.int(
-        chunk_offset + 1L,
-        length.out = chunk_nbytes
-      )]
-      # FIXME: Once stores are implemented, treat this as a memory store and use `read_data()` directly
-      read_chunk(
-        chunk_raw,
-        chunk_dim = chunk_dim,
-        decoders = configured_decoders,
-        datatype = datatype,
-        fill_value = fill_value
-      )
-    },
-    simplify = FALSE
-  )
+  # FIXME: Once stores are implemented, treat this as a memory store and use
+  # `read_data()` directly
   shard <- array(fill_value, dim = outer_chunk_dim)
-  non_empty_coords <- which(
-    asplit(index, 1L)[[2L]] > 0L,
-    arr.ind = TRUE
-  )
-  # Merge chunks into shard
-  for (i in seq_len(nrow(non_empty_coords))) {
-    coords_in_shard <- non_empty_coords[i, ]
-    index_in_result <- mapply(
-      FUN = function(coord, chunk_dim) {
-        seq.int((coord - 1L) * chunk_dim + 1L, length.out = chunk_dim)
-      },
-      coords_in_shard,
+
+  index_in_chunk <- lapply(chunk_dim, seq_len)
+  n_chunks <- dim(index)[-1L]
+  index <- matrix(index, nrow = 2L)
+  non_empty <- index[2L, ] > 0L
+  to_read <- which(non_empty & needed)
+  for (i in to_read) {
+    # Offset caused by index being at the start is already contained in the
+    # offset returned by index.
+    chunk_raw <- input[seq.int(index[1L, i] + 1L, length.out = index[2L, i])]
+    chunk <- read_chunk(
+      chunk_raw,
       chunk_dim = chunk_dim,
-      SIMPLIFY = FALSE
+      decoders = configured_decoders,
+      datatype = datatype,
+      fill_value = fill_value
     )
-    chunk_to_insert <- drop(.extract_chunk(chunks, coords_in_shard))[[1L]]
-    rlang::inject(shard[!!!index_in_result] <- chunk_to_insert) # nolint implicit_assignment_linter.
+    coord <- arrayInd(i, n_chunks)
+    index_in_result <- lapply(seq_len(nb_dims), function(d) {
+      (coord[[d]] - 1L) * chunk_dim[[d]] + index_in_chunk[[d]]
+    })
+    rlang::inject(shard[!!!index_in_result] <- chunk) # nolint: implicit_assignment_linter.
   }
 
   return(shard)
