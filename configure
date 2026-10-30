@@ -658,32 +658,30 @@ AVX2_SHUFFLE_OBJ
 AVX2_BITSHUFFLE_OBJ
 AVX2_SHUFFLE
 AVX2_BITSHUFFLE
-MAVX2
 AVX2
 SSE2_OBJ_PATH
 SSE2_SHUFFLE_OBJ
 SSE2_BITSHUFFLE_OBJ
 SSE2_SHUFFLE
 SSE2_BITSHUFFLE
-MSSE2
 SSE2
 ZSTD_LIB
 BUILD_ZSTD
-OBJEXT
-EXEEXT
-ac_ct_CC
-LDFLAGS
 NO_RLIB
 R_CPPFLAGS
 AR
 RANLIB
 MAKE
-CPPFLAGS
 CXXPICFLAGS
 CPICFLAGS
 CXXFLAGS
-CFLAGS
 CXX
+OBJEXT
+EXEEXT
+ac_ct_CC
+CPPFLAGS
+LDFLAGS
+CFLAGS
 CC
 target_alias
 host_alias
@@ -2290,246 +2288,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-# ============================================================================
-#  https://www.gnu.org/software/autoconf-archive/ax_gcc_x86_cpu_supports.html
-# ============================================================================
-#
-# SYNOPSIS
-#
-#   AX_GCC_X86_CPU_SUPPORTS(X86-INSTRUCTION-SET,
-#     [ACTION-IF-FOUND],[ACTION-IF-NOT-FOUND])
-#
-# DESCRIPTION
-#
-#   Checks if the host cpu supports X86-INSTRUCTION-SET. The instruction set
-#   that can be tested are "mmx, popcnt, sse, sse2, sse3, sse4.1, sse4.2,
-#   sse4a, avx, avx2, avx512f, fma, fma4, bmi, bmi2". If the instruction set
-#   is supported by the host cpu, the C preprocessor macro
-#   HAVE_XXX_INSTRUCTIONS is set to 1. The XXX is up-cased instruction case
-#   with dot replaced by underscore. For example, the test for "sse4.2"
-#   would export HAVE_SSE4_2_INSTRUCTIONS=1. This macro requires gcc
-#   extended builtin function "__builtin_cpu_init" and
-#   "__builtin_cpu_supports" to detect the cpu features. It will error out
-#   if the compiler doesn't has these builtins.
-#
-#   If the test for the instruction set succeeded, the hook ACTION-IF-FOUND
-#   would run. Otherwise the hook ACTION-IF-NOT-FOUND would run if
-#   specified.
-#
-#   See also AX_CHECK_X86_FEATURES, which checks all the possible
-#   instruction set and export the corresponding CFLAGS.
-#
-# LICENSE
-#
-#   Copyright (c) 2016 Felix Chern <idryman@gmail.com>
-#
-#   This program is free software; you can redistribute it and/or modify it
-#   under the terms of the GNU General Public License as published by the
-#   Free Software Foundation; either version 2 of the License, or (at your
-#   option) any later version.
-#
-#   This program is distributed in the hope that it will be useful, but
-#   WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-#   Public License for more details.
-#
-#   You should have received a copy of the GNU General Public License along
-#   with this program. If not, see <https://www.gnu.org/licenses/>.
-#
-#   As a special exception, the respective Autoconf Macro's copyright owner
-#   gives unlimited permission to copy, distribute and modify the configure
-#   scripts that are the output of Autoconf when processing the Macro. You
-#   need not follow the terms of the GNU General Public License when using
-#   or distributing such scripts, even though portions of the text of the
-#   Macro appear in them. The GNU General Public License (GPL) does govern
-#   all other use of the material that constitutes the Autoconf Macro.
-#
-#   This special exception to the GPL applies to versions of the Autoconf
-#   Macro released by the Autoconf Archive. When you make and distribute a
-#   modified version of the Autoconf Macro, you may extend this special
-#   exception to the GPL to apply to your modified version as well.
-
-#serial 4
-
-
-
-
-
-# ===========================================================================
-#  https://www.gnu.org/software/autoconf-archive/ax_check_compile_flag.html
-# ===========================================================================
-#
-# SYNOPSIS
-#
-#   AX_CHECK_COMPILE_FLAG(FLAG, [ACTION-SUCCESS], [ACTION-FAILURE], [EXTRA-FLAGS], [INPUT])
-#
-# DESCRIPTION
-#
-#   Check whether the given FLAG works with the current language's compiler
-#   or gives an error.  (Warnings, however, are ignored)
-#
-#   ACTION-SUCCESS/ACTION-FAILURE are shell commands to execute on
-#   success/failure.
-#
-#   If EXTRA-FLAGS is defined, it is added to the current language's default
-#   flags (e.g. CFLAGS) when the check is done.  The check is thus made with
-#   the flags: "CFLAGS EXTRA-FLAGS FLAG".  This can for example be used to
-#   force the compiler to issue an error when a bad flag is given.
-#
-#   INPUT gives an alternative input source to AC_COMPILE_IFELSE.
-#
-#   NOTE: Implementation based on AX_CFLAGS_GCC_OPTION. Please keep this
-#   macro in sync with AX_CHECK_{PREPROC,LINK}_FLAG.
-#
-# LICENSE
-#
-#   Copyright (c) 2008 Guido U. Draheim <guidod@gmx.de>
-#   Copyright (c) 2011 Maarten Bosmans <mkbosmans@gmail.com>
-#
-#   Copying and distribution of this file, with or without modification, are
-#   permitted in any medium without royalty provided the copyright notice
-#   and this notice are preserved.  This file is offered as-is, without any
-#   warranty.
-
-#serial 11
-
-
-
-: ${R_HOME=`R RHOME`}
-if test -z "${R_HOME}"; then
-  echo "could not determine R_HOME"
-  exit 1
-fi
-
-CC=`"${R_HOME}/bin/R" CMD config CC`
-
-CXX=`"${R_HOME}/bin/R" CMD config CXX`
-
-CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
-
-CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
-
-CPICFLAGS=`"${R_HOME}/bin/R" CMD config CPICFLAGS`
-
-CXXPICFLAGS=`"${R_HOME}/bin/R" CMD config CXXPICFLAGS`
-
-CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
-
-MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
-
-RANLIB=`"${R_HOME}/bin/R" CMD config RANLIB`
-
-
-AR=`"${R_HOME}/bin/R" CMD config AR`
-if test "x$AR" = "xERROR: no information for variable 'AR'"
-then :
-  # Extract the first word of "ar", so it can be a program name with args.
-set dummy ar; ac_word=$2
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-printf %s "checking for $ac_word... " >&6; }
-if test ${ac_cv_path_AR+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  case $AR in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_AR="$AR" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  case $as_dir in #(((
-    '') as_dir=./ ;;
-    */) ;;
-    *) as_dir=$as_dir/ ;;
-  esac
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
-    ac_cv_path_AR="$as_dir$ac_word$ac_exec_ext"
-    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-AR=$ac_cv_path_AR
-if test -n "$AR"; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $AR" >&5
-printf "%s\n" "$AR" >&6; }
-else
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-fi
-
-
-fi
-
-
-R_CPPFLAGS=`"${R_HOME}/bin/R" CMD config --cppflags`
-
-if [ -z "$R_CPPFLAGS" ]; then
-  R_CPPFLAGS=""
-  NO_RLIB="-DNO_RLIB"
-else
-  NO_RLIB=""
-fi
-
-echo "NO_RLIB=${NO_RLIB}"
-echo "R_CPPFLAGS=${R_CPPFLAGS}"
-
-
-
-
-ac_config_files="$ac_config_files src/Makevars"
-
-
-##############################
-
-
-# Check whether --with-bundled-libraries was given.
-if test ${with_bundled_libraries+y}
-then :
-  withval=$with_bundled_libraries;
-    bundled_libs="yes"
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Forcing the use of bundled compression libraries" >&5
-printf "%s\n" "$as_me: Forcing the use of bundled compression libraries" >&6;}
-
-else $as_nop
-
-    bundled_libs="no"
-
-fi
-
-
-if test "x$bundled_libs" = xyes
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: requesting bundled libs" >&5
-printf "%s\n" "$as_me: requesting bundled libs" >&6;}
-elif test "${IS_BIOC_BUILD_MACHINE}" = "true"
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: is Bioc build machine" >&5
-printf "%s\n" "$as_me: is Bioc build machine" >&6;}
-else $as_nop
-
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: is NOT Bioc build machine" >&5
-printf "%s\n" "$as_me: is NOT Bioc build machine" >&6;}
-        HAVE_ZSTD="yes"
-        HAVE_BLOSC="yes"
-
-fi
-
-##############################
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: configuring the Zstd filter..." >&5
-printf "%s\n" "$as_me: configuring the Zstd filter..." >&6;}
-
-if test "x$HAVE_ZSTD" = "xyes"; then
-
 
 
 
@@ -3525,6 +3283,246 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
+# ============================================================================
+#  https://www.gnu.org/software/autoconf-archive/ax_gcc_x86_cpu_supports.html
+# ============================================================================
+#
+# SYNOPSIS
+#
+#   AX_GCC_X86_CPU_SUPPORTS(X86-INSTRUCTION-SET,
+#     [ACTION-IF-FOUND],[ACTION-IF-NOT-FOUND])
+#
+# DESCRIPTION
+#
+#   Checks if the host cpu supports X86-INSTRUCTION-SET. The instruction set
+#   that can be tested are "mmx, popcnt, sse, sse2, sse3, sse4.1, sse4.2,
+#   sse4a, avx, avx2, avx512f, fma, fma4, bmi, bmi2". If the instruction set
+#   is supported by the host cpu, the C preprocessor macro
+#   HAVE_XXX_INSTRUCTIONS is set to 1. The XXX is up-cased instruction case
+#   with dot replaced by underscore. For example, the test for "sse4.2"
+#   would export HAVE_SSE4_2_INSTRUCTIONS=1. This macro requires gcc
+#   extended builtin function "__builtin_cpu_init" and
+#   "__builtin_cpu_supports" to detect the cpu features. It will error out
+#   if the compiler doesn't has these builtins.
+#
+#   If the test for the instruction set succeeded, the hook ACTION-IF-FOUND
+#   would run. Otherwise the hook ACTION-IF-NOT-FOUND would run if
+#   specified.
+#
+#   See also AX_CHECK_X86_FEATURES, which checks all the possible
+#   instruction set and export the corresponding CFLAGS.
+#
+# LICENSE
+#
+#   Copyright (c) 2016 Felix Chern <idryman@gmail.com>
+#
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the
+#   Free Software Foundation; either version 2 of the License, or (at your
+#   option) any later version.
+#
+#   This program is distributed in the hope that it will be useful, but
+#   WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+#   Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program. If not, see <https://www.gnu.org/licenses/>.
+#
+#   As a special exception, the respective Autoconf Macro's copyright owner
+#   gives unlimited permission to copy, distribute and modify the configure
+#   scripts that are the output of Autoconf when processing the Macro. You
+#   need not follow the terms of the GNU General Public License when using
+#   or distributing such scripts, even though portions of the text of the
+#   Macro appear in them. The GNU General Public License (GPL) does govern
+#   all other use of the material that constitutes the Autoconf Macro.
+#
+#   This special exception to the GPL applies to versions of the Autoconf
+#   Macro released by the Autoconf Archive. When you make and distribute a
+#   modified version of the Autoconf Macro, you may extend this special
+#   exception to the GPL to apply to your modified version as well.
+
+#serial 4
+
+
+
+
+
+# ===========================================================================
+#  https://www.gnu.org/software/autoconf-archive/ax_check_compile_flag.html
+# ===========================================================================
+#
+# SYNOPSIS
+#
+#   AX_CHECK_COMPILE_FLAG(FLAG, [ACTION-SUCCESS], [ACTION-FAILURE], [EXTRA-FLAGS], [INPUT])
+#
+# DESCRIPTION
+#
+#   Check whether the given FLAG works with the current language's compiler
+#   or gives an error.  (Warnings, however, are ignored)
+#
+#   ACTION-SUCCESS/ACTION-FAILURE are shell commands to execute on
+#   success/failure.
+#
+#   If EXTRA-FLAGS is defined, it is added to the current language's default
+#   flags (e.g. CFLAGS) when the check is done.  The check is thus made with
+#   the flags: "CFLAGS EXTRA-FLAGS FLAG".  This can for example be used to
+#   force the compiler to issue an error when a bad flag is given.
+#
+#   INPUT gives an alternative input source to AC_COMPILE_IFELSE.
+#
+#   NOTE: Implementation based on AX_CFLAGS_GCC_OPTION. Please keep this
+#   macro in sync with AX_CHECK_{PREPROC,LINK}_FLAG.
+#
+# LICENSE
+#
+#   Copyright (c) 2008 Guido U. Draheim <guidod@gmx.de>
+#   Copyright (c) 2011 Maarten Bosmans <mkbosmans@gmail.com>
+#
+#   Copying and distribution of this file, with or without modification, are
+#   permitted in any medium without royalty provided the copyright notice
+#   and this notice are preserved.  This file is offered as-is, without any
+#   warranty.
+
+#serial 11
+
+
+
+: ${R_HOME=`R RHOME`}
+if test -z "${R_HOME}"; then
+  echo "could not determine R_HOME"
+  exit 1
+fi
+
+CC=`"${R_HOME}/bin/R" CMD config CC`
+
+CXX=`"${R_HOME}/bin/R" CMD config CXX`
+
+CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
+
+CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
+
+CPICFLAGS=`"${R_HOME}/bin/R" CMD config CPICFLAGS`
+
+CXXPICFLAGS=`"${R_HOME}/bin/R" CMD config CXXPICFLAGS`
+
+CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
+
+MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
+
+RANLIB=`"${R_HOME}/bin/R" CMD config RANLIB`
+
+
+AR=`"${R_HOME}/bin/R" CMD config AR`
+if test "x$AR" = "xERROR: no information for variable 'AR'"
+then :
+  # Extract the first word of "ar", so it can be a program name with args.
+set dummy ar; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_path_AR+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  case $AR in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_AR="$AR" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_path_AR="$as_dir$ac_word$ac_exec_ext"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+AR=$ac_cv_path_AR
+if test -n "$AR"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $AR" >&5
+printf "%s\n" "$AR" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+fi
+
+
+fi
+
+
+R_CPPFLAGS=`"${R_HOME}/bin/R" CMD config --cppflags`
+
+if [ -z "$R_CPPFLAGS" ]; then
+  R_CPPFLAGS=""
+  NO_RLIB="-DNO_RLIB"
+else
+  NO_RLIB=""
+fi
+
+echo "NO_RLIB=${NO_RLIB}"
+echo "R_CPPFLAGS=${R_CPPFLAGS}"
+
+
+
+
+ac_config_files="$ac_config_files src/Makevars"
+
+
+##############################
+
+
+# Check whether --with-bundled-libraries was given.
+if test ${with_bundled_libraries+y}
+then :
+  withval=$with_bundled_libraries;
+    bundled_libs="yes"
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Forcing the use of bundled compression libraries" >&5
+printf "%s\n" "$as_me: Forcing the use of bundled compression libraries" >&6;}
+
+else $as_nop
+
+    bundled_libs="no"
+
+fi
+
+
+if test "x$bundled_libs" = xyes
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: requesting bundled libs" >&5
+printf "%s\n" "$as_me: requesting bundled libs" >&6;}
+elif test "${IS_BIOC_BUILD_MACHINE}" = "true"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: is Bioc build machine" >&5
+printf "%s\n" "$as_me: is Bioc build machine" >&6;}
+else $as_nop
+
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: is NOT Bioc build machine" >&5
+printf "%s\n" "$as_me: is NOT Bioc build machine" >&6;}
+        HAVE_ZSTD="yes"
+        HAVE_BLOSC="yes"
+
+fi
+
+##############################
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: configuring the Zstd filter..." >&5
+printf "%s\n" "$as_me: configuring the Zstd filter..." >&6;}
+
+if test "x$HAVE_ZSTD" = "xyes"; then
+
 ac_header= ac_cache=
 for ac_item in $ac_header_c_list
 do
@@ -4042,17 +4040,15 @@ fi
 
   if  "$MSSE2" = true  &&  "$SSE2_SUPPORTED" = true  ; then
     SSE2="-DSHUFFLE_SSE2_ENABLED"
-    MSSE2="-msse2"
     SSE2_BITSHUFFLE='bitshuffle-sse2.o: bitshuffle-sse2.c
-	$(CC) $(FLAGS) -c bitshuffle-sse2.c'
+	$(CC) $(FLAGS) -msse2 -c bitshuffle-sse2.c'
     SSE2_BITSHUFFLE_OBJ='bitshuffle-sse2.o'
     SSE2_SHUFFLE='shuffle-sse2.o: shuffle-sse2.c
-	$(CC) $(FLAGS) -c shuffle-sse2.c'
+	$(CC) $(FLAGS) -msse2 -c shuffle-sse2.c'
     SSE2_SHUFFLE_OBJ='shuffle-sse2.o'
     SSE2_OBJ_PATH='lib/blosc-1.21.6/'
   else
     SSE2=""
-    MSSE2=""
     SSE2_BITSHUFFLE=""
     SSE2_SHUFFLE=""
     SSE2_BITSHUFFLE_OBJ=""
@@ -4067,27 +4063,23 @@ fi
 
 
 
-
   if  "$MAVX2" = true  &&  "$AVX2_SUPPORTED" = true  ; then
     AVX2="-DSHUFFLE_AVX2_ENABLED"
-    MAVX2="-mavx2"
     AVX2_BITSHUFFLE='bitshuffle-avx2.o: bitshuffle-avx2.c
-	$(CC) $(FLAGS) -c bitshuffle-avx2.c'
+	$(CC) $(FLAGS) -mavx2 -c bitshuffle-avx2.c'
     AVX2_BITSHUFFLE_OBJ='bitshuffle-avx2.o'
     AVX2_SHUFFLE='shuffle-avx2.o: shuffle-avx2.c
-	$(CC) $(FLAGS) -c shuffle-avx2.c'
+	$(CC) $(FLAGS) -mavx2 -c shuffle-avx2.c'
     AVX2_SHUFFLE_OBJ='shuffle-avx2.o'
     AVX2_OBJ_PATH='lib/blosc-1.21.6/'
   else
     AVX2=""
-    MAVX2=""
     AVX2_BITSHUFFLE=""
     AVX2_SHUFFLE=""
     AVX2_BITSHUFFLE_OBJ=""
     AVX2_SHUFFLE_OBJ=""
     AVX2_OBJ_PATH=""
   fi
-
 
 
 
