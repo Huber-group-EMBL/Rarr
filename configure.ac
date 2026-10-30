@@ -4,6 +4,7 @@ dnl author: Mike Smith (grimbough@gmail.com)
 AC_PREREQ([2.65])
 AC_INIT([Rarr], [0.0.0.9000], [grimbough@gmail.com])
 AC_CONFIG_SRCDIR([src])
+AC_PROG_CC
 
 m4_include([tools/ax_gcc_x86_cpu_supports.m4])
 m4_include([tools/ax_check_compile_flag.m4])
@@ -147,17 +148,15 @@ if test -z "$HAVE_BLOSC"; then
   
   if [ "$MSSE2" = true ] && [ "$SSE2_SUPPORTED" = true ] ; then
     SSE2="-DSHUFFLE_SSE2_ENABLED"
-    MSSE2="-msse2"
     SSE2_BITSHUFFLE='bitshuffle-sse2.o: bitshuffle-sse2.c
-	$(CC) $(FLAGS) -c bitshuffle-sse2.c'
+	$(CC) $(FLAGS) -msse2 -c bitshuffle-sse2.c'
     SSE2_BITSHUFFLE_OBJ='bitshuffle-sse2.o'
     SSE2_SHUFFLE='shuffle-sse2.o: shuffle-sse2.c
-	$(CC) $(FLAGS) -c shuffle-sse2.c'
+	$(CC) $(FLAGS) -msse2 -c shuffle-sse2.c'
     SSE2_SHUFFLE_OBJ='shuffle-sse2.o'
     SSE2_OBJ_PATH='lib/blosc-1.21.6/'
   else
     SSE2=""
-    MSSE2=""
     SSE2_BITSHUFFLE=""
     SSE2_SHUFFLE=""
     SSE2_BITSHUFFLE_OBJ=""
@@ -166,7 +165,6 @@ if test -z "$HAVE_BLOSC"; then
   fi
   
   AC_SUBST(SSE2)
-  AC_SUBST(MSSE2)
   AC_SUBST(SSE2_BITSHUFFLE)
   AC_SUBST(SSE2_SHUFFLE)
   AC_SUBST(SSE2_BITSHUFFLE_OBJ)
@@ -175,17 +173,15 @@ if test -z "$HAVE_BLOSC"; then
   
   if [ "$MAVX2" = true ] && [ "$AVX2_SUPPORTED" = true ] ; then
     AVX2="-DSHUFFLE_AVX2_ENABLED"
-    MAVX2="-mavx2"
     AVX2_BITSHUFFLE='bitshuffle-avx2.o: bitshuffle-avx2.c
-	$(CC) $(FLAGS) -c bitshuffle-avx2.c'
+	$(CC) $(FLAGS) -mavx2 -c bitshuffle-avx2.c'
     AVX2_BITSHUFFLE_OBJ='bitshuffle-avx2.o'
     AVX2_SHUFFLE='shuffle-avx2.o: shuffle-avx2.c
-	$(CC) $(FLAGS) -c shuffle-avx2.c'
+	$(CC) $(FLAGS) -mavx2 -c shuffle-avx2.c'
     AVX2_SHUFFLE_OBJ='shuffle-avx2.o'
     AVX2_OBJ_PATH='lib/blosc-1.21.6/'
   else
     AVX2=""
-    MAVX2=""
     AVX2_BITSHUFFLE=""
     AVX2_SHUFFLE=""
     AVX2_BITSHUFFLE_OBJ=""
@@ -194,7 +190,6 @@ if test -z "$HAVE_BLOSC"; then
   fi
   
   AC_SUBST(AVX2)
-  AC_SUBST(MAVX2)
   AC_SUBST(AVX2_BITSHUFFLE)
   AC_SUBST(AVX2_SHUFFLE)
   AC_SUBST(AVX2_BITSHUFFLE_OBJ)
