@@ -74,6 +74,11 @@
   no longer overwrites chunks that wouldn't be modified.
 * This package now compiles on WASM, making it available in webR (shinylive, 
   etc.)
+* `create_empty_zarr_array()` and `write_zarr_array()` now accept Zarr v3 data
+  types as their `data_type` argument.
+* VLen-UTF8 data types can now be written directly via 
+  `write_zarr_array(data_type = "string")`, following requests from the spicyR
+  and anndataR maintainers.
 
 ## Minor improvements
 
