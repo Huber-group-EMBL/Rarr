@@ -14,8 +14,8 @@
     data_type <- storage.mode(fill_value)
   }
 
-  ## if data type was supplied directly, always use that
-  supported_types <- c(
+  r_base_types <- c("integer", "double", "character", "logical")
+  supported_v2_types <- c(
     "|i1",
     "<i2",
     "<i4",
@@ -29,29 +29,59 @@
     "|S",
     "<U",
     "|b1",
+    # FIXME: once anndataR (and others??) have been migrated to using string,
+    # remove the option to write |O directly.
+    # At least until #111 is implemented.
     "|O"
   )
-  r_base_types <- c("integer", "double", "character", "logical")
+  backward_compatible_v3_types <- c(
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+    "float32",
+    "float64",
+    "null_terminated_bytes",
+    "fixed_length_utf32",
+    "bool"
+  )
+  new_v3_types <- c(
+    "string"
+  )
 
-  if (data_type %notin% supported_types) {
-    if (data_type %notin% r_base_types) {
-      stop(
-        "Data type ",
-        data_type,
-        " is not supported. ",
-        "Only arrays of type 'integer', 'double', 'character' and ",
-        "'logical' can be written, or one of the equivalent Numpy ",
-        "formats: ",
-        toString(sprintf("'%s'", supported_types)),
-        call. = FALSE
-      )
-    }
+  if (data_type %in% r_base_types) {
     data_type <- switch(
       data_type,
       "integer" = "<i4",
       "double" = "<f8",
       "character" = "|S",
       "logical" = "|b1"
+    )
+  } else if (data_type %in% backward_compatible_v3_types) {
+    parsed_v3_datatype <- .parse_datatype_v3(data_type)
+    data_type <- .convert_dtype_version(
+      parsed_v3_datatype$base_type,
+      parsed_v3_datatype$nbytes,
+      parsed_v3_datatype$endian,
+      version_from = 3L,
+      version_to = 2L
+    )
+  } else if (data_type %notin% c(supported_v2_types, new_v3_types)) {
+    stop(
+      "Data type ",
+      data_type,
+      " is not supported. ",
+      "Only arrays of type 'integer', 'double', 'character' and ",
+      "'logical' can be written, or Zarr v2 or v3 data types:",
+      toString(sprintf(
+        "'%s'",
+        c(supported_v2_types, backward_compatible_v3_types, new_v3_types)
+      )),
+      call. = FALSE
     )
   }
 
@@ -73,6 +103,7 @@
       "<U" = "",
       "|O" = "",
       "|b1" = FALSE,
+      "string" = "",
       NULL
     )
 
@@ -115,12 +146,14 @@
 #'   `dim`.
 #' @param chunk_dim Dimensions of the array chunks. Should be a numeric vector
 #'   with the same length as the `dim` argument.
-#' @param data_type Character vector giving the data type of the new array.
+#' @param data_type Character giving the data type of the new array.
 #'   Valid options are: "integer", "double", "character", "logical", which are
-#'   based on standard R data types. You can also use the analogous Numpy
-#'   formats: "|i1", "<i2", "<i4", "<f4", "<f8", "|S", "|b1".
-#'   If this argument isn't provided the `fill_value` will be used to determine
-#'   the datatype.
+#'   based on standard R data types. You can also use the analogous Zarr v2
+#'   ("|i1", "<i2", "<i4", "<i8", "|u1", "<u2", "<u4", "<u8", "<f4", "<f8",
+#'   "|S", "<U", "|b1") or v3 ("int8", "int16", "int32", "int64", "uint8",
+#'   "uint16", "uint32", "uint64", "float32", "float64", "string", "bool") data
+#'   types. If this argument isn't provided the `fill_value` will be used to
+#'   determine the datatype.
 #' @param order Define the layout of the bytes within each chunk.  Valid options
 #'   are 'column', 'row', 'F' & 'C'.  'column' or 'F' will specify
 #'   "column-major" ordering, which is how R arrays are arranged in memory.

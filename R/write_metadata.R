@@ -13,6 +13,11 @@
   zarr_version = 3L
 ) {
   .check_node_name(basename(array_path))
+  filters <- NULL
+  if (data_type == "string") {
+    data_type <- "|O"
+    filters <- list(list(id = "vlen-utf8"))
+  }
 
   if (!is.null(compressor$id) && compressor$id == "blosc") {
     nbytes <- parse_npy_datatype(data_type)$nbytes
@@ -32,7 +37,7 @@
     dimension_separator = dimension_separator,
     order = order,
     zarr_format = 2L,
-    filters = NULL,
+    filters = filters,
     compressor = compressor
   )
 
