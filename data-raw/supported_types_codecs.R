@@ -1,6 +1,7 @@
 CODEC_BYTES_BYTES <- c(
   "blosc",
   "zlib",
+  "numcodecs.zlib",
   "gzip",
   "bz2",
   "lzma",

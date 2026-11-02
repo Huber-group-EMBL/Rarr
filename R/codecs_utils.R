@@ -87,6 +87,7 @@
     candidate_codec <- switch(
       candidate_codec,
       "numcodecs.lz4" = "lz4",
+      "numcodecs.zlib" = "zlib",
       "zstd" = if (has_zstd()) {
         "zstd_base"
       } else {
