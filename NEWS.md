@@ -122,6 +122,8 @@
   (#136).
 * Rarr now compiles properly on Window ARM64, thanks a to report and patch from
   Jeroen Ooms (#224).
+* `use_gzip()` now uses GZIP (RFC 1952) instead of ZLIB (RFC 1950). Thanks to a
+  report from Patrick Ellis.
 
 ## Internal changes
 
