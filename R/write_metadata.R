@@ -61,6 +61,12 @@
     if (!is.null(dimension_names)) {
       metadata_v3$dimension_names <- dimension_names
     }
+    if (length(intersect(names(metadata_v3$codecs), c("zlib", "lz4"))) > 0L) {
+      warning(
+        "`zlib` and `lz4` codecs are not fully standardized in Zarr V3, and ",
+        "interoperability with other Zarr implementations may be limited."
+      )
+    }
     # FIXME: get rid of these directly in the internal
     metadata_v3$codecs <- unname(metadata_v3$codecs)
     metadata_v3$datatype <- NULL

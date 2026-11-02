@@ -19,14 +19,15 @@ test_that("zarr arrays can be written and read with various compression methods"
 
   # Standard writing and reading with zlib compression
   path <- withr::local_tempfile(pattern = "zlib_", fileext = ".zarr")
-  expect_silent(
+  expect_warning(
     res <- write_zarr_array(
       x = x,
       zarr_array_path = path,
       chunk_dim = c(2, 5, 1),
       order = "F",
       compressor = use_zlib()
-    )
+    ),
+    "interoperability"
   )
   expect_identical(read_zarr_array(path), x)
 
@@ -75,13 +76,14 @@ test_that("zarr arrays can be written and read with various compression methods"
 
   # Testing LZ4 compression
   path <- withr::local_tempfile(pattern = "lz4_", fileext = ".zarr")
-  expect_silent(
+  expect_warning(
     res <- write_zarr_array(
       x = x,
       zarr_array_path = path,
       chunk_dim = c(2, 5, 1),
       compressor = use_lz4()
-    )
+    ),
+    "interoperability"
   )
   expect_identical(read_zarr_array(path), x)
 
