@@ -390,7 +390,7 @@ contents is as expected.
 
 ### Session info
 
-    ## R Under development (unstable) (2026-10-26 r90766)
+    ## R Under development (unstable) (2026-10-31 r90820)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 26.04.1 LTS
     ## 
