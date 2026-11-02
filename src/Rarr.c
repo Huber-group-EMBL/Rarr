@@ -13,6 +13,7 @@ static const R_CallMethodDef callMethods[] = {
   {"compress_chunk_BLOSC", (DL_FUNC) &compress_chunk_BLOSC, 6},
   {"compress_chunk_LZ4", (DL_FUNC) &compress_chunk_LZ4, 1},
   {"compress_chunk_ZSTD", (DL_FUNC) &compress_chunk_ZSTD, 2},
+  {"compress_chunk_GZIP", (DL_FUNC) &compress_chunk_GZIP, 2},
   
   {"type_convert_bfloat", (DL_FUNC) &type_convert_bfloat, 4},
   {"codec_vlen_utf8_decode_c", (DL_FUNC) &codec_vlen_utf8_decode_c, 3},

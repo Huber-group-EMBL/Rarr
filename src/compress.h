@@ -1,4 +1,5 @@
 #include "Rarr.h"
+#include <zlib.h>
 
 #ifndef _COMPRESSION_H
   #define _COMPRESSION_H
@@ -18,3 +19,4 @@ SEXP compress_chunk_BLOSC(
 );
 SEXP compress_chunk_LZ4(SEXP input);
 SEXP compress_chunk_ZSTD(SEXP input, SEXP compression_level);
+SEXP compress_chunk_GZIP(SEXP input, SEXP level);
