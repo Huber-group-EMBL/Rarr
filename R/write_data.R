@@ -310,7 +310,14 @@ write_zarr_array <- function(
     )
   }
 
-  if (storage.mode(x) == "character" && missing(nchar)) {
+  if (data_type == "character" && missing(nchar) && !anyNA(x)) {
+    # VLen-UTF8 is a better way to store strings in general. We avoid it
+    # when there are NAs since we cannot write them, or when the user
+    # specifically requested a fixed length type.
+    data_type <- "string"
+  }
+
+  if (data_type %in% c("character", "|S", "<U") && missing(nchar)) {
     # +1 to add NUL terminator
     # c(0, ) to deal with array full of NAs
     # base::nchar() to avoid collision with var name
