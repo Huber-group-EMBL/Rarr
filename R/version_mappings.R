@@ -94,51 +94,69 @@
   version_from,
   version_to
 ) {
-  if (version_from != 2L || version_to != 3L) {
-    # nocov start
-    stop(
-      "Only conversion from version 2 to version 3 is supported.",
-      call. = FALSE
-    )
-    # nocov end
-  }
-  if (length(base_type) > 1L) {
-    return(
-      list(
-        name = "struct",
-        configuration = list(
-          fields = mapply(
-            .convert_dtype_version,
-            base_type,
-            nbytes,
-            endian,
-            MoreArgs = list(
-              version_from = version_from,
-              version_to = version_to
-            ),
-            SIMPLIFY = FALSE
+  if (version_from == 2L && version_to == 3L) {
+    if (length(base_type) > 1L) {
+      return(
+        list(
+          name = "struct",
+          configuration = list(
+            fields = mapply(
+              .convert_dtype_version,
+              base_type,
+              nbytes,
+              endian,
+              MoreArgs = list(
+                version_from = version_from,
+                version_to = version_to
+              ),
+              SIMPLIFY = FALSE
+            )
           )
         )
       )
-    )
+    }
+    return(switch(
+      base_type,
+      "unicode" = list(
+        name = "fixed_length_utf32",
+        configuration = list(
+          length_bytes = 8L * nbytes
+        )
+      ),
+      "string" = list(
+        name = "null_terminated_bytes",
+        configuration = list(
+          length_bytes = nbytes
+        )
+      ),
+      "bool" = "bool",
+      paste0(base_type, 8L * nbytes)
+    ))
   }
-  switch(
-    base_type,
-    "unicode" = list(
-      name = "fixed_length_utf32",
-      configuration = list(
-        length_bytes = 8L * nbytes
-      )
-    ),
-    "string" = list(
-      name = "null_terminated_bytes",
-      configuration = list(
-        length_bytes = nbytes
-      )
-    ),
-    "bool" = "bool",
-    paste0(base_type, 8L * nbytes)
+  if (version_from == 3L && version_to == 2L) {
+    # We have only implemented mapping for types we want to write
+    endian_symbol <- switch(
+      endian,
+      "little" = "<",
+      "big" = ">",
+      NA_character_
+    )
+    return(switch(
+      base_type,
+      "unicode" = "<U",
+      "string" = "|S",
+      paste0(endian_symbol, substr(base_type, 1L, 1L), nbytes)
+    ))
+  }
+  # nocov start
+  stop(
+    "Data type mapping from version ",
+    version_from,
+    " to version ",
+    version_to,
+    " is not implemented."
   )
+  # nocov end
 }
 
 .convert_consolidated_metadata_version <- function(
