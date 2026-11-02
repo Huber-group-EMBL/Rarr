@@ -113,14 +113,24 @@ SEXP compress_chunk_ZSTD(SEXP input, SEXP compression_level) {
 
 SEXP compress_chunk_GZIP(SEXP input, SEXP compression_level) {
 
-  /* windowBits = 15 + 16 makes deflate write the gzip format (RFC 1952),
-   * i.e. a gzip header and trailer, instead of the zlib format (RFC 1950). */
-
   const void* p_input = RAW_RO(input);
   void* p_output;
-  const uLong input_size = (uLong) xlength(input);
+  const size_t input_size = (size_t) xlength(input);
   const int compressionLevel = INTEGER(compression_level)[0];
 
+#ifdef HAVE_LIBDEFLATE
+  struct libdeflate_compressor *compressor = libdeflate_alloc_compressor(compressionLevel);
+
+  const size_t output_size = libdeflate_gzip_compress_bound(compressor, input_size);
+
+  SEXP output = PROTECT(Rf_allocVector(RAWSXP, output_size));
+  p_output = RAW(output);
+
+  size_t dsize = libdeflate_gzip_compress(compressor, p_input, input_size, p_output, output_size);
+  libdeflate_free_compressor(compressor);
+#else
+  /* windowBits = 15 + 16 makes deflate write the gzip format (RFC 1952),
+   * i.e. a gzip header and trailer, instead of the zlib format (RFC 1950). */
   z_stream strm;
   memset(&strm, 0, sizeof(strm));
   int rc = deflateInit2(&strm, compressionLevel, Z_DEFLATED, 15 + 16, 8, Z_DEFAULT_STRATEGY);
@@ -129,7 +139,7 @@ SEXP compress_chunk_GZIP(SEXP input, SEXP compression_level) {
   }
 
   /* deflateBound() accounts for the gzip header and trailer once the stream is initialised */
-  const uLong output_size = deflateBound(&strm, input_size);
+  const uLong output_size = deflateBound(&strm, (uLong) input_size);
 
   SEXP output = PROTECT(Rf_allocVector(RAWSXP, output_size));
   p_output = RAW(output);
@@ -146,6 +156,7 @@ SEXP compress_chunk_GZIP(SEXP input, SEXP compression_level) {
   if(rc != Z_STREAM_END) {
     error("gzip compression error - error code: %d\n", rc);
   }
+#endif
 
   /* shrink our output vector to include only the compressed bytes */
   output = Rf_xlengthgets(output, dsize);
