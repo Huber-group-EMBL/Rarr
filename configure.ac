@@ -75,6 +75,23 @@ AC_CHECK_HEADERS([zlib.h],, [AC_MSG_ERROR([zlib.h not found: zlib development fi
 AC_CHECK_LIB([z], [deflateInit2_],, [AC_MSG_ERROR([libz not found: zlib is required])])
 
 ##############################
+AC_MSG_NOTICE(checking for libdeflate (optional, faster gzip)...)
+HAVE_LIBDEFLATE=no
+AC_CHECK_HEADERS([libdeflate.h], [HAVE_LIBDEFLATE_H=yes])
+if test "x$HAVE_LIBDEFLATE_H" = "xyes"; then
+  AC_CHECK_LIB([deflate], [libdeflate_alloc_compressor], [HAVE_LIBDEFLATE=yes],)
+fi
+if test "x$HAVE_LIBDEFLATE" = "xyes"; then
+  AC_MSG_NOTICE(Using libdeflate for gzip compression)
+  AC_SUBST(LIBDEFLATE_CPPFLAGS, -DHAVE_LIBDEFLATE)
+  AC_SUBST(LIBDEFLATE_LIB, -ldeflate)
+else
+  AC_MSG_NOTICE(libdeflate not found, using zlib for gzip compression)
+  AC_SUBST(LIBDEFLATE_CPPFLAGS, "")
+  AC_SUBST(LIBDEFLATE_LIB, "")
+fi
+
+##############################
 AC_MSG_NOTICE(configuring the Zstd filter...)
 
 if test "x$HAVE_ZSTD" = "xyes"; then

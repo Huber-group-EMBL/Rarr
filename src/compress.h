@@ -1,5 +1,8 @@
 #include "Rarr.h"
 #include <zlib.h>
+#ifdef HAVE_LIBDEFLATE
+  #include <libdeflate.h>
+#endif
 
 #ifndef _COMPRESSION_H
   #define _COMPRESSION_H

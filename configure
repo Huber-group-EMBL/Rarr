@@ -669,6 +669,8 @@ MSSE2
 SSE2
 ZSTD_LIB
 BUILD_ZSTD
+LIBDEFLATE_LIB
+LIBDEFLATE_CPPFLAGS
 OBJEXT
 EXEEXT
 ac_ct_CC
@@ -3609,6 +3611,78 @@ else $as_nop
   as_fn_error $? "libz not found: zlib is required" "$LINENO" 5
 fi
 
+
+##############################
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for libdeflate (optional, faster gzip)..." >&5
+printf "%s\n" "$as_me: checking for libdeflate (optional, faster gzip)..." >&6;}
+HAVE_LIBDEFLATE=no
+       for ac_header in libdeflate.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "libdeflate.h" "ac_cv_header_libdeflate_h" "$ac_includes_default"
+if test "x$ac_cv_header_libdeflate_h" = xyes
+then :
+  printf "%s\n" "#define HAVE_LIBDEFLATE_H 1" >>confdefs.h
+ HAVE_LIBDEFLATE_H=yes
+fi
+
+done
+if test "x$HAVE_LIBDEFLATE_H" = "xyes"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for libdeflate_alloc_compressor in -ldeflate" >&5
+printf %s "checking for libdeflate_alloc_compressor in -ldeflate... " >&6; }
+if test ${ac_cv_lib_deflate_libdeflate_alloc_compressor+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ldeflate  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+char libdeflate_alloc_compressor ();
+int
+main (void)
+{
+return libdeflate_alloc_compressor ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_lib_deflate_libdeflate_alloc_compressor=yes
+else $as_nop
+  ac_cv_lib_deflate_libdeflate_alloc_compressor=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_deflate_libdeflate_alloc_compressor" >&5
+printf "%s\n" "$ac_cv_lib_deflate_libdeflate_alloc_compressor" >&6; }
+if test "x$ac_cv_lib_deflate_libdeflate_alloc_compressor" = xyes
+then :
+  HAVE_LIBDEFLATE=yes
+fi
+
+fi
+if test "x$HAVE_LIBDEFLATE" = "xyes"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Using libdeflate for gzip compression" >&5
+printf "%s\n" "$as_me: Using libdeflate for gzip compression" >&6;}
+  LIBDEFLATE_CPPFLAGS=-DHAVE_LIBDEFLATE
+
+  LIBDEFLATE_LIB=-ldeflate
+
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: libdeflate not found" >&5
+printf "%s\n" "$as_me: libdeflate not found" >&using zlib for gzip compression;}
+  LIBDEFLATE_CPPFLAGS=""
+
+  LIBDEFLATE_LIB=""
+
+fi
 
 ##############################
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: configuring the Zstd filter..." >&5
