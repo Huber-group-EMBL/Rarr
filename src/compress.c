@@ -36,11 +36,8 @@ SEXP compress_chunk_BLOSC(
     output_size
   );
 
-  if(dsize > 0) {
-    /* shrink our output buffer to contain only the compressed bytes */
-    output = Rf_xlengthgets(output, dsize);
-    UNPROTECT(1);
-    return output;
+  if(dsize < 0) {
+    error("BLOSC compression error - error code: %d\n", dsize);
   }
   if(dsize == 0) {
     /* if compression results in a bigger chunk, just use the original input */
@@ -48,8 +45,11 @@ SEXP compress_chunk_BLOSC(
     return input;
   }
 
-  /* something terrible happened */
-  error("BLOSC compression error - error code: %d\n", dsize);
+    /* shrink our output buffer to contain only the compressed bytes */
+    output = Rf_xlengthgets(output, dsize);
+
+    UNPROTECT(1);
+    return output;
 } 
 
 SEXP compress_chunk_LZ4(SEXP input) {
