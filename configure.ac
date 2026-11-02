@@ -69,6 +69,12 @@ AS_IF([test "x$bundled_libs" = xyes],
       ])
       
 ##############################
+# zlib is already required by R itself so this should be safe
+AC_MSG_NOTICE(checking for zlib...)
+AC_CHECK_HEADERS([zlib.h],, [AC_MSG_ERROR([zlib.h not found: zlib development files are required])])
+AC_CHECK_LIB([z], [deflateInit2_],, [AC_MSG_ERROR([libz not found: zlib is required])])
+
+##############################
 AC_MSG_NOTICE(configuring the Zstd filter...)
 
 if test "x$HAVE_ZSTD" = "xyes"; then

@@ -2525,10 +2525,8 @@ printf "%s\n" "$as_me: is NOT Bioc build machine" >&6;}
 fi
 
 ##############################
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: configuring the Zstd filter..." >&5
-printf "%s\n" "$as_me: configuring the Zstd filter..." >&6;}
-
-if test "x$HAVE_ZSTD" = "xyes"; then
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for zlib..." >&5
+printf "%s\n" "$as_me: checking for zlib..." >&6;}
 
 
 
@@ -3554,7 +3552,70 @@ then :
 printf "%s\n" "#define STDC_HEADERS 1" >>confdefs.h
 
 fi
-       for ac_header in zstd.h
+       for ac_header in zlib.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "zlib.h" "ac_cv_header_zlib_h" "$ac_includes_default"
+if test "x$ac_cv_header_zlib_h" = xyes
+then :
+  printf "%s\n" "#define HAVE_ZLIB_H 1" >>confdefs.h
+
+else $as_nop
+  as_fn_error $? "zlib.h not found: zlib development files are required" "$LINENO" 5
+fi
+
+done
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for deflateInit2_ in -lz" >&5
+printf %s "checking for deflateInit2_ in -lz... " >&6; }
+if test ${ac_cv_lib_z_deflateInit2_+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lz  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+char deflateInit2_ ();
+int
+main (void)
+{
+return deflateInit2_ ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_lib_z_deflateInit2_=yes
+else $as_nop
+  ac_cv_lib_z_deflateInit2_=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_z_deflateInit2_" >&5
+printf "%s\n" "$ac_cv_lib_z_deflateInit2_" >&6; }
+if test "x$ac_cv_lib_z_deflateInit2_" = xyes
+then :
+  printf "%s\n" "#define HAVE_LIBZ 1" >>confdefs.h
+
+  LIBS="-lz $LIBS"
+
+else $as_nop
+  as_fn_error $? "libz not found: zlib is required" "$LINENO" 5
+fi
+
+
+##############################
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: configuring the Zstd filter..." >&5
+printf "%s\n" "$as_me: configuring the Zstd filter..." >&6;}
+
+if test "x$HAVE_ZSTD" = "xyes"; then
+         for ac_header in zstd.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "zstd.h" "ac_cv_header_zstd_h" "$ac_includes_default"
 if test "x$ac_cv_header_zstd_h" = xyes
