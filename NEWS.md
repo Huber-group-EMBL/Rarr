@@ -37,6 +37,9 @@
   backend, or lazy reading or Zarr datasets, look at the `ZarrArray` package.
 * Empty or missing attributes are now returned as `NULL` instead of an empty
   list by `read_zarr_attributes()`.
+* Character arrays are now written as VLen-UTF8 by default if 
+  `write_zarr_array(data_type = )` argument is left empty or `"character"`
+  **and** no NAs are present.
 
 ## New features
 
