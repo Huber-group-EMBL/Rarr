@@ -8,6 +8,9 @@ linters: all_linters(
       modify_defaults(
         default_undesirable_functions,
         citEntry = "use the more modern bibentry() function",
+        tail = "use direct indexing which is more memory efficient and faster",
+        head = "use direct indexing which is more memory efficient and faster",
+        Map = "use mapply(SIMPLIFY = FALSE) since Map() is a thin wrapper around it",
         mapply = NULL,
         library = NULL # too many false positive in too many files
       ),
