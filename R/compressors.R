@@ -116,14 +116,6 @@ use_zlib <- function(level = 6L) {
 #' @rdname compressors
 #' @export
 use_gzip <- function(level = 6L) {
-  if (level != 6L) {
-    warning(
-      "Gzip compression `level` value is ignored. ",
-      "The underlying implementation always uses level 6.",
-      call. = FALSE
-    )
-    level <- 6L
-  }
   res <- list(id = "gzip", level = as.integer(level))
   return(res)
 }
