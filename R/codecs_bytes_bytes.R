@@ -85,7 +85,7 @@ codec_lz4_decode <- function(bytes, ...) {
   buffer_size <- readBin(bytes, "integer", n = 1L, size = 4L, endian = "little")
   .Call(
     "decompress_chunk_LZ4",
-    tail(x = bytes, n = -4L),
+    bytes[5L:length(bytes)],
     buffer_size,
     PACKAGE = "Rarr"
   )
