@@ -49,9 +49,7 @@
     "fixed_length_utf32",
     "bool"
   )
-  new_v3_types <- c(
-    "string"
-  )
+  new_v3_types <- "string"
 
   if (data_type %in% r_base_types) {
     data_type <- switch(
