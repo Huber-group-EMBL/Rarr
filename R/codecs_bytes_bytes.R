@@ -38,7 +38,9 @@ codec_zlib_encode <- codec_gzip_encode <- function(bytes, ...) {
   )
 }
 
-codec_gzip_encode <- function(bytes, level = -1L, ...) {
+codec_gzip_encode <- function(bytes, ...) {
+  compressor_config <- list(...)
+  level <- compressor_config$level
   # memCompress(type = "gzip") only writes the zlib format (RFC 1950), so call
   # zlib directly to write the gzip format (RFC 1952).
   # Might be solved by https://bugs.r-project.org/show_bug.cgi?id=19260.
