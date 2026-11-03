@@ -37,7 +37,10 @@ test_that("codec: vlen-utf8", {
       c(0, 0, 0, 0)
     ))
   )
-  expect_identical(`codec_vlen-utf8_encode`(character(0)), as.raw(c(0, 0, 0, 0)))
+  expect_identical(
+    `codec_vlen-utf8_encode`(character(0)),
+    as.raw(c(0, 0, 0, 0))
+  )
 
   # NA is written as the string "NA"
   expect_identical(
@@ -66,6 +69,17 @@ test_that("codec: vlen-utf8", {
   )
 
   expect_error(`codec_vlen-utf8_encode`(1:3), "character vector")
+})
+
+test_that("codec: gzip", {
+  x <- charToRaw("Hello, world!")
+  gziped <- codec_gzip_encode(x, level = 6L)
+  # GZIP magic bytes
+  expect_identical(gziped[1:2], as.raw(c(0x1f, 0x8b)))
+  expect_identical(
+    codec_gzip_decode(gziped),
+    x
+  )
 })
 
 test_that("unsupported codec", {
