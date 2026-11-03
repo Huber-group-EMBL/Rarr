@@ -483,6 +483,20 @@ touchstone::benchmark_run(
 touchstone::benchmark_run(
   {
     library(Rarr)
+    unlink("lz4.zarr", recursive = TRUE)
+  },
+  write_lz4 = write_zarr_array(
+    array(1:1e6, dim = c(100, 100, 100)),
+    "lz4.zarr",
+    chunk_dim = c(10, 10, 10),
+    compressor = use_lz4()
+  ),
+  n = 25
+)
+
+touchstone::benchmark_run(
+  {
+    library(Rarr)
   },
   read_lz4 = read_zarr_array(system.file(
     "extdata",
@@ -505,6 +519,20 @@ touchstone::benchmark_run(
     "zlib.zarr",
     package = "Rarr"
   )),
+  n = 25
+)
+
+touchstone::benchmark_run(
+  {
+    library(Rarr)
+    unlink("gzip.zarr", recursive = TRUE)
+  },
+  write_gzip = write_zarr_array(
+    array(1:1e6, dim = c(100, 100, 100)),
+    "gzip.zarr",
+    chunk_dim = c(10, 10, 10),
+    compressor = use_gzip(level = 6)
+  ),
   n = 25
 )
 
