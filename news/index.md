@@ -147,6 +147,11 @@
 - Performance has been improved when reading
 - S3 access with credentials is now more robust and compatible with more
   providers.
+- [`write_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/write_zarr_array.md)
+  and
+  [`create_empty_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/create_empty_zarr_array.md)
+  now warn when using the unstandardized / unregistered `lz4` and `zlib`
+  codecs with Zarr v3.
 
 ### Bug fixes
 
@@ -177,6 +182,8 @@
 - [`use_gzip()`](https://huber-group-embl.github.io/Rarr/reference/compressors.md)
   now uses GZIP (RFC 1952) instead of ZLIB (RFC 1950). Thanks to a
   report from Patrick Ellis.
+- Zarr v3 arrays compressed with Python’s `numcodecs.zlib` can now be
+  read by Rarr. Thanks to a report from Patrick Ellis.
 
 ### Internal changes
 
