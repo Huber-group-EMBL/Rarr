@@ -127,7 +127,10 @@ codec_sharding_indexed_decode <- function(
       .Platform$endian
   )
   dim(index) <- index_shape
-  index <- codec_transpose_decode(index, c(1L, rev(seq_len(nb_dims) + 1L)))
+  index <- codec_transpose_decode(
+    index,
+    c(1L, seq.int(from = nb_dims + 1L, to = 2L))
+  )
 
   # FIXME: do all this, up to the .configure_codecs() step once, early on.
   # It doesn't need to be in the loop.
@@ -144,7 +147,8 @@ codec_sharding_indexed_decode <- function(
       list(
         transpose = list(
           name = "transpose",
-          configuration = list(order = seq_along(chunk_dim) - 1L)
+          # Better than seq_along() - 1L for ALTREP representation
+          configuration = list(order = seq.int(0L, length(chunk_dim) - 1L))
         )
       ),
       inner_codecs
@@ -179,7 +183,10 @@ codec_sharding_indexed_decode <- function(
   for (i in to_read) {
     # Offset caused by index being at the start is already contained in the
     # offset returned by index.
-    chunk_raw <- input[seq.int(index[1L, i] + 1L, length.out = index[2L, i])]
+    # Using seq.int(length.out = ) would seem more natural here but it is MUCH
+    # slower than using the explicit start and end indices because it doesn't
+    # produce an ALTREP object.
+    chunk_raw <- input[seq.int(index[1L, i] + 1L, index[1L, i] + index[2L, i])]
     chunk <- read_chunk(
       chunk_raw,
       chunk_dim = chunk_dim,
@@ -188,8 +195,9 @@ codec_sharding_indexed_decode <- function(
       fill_value = fill_value
     )
     coord <- arrayInd(i, n_chunks)
+    starts <- (coord - 1L) * chunk_dim + 1L
     index_in_result <- lapply(seq_len(nb_dims), function(d) {
-      (coord[[d]] - 1L) * chunk_dim[[d]] + index_in_chunk[[d]]
+      seq.int(starts[[d]], length.out = length(index_in_chunk[[d]]))
     })
     rlang::inject(shard[!!!index_in_result] <- chunk) # nolint: implicit_assignment_linter.
   }
