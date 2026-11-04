@@ -93,16 +93,19 @@
         }
         starts <- cumsum(c(1L, lens[-length(lens)]))
         ids <- first_chunk + seq_along(lens) - 1L
+        in_chunk_starts <- c(offset + 1L, rep.int(1L, length(lens) - 1L))
+        # seq.int(from, to) returns an ALTREP object,
+        # whereas seq.int(from, length.out = n) materializes the vector.
         list(
           per_dim = setNames(
-            mapply(seq.int, starts, length.out = lens, SIMPLIFY = FALSE),
+            mapply(seq.int, starts, starts + lens - 1L, SIMPLIFY = FALSE),
             ids
           ),
           in_chunk = setNames(
             mapply(
               seq.int,
-              c(offset + 1L, rep.int(1L, length(lens) - 1L)),
-              length.out = lens,
+              in_chunk_starts,
+              in_chunk_starts + lens - 1L,
               SIMPLIFY = FALSE
             ),
             ids
