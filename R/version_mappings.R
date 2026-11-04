@@ -45,16 +45,20 @@
     codecs = list()
   )
 
+  n_dims <- length(metadata_v3$shape)
   # Transpose codec only makes sense for more than 1 dimension
-  if (length(metadata_v3$shape) > 1L) {
+  if (n_dims > 1L) {
     metadata_v3$codecs$transpose <- list(
       name = "transpose",
       configuration = list(
         order = switch(
+          # Other options with seq_along() and rev() lose the compact
+          # ALTREP representation
           metadata$order,
           # default in numpy is "C"
-          "C" = seq_along(metadata$shape) - 1L, # zero indexed
-          "F" = rev(seq_along(metadata$shape)) - 1L
+          "C" = seq.int(from = 0L, to = n_dims - 1L), # zero indexed
+
+          "F" = seq.int(from = n_dims - 1L, to = 0L)
         )
       )
     )

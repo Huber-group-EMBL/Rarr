@@ -109,7 +109,7 @@
           lens <- c(lens, last_len)
         }
         starts <- cumsum(c(1L, lens[-length(lens)]))
-        ids <- first_chunk + seq_along(lens) - 1L
+        ids <- seq.int(first_chunk, length.out = length(lens))
         in_chunk_starts <- c(offset + 1L, rep.int(1L, length(lens) - 1L))
         # seq.int(from, to) returns an ALTREP object,
         # whereas seq.int(from, length.out = n) materializes the vector.
