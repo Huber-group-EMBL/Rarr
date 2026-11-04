@@ -131,6 +131,8 @@ codec_sharding_indexed_decode <- function(
   dim(index) <- index_shape
   index <- codec_transpose_decode(index, c(1L, rev(seq_len(nb_dims) + 1L)))
 
+  # FIXME: do all this, up to the .configure_codecs() step once, early on.
+  # It doesn't need to be in the loop.
   inner_codecs <- config$codecs |>
     setNames(vapply(
       config$codecs,
