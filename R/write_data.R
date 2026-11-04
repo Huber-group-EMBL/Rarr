@@ -118,7 +118,8 @@
 #' @param data_type Character vector giving the data type of the new array.
 #'   Valid options are: "integer", "double", "character", "logical", which are
 #'   based on standard R data types. You can also use the analogous Numpy
-#'   formats: "|i1", "<i2", "<i4", "<f4", "<f8", "|S", "|b1".
+#'   formats: "|i1", "<i2", "<i4", "<f4", "<f8", "|S", "|b1", and "|O" for
+#'   variable-length strings (written with [use_vlen_utf8()]).
 #'   If this argument isn't provided the `fill_value` will be used to determine
 #'   the datatype.
 #' @param order Define the layout of the bytes within each chunk.  Valid options
@@ -138,6 +139,10 @@
 #'   in the names of the chunk files.  Valid options are limited to "." and "/".
 #' @param zarr_version The version of the Zarr specification to use. Currently,
 #'   either `2` or `3`. The default is `3`.
+#' @param codecs Optional list of codecs, in the order they are applied when
+#'   writing: an 'array-to-bytes' codec such as [use_vlen_utf8()], then any
+#'   number of [compressors] (at most one for Zarr v2). Replaces `compressor`,
+#'   so the two cannot both be given. See [codecs] for more details.
 #'
 #' @returns This function is primarily called for the side effect of
 #'   initialising a Zarr array location and creating the `.zarray` or
@@ -166,7 +171,8 @@ create_empty_zarr_array <- function(
   nchar = NULL,
   dimension_separator = if (zarr_version == 2L) "." else "/",
   dimension_names = NULL,
-  zarr_version = 3L
+  zarr_version = 3L,
+  codecs = NULL
 ) {
   if (!is.null(dimension_names) && length(dimension_names) != length(dim)) {
     stop(
@@ -175,6 +181,7 @@ create_empty_zarr_array <- function(
     )
   }
   order <- match.arg(order)
+  .check_compressor_or_codecs(compressor, codecs, missing(compressor))
 
   dt <- .check_datatype(
     data_type = data_type,
@@ -185,6 +192,7 @@ create_empty_zarr_array <- function(
   fill_value <- dt$fill_value
 
   .check_chunk_shape(x_dim = dim, chunk_dim = chunk_dim)
+  codecs <- .resolve_codecs(codecs, compressor, data_type, zarr_version)
 
   path <- .normalize_array_path(zarr_array_path)
   path_exists <- dir.exists(path)
@@ -216,7 +224,7 @@ create_empty_zarr_array <- function(
     data_type = data_type,
     order = order,
     fill_value = fill_value,
-    compressor = compressor,
+    codecs = codecs,
     dimension_separator = dimension_separator,
     zarr_version = zarr_version
   )
@@ -267,12 +275,27 @@ write_zarr_array <- function(
   fill_value = NULL,
   nchar,
   dimension_separator = if (zarr_version == 2L) "." else "/",
-  zarr_version = 3L
+  zarr_version = 3L,
+  codecs = NULL
 ) {
   if (!is.array(x) && !is.atomic(x)) {
     stop(
       "`x` must be an atomic array. ",
       "You can maybe coerce your object with `as.array()`.",
+      call. = FALSE
+    )
+  }
+
+  .check_compressor_or_codecs(compressor, codecs, missing(compressor))
+  if (!is.null(codecs)) {
+    # `codecs` replaces the default compressor
+    compressor <- NULL
+  }
+  if (identical(data_type, "|O") && !is.character(x)) {
+    stop(
+      "`data_type = \"|O\"` is for character arrays, but `x` is of type ",
+      storage.mode(x),
+      ". Convert it with `as.character()` first.",
       call. = FALSE
     )
   }
@@ -298,7 +321,8 @@ write_zarr_array <- function(
     compressor = compressor,
     nchar = nchar,
     dimension_separator = dimension_separator,
-    zarr_version = zarr_version
+    zarr_version = zarr_version,
+    codecs = codecs
   )
   # FIXME: it's not optimal to write and read again because we do multiple
   # steps to get it ready for writing, and then ready to use internally.

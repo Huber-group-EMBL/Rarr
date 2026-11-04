@@ -96,3 +96,18 @@ test_that("compressed zarr arrays (zstd) can be read correctly", {
 
   expect_identical(data_vlen, array(as.character(0:5), dim = 6))
 })
+
+test_that("chains of compressors are decoded in reverse order", {
+  zarr <- system.file(
+    "extdata",
+    "zarr_examples",
+    "compression",
+    "zstd_blosc_v3.zarr",
+    package = "Rarr"
+  )
+
+  expect_silent(data <- read_zarr_array(zarr))
+
+  expect_identical(data[1, ], 1:10)
+  expect_true(all(data[, 1] == seq(1, 60, 3)))
+})

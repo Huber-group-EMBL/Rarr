@@ -211,6 +211,12 @@ z = zarr.create_array('inst/extdata/zarr_examples/compression/zstd_v3.zarr', sha
 z[0, :] = np.arange(start=1, stop=11)
 z[:, 0] = np.arange(start=1, stop=60, step=3)
 
+compressors = [zarr.codecs.ZstdCodec(), zarr.codecs.BloscCodec()]
+z = zarr.create_array('inst/extdata/zarr_examples/compression/zstd_blosc_v3.zarr', shape=(20, 10),
+              chunks=(10, 10), dtype='i4', filters = (zarr.codecs.TransposeCodec(order = [1, 0])), compressors=compressors, overwrite=True)
+z[0, :] = np.arange(start=1, stop=11)
+z[:, 0] = np.arange(start=1, stop=60, step=3)
+
 #####################################
 
 greetings = ['¡Hola mundo!', 'Hej Världen!', 'Servus Woid!', 'Hei maailma!',
