@@ -181,7 +181,10 @@ codec_sharding_indexed_decode <- function(
   for (i in to_read) {
     # Offset caused by index being at the start is already contained in the
     # offset returned by index.
-    chunk_raw <- input[seq.int(index[1L, i] + 1L, length.out = index[2L, i])]
+    # Using seq.int(length.out = ) would seem more natural here but it is MUCH
+    # slower than using the explicit start and end indices because it doesn't
+    # produce an ALTREP object.
+    chunk_raw <- input[seq.int(index[1L, i] + 1L, index[1L, i] + index[2L, i])]
     chunk <- read_chunk(
       chunk_raw,
       chunk_dim = chunk_dim,
