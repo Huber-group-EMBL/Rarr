@@ -96,6 +96,7 @@
         in_chunk_starts <- c(offset + 1L, rep.int(1L, length(lens) - 1L))
         # seq.int(from, to) returns an ALTREP object,
         # whereas seq.int(from, length.out = n) materializes the vector.
+        # https://bugs.r-project.org/show_bug.cgi?id=19282
         list(
           per_dim = setNames(
             mapply(seq.int, starts, starts + lens - 1L, SIMPLIFY = FALSE),
