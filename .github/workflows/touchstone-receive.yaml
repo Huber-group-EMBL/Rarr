@@ -55,7 +55,7 @@ jobs:
       RSPM: ${{ matrix.config.rspm }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: lorenzwalthert/touchstone/actions/receive@7e6072a25d1f8d72649188bc711113039ef94b75
+      - uses: lorenzwalthert/touchstone/actions/receive@1304e04eb1671a1cd38799a6a24b3ff5da314b24
         with:
           cache-version: 1
           touchstone_ref: ${{ matrix.config.touchstone_ref }}
