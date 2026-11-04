@@ -45,8 +45,6 @@
     "uint64",
     "float32",
     "float64",
-    "null_terminated_bytes",
-    "fixed_length_utf32",
     "bool"
   )
   new_v3_types <- "string"
