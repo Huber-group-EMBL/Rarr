@@ -361,7 +361,10 @@ zarr_overview <- function(
     # So even when using the implicit default, we need to add it here.
     metadata$codecs[["transpose"]] <- list(
       name = "transpose",
-      configuration = list(order = seq_along(metadata$shape) - 1L)
+      configuration = list(
+        # Better than seq_along() - 1L because it keeps ALTREP compactness
+        order = seq.int(0L, length.out = length(metadata$shape))
+      )
     )
   }
 
