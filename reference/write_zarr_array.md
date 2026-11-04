@@ -36,12 +36,14 @@ write_zarr_array(
 
 - data_type:
 
-  Character vector giving the data type of the new array. Valid options
-  are: "integer", "double", "character", "logical", which are based on
-  standard R data types. You can also use the analogous Numpy formats:
-  "\|i1", "\<i2", "\<i4", "\<f4", "\<f8", "\|S", "\|b1". If this
-  argument isn't provided the `fill_value` will be used to determine the
-  datatype.
+  Character giving the data type of the new array. Valid options are:
+  "integer", "double", "character", "logical", which are based on
+  standard R data types. You can also use the analogous Zarr v2 ("\|i1",
+  "\<i2", "\<i4", "\<i8", "\|u1", "\<u2", "\<u4", "\<u8", "\<f4",
+  "\<f8", "\|S", "\<U", "\|b1") or v3 ("int8", "int16", "int32",
+  "int64", "uint8", "uint16", "uint32", "uint64", "float32", "float64",
+  "string", "bool") data types. If this argument isn't provided the
+  `fill_value` will be used to determine the datatype.
 
 - order:
 

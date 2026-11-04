@@ -52,6 +52,9 @@
 - Empty or missing attributes are now returned as `NULL` instead of an
   empty list by
   [`read_zarr_attributes()`](https://huber-group-embl.github.io/Rarr/reference/read_zarr_attributes.md).
+- Character arrays are now written as VLen-UTF8 by default if
+  `write_zarr_array(data_type = )` argument is left empty or
+  `"character"` **and** no NAs are present.
 
 ### New features
 
@@ -111,6 +114,13 @@
   overwrites chunks that wouldn’t be modified.
 - This package now compiles on WASM, making it available in webR
   (shinylive, etc.)
+- [`create_empty_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/create_empty_zarr_array.md)
+  and
+  [`write_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/write_zarr_array.md)
+  now accept Zarr v3 data types as their `data_type` argument.
+- VLen-UTF8 data types can now be written directly via
+  `write_zarr_array(data_type = "string")`, following requests from the
+  spicyR and anndataR maintainers.
 
 ### Minor improvements
 

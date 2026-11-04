@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.55</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.56</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,6 +57,7 @@
 <li>User-specified compression levels are now ignored when writing. This change is necessary to eventually enable writing on S3, and writing sharded arrays. It allows results in better speed performance when writing. A patch will be provided to base R to enable custom user-specified compression levels again in the future.</li>
 <li>Functions related to the <code>DelayedArray</code> backend have been dropped entirely after being deprecated in the previous release. To use the <code>DelayedArray</code> backend, or lazy reading or Zarr datasets, look at the <code>ZarrArray</code> package.</li>
 <li>Empty or missing attributes are now returned as <code>NULL</code> instead of an empty list by <code><a href="../reference/read_zarr_attributes.html">read_zarr_attributes()</a></code>.</li>
+<li>Character arrays are now written as VLen-UTF8 by default if <code>write_zarr_array(data_type = )</code> argument is left empty or <code>"character"</code> <strong>and</strong> no NAs are present.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-features-2-1">New features<a class="anchor" aria-label="anchor" href="#new-features-2-1"></a></h3>
@@ -81,6 +82,9 @@
 <li>
 <code><a href="../reference/update_zarr_array.html">update_zarr_array()</a></code> no longer writes chunks filled with the fill value, and no longer overwrites chunks that wouldn’t be modified.</li>
 <li>This package now compiles on WASM, making it available in webR (shinylive, etc.)</li>
+<li>
+<code><a href="../reference/create_empty_zarr_array.html">create_empty_zarr_array()</a></code> and <code><a href="../reference/write_zarr_array.html">write_zarr_array()</a></code> now accept Zarr v3 data types as their <code>data_type</code> argument.</li>
+<li>VLen-UTF8 data types can now be written directly via <code>write_zarr_array(data_type = "string")</code>, following requests from the spicyR and anndataR maintainers.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-improvements-2-1">Minor improvements<a class="anchor" aria-label="anchor" href="#minor-improvements-2-1"></a></h3>
