@@ -135,12 +135,11 @@
   }
   if (version_from == 3L && version_to == 2L) {
     # We have only implemented mapping for types we want to write
-    endian_symbol <- switch(
-      endian,
-      "little" = "<",
-      "big" = ">",
-      NA_character_
-    )
+    if (nbytes == 1L) {
+      endian_symbol <- "|"
+    } else {
+      endian_symbol <- "<"
+    }
     return(switch(
       base_type,
       "unicode" = "<U",
