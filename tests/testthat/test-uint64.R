@@ -33,11 +33,12 @@ test_that("uint64 zarr arrays produce NA for out-of-range values", {
     package = "Rarr"
   )
 
-  # this data point should be outside the range of an int32 and throw a warning
-  expect_warning(
-    column_major <- read_zarr_array(zarr_c, index = list(30L, 20L, 10L))
-  )
-  expect_true(all(is.na(column_major)))
+  column_major <- read_zarr_array(zarr_c, index = list(30L, 20L, 10L))
+  if (packageVersion("grumpy") >= "0.1.1.9005") {
+    expect_identical(column_major, array(4294967296, c(1L, 1L, 1L)))
+  } else {
+    expect_true(all(is.na(column_major)))
+  }
 })
 
 test_that("v2 and v3 return identical results", {

@@ -51,21 +51,25 @@ test_that("int64 zarr arrays handle out-of-range values", {
     package = "Rarr"
   )
 
-  # This data point should be outside the range of an int32 and throw a warning
-  expect_warning(
-    column_major <- read_zarr_array(zarr_c, index = list(30, 20, 10))
-  )
-  expect_warning(row_major <- read_zarr_array(zarr_f, index = list(30, 20, 10)))
-  expect_true(all(is.na(column_major)))
-  expect_true(all(is.na(row_major)))
+  column_major <- read_zarr_array(zarr_c, index = list(30, 20, 10))
+  row_major <- read_zarr_array(zarr_f, index = list(30, 20, 10))
 
-  # This data point should be smaller than the range of an int32 and throw a warning
-  expect_warning(
-    column_major <- read_zarr_array(zarr_c, index = list(30, 20, 9))
-  )
-  expect_warning(row_major <- read_zarr_array(zarr_f, index = list(30, 20, 9)))
-  expect_true(all(is.na(column_major)))
-  expect_true(all(is.na(row_major)))
+  if (packageVersion("grumpy") >= "0.1.1.9005") {
+    expect_identical(column_major, array(4294967296, c(1L, 1L, 1L)))
+  } else {
+    expect_true(all(is.na(column_major)))
+  }
+  expect_identical(row_major, column_major)
+
+  column_major <- read_zarr_array(zarr_c, index = list(30, 20, 9))
+  row_major <- read_zarr_array(zarr_f, index = list(30, 20, 9))
+
+  if (packageVersion("grumpy") >= "0.1.1.9005") {
+    expect_identical(column_major, array(-4294967296, c(1L, 1L, 1L)))
+  } else {
+    expect_true(all(is.na(column_major)))
+  }
+  expect_identical(row_major, column_major)
 })
 
 test_that("v2 and v3 return identical results", {
