@@ -34,12 +34,14 @@ test_that("uint32 zarr arrays can be read correctly", {
   expect_identical(column_major[, 1, ], rep(1L, 30))
 
   ## this data point should be outside the range of an int32 and throw a warning
-  expect_warning(
-    column_major <- read_zarr_array(zarr_c, index = list(30, 20, 10))
-  )
-  expect_warning(row_major <- read_zarr_array(zarr_f, index = list(30, 20, 10)))
-  expect_true(all(is.na(column_major)))
-  expect_true(all(is.na(row_major)))
+  column_major <- read_zarr_array(zarr_c, index = list(30, 20, 10))
+  row_major <- read_zarr_array(zarr_f, index = list(30, 20, 10))
+  if (packageVersion("grumpy") >= "0.1.1.9005") {
+    expect_identical(column_major, array(2147483648.0, c(1L, 1L, 1L)))
+  } else {
+    expect_true(all(is.na(column_major)))
+  }
+  expect_identical(row_major, column_major)
 })
 
 test_that("v2 and v3 return identical results", {
