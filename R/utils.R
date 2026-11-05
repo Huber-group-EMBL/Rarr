@@ -26,8 +26,6 @@ check_index <- function(index, metadata) {
         (min(index[[i]]) < 1L || max(index[[i]]) > shape[[i]])
     ) {
       failed[i] <- TRUE
-    } else {
-      index[[i]] <- as.integer(index[[i]])
     }
   }
 
