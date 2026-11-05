@@ -65,10 +65,7 @@
     \(dim_index, chunk_size) {
       # FIXME: add a fast path for decreasing consecutive sequences.
       consecutive <- is.consecutive(dim_index, direction = "increasing")
-      if (
-        consecutive &&
-          dim_index[1L] == 1L
-      ) {
+      if (consecutive && dim_index[1L] == 1L) {
         chopped <- .Call("chop_vec", dim_index, chunk_size, PACKAGE = "Rarr")
         positions_by_chunk <- setNames(chopped, 0L:(length(chopped) - 1L))
         list(
