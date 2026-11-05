@@ -53,10 +53,6 @@
   metadata,
   chunk_dim = unlist(metadata$chunk_grid$configuration$chunk_shape)
 ) {
-  if (!is.integer(chunk_dim)) {
-    chunk_dim <- as.integer(chunk_dim)
-  }
-
   # We try 3 approaches, from the most efficient / most specific to the least
   # efficient / most general:
   # 1. The index is a run of consecutive integers starting at 1: we can chop it
@@ -69,7 +65,12 @@
     \(dim_index, chunk_size) {
       # FIXME: add a fast path for decreasing consecutive sequences.
       consecutive <- is.consecutive(dim_index, direction = "increasing")
-      if (consecutive && dim_index[1L] == 1L) {
+      if (
+        consecutive &&
+          is.integer(dim_index) &&
+          is.integer(chunk_size) &&
+          dim_index[1L] == 1L
+      ) {
         chopped <- .Call("chop_vec", dim_index, chunk_size, PACKAGE = "Rarr")
         positions_by_chunk <- setNames(chopped, 0L:(length(chopped) - 1L))
         list(
