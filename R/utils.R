@@ -23,7 +23,11 @@ check_index <- function(index, metadata) {
       index[[i]] <- seq_len(shape[[i]])
     } else if (
       length(index[[i]]) > 0L &&
-        (min(index[[i]]) < 1L || max(index[[i]]) > shape[[i]])
+        (min(index[[i]]) < 1L || max(index[[i]]) > shape[[i]]) ||
+        # Converting to integer and checking for equality doesn't work here
+        # because large integers are stored as doubles but still valid index
+        # values.
+        !(is.integer(index[[i]]) || is.wholenumber(index[[i]]))
     ) {
       failed[i] <- TRUE
     }
@@ -153,4 +157,8 @@ check_index <- function(index, metadata) {
     base_type = entry$base_type,
     nbytes = entry$nbytes
   ))
+}
+
+is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
+  all(abs(x - round(x)) < tol)
 }
