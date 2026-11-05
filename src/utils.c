@@ -20,6 +20,8 @@ SEXP chop_vec(SEXP x, SEXP _size) {
       INTEGER_GET_REGION(x, start, size, INTEGER(el));
     } else if (TYPEOF(x) == RAWSXP) {
       RAW_GET_REGION(x, start, size, RAW(el));
+    } else if (TYPEOF(x) == REALSXP) {
+      REAL_GET_REGION(x, start, size, REAL(el));
     }
     SET_VECTOR_ELT(result, i, el);
     start += size;
