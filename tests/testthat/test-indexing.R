@@ -18,6 +18,12 @@ test_that("check_index errors for indices outside extent", {
   )
 })
 
+test_that("check_index errors for non-integer indices", {
+  expect_error(
+    check_index(index = list(1.5, 1), metadata = list(shape = c(10, 10)))
+  )
+})
+
 test_that("integer(0) indexing works correctly", {
   zarr_v2 <- system.file(
     package = "Rarr",
