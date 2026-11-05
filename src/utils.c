@@ -2,7 +2,10 @@
 
 SEXP chop_vec(SEXP x, SEXP _size) {
   R_xlen_t n = XLENGTH(x);
-  int size = INTEGER(_size)[0];
+  // large ints are stored a double in R so even though it's an integer,
+  // _size is not necessarily an INTSXP.
+  R_xlen_t size = TYPEOF(_size) == INTSXP ? (R_xlen_t) INTEGER(_size)[0]
+                                          : (R_xlen_t) REAL(_size)[0];
   R_xlen_t m = ceil((double)n / size);
 
   SEXP result = PROTECT(allocVector(VECSXP, m));

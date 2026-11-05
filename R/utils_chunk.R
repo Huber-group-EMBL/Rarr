@@ -67,7 +67,6 @@
       consecutive <- is.consecutive(dim_index, direction = "increasing")
       if (
         consecutive &&
-          is.integer(chunk_size) &&
           dim_index[1L] == 1L
       ) {
         chopped <- .Call("chop_vec", dim_index, chunk_size, PACKAGE = "Rarr")
