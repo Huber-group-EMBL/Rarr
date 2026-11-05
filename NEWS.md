@@ -114,6 +114,10 @@
   providers.
 * `write_zarr_array()` and `create_empty_zarr_array()` now warn when using the
   unstandardized / unregistered `lz4` and `zlib` codecs with Zarr v3.
+* `write_zarr_array()` now errors if `x` has a different storage mode than
+  expected from `data_type` (if specified). The previous situation could lead
+  to doubles being marked as, e.g., `int` in the Zarr metadata, and encode
+  incorrect values.
 
 ## Bug fixes
 
