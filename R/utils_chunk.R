@@ -67,7 +67,6 @@
       consecutive <- is.consecutive(dim_index, direction = "increasing")
       if (
         consecutive &&
-          is.integer(dim_index) &&
           is.integer(chunk_size) &&
           dim_index[1L] == 1L
       ) {
