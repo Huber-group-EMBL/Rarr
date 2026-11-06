@@ -114,6 +114,12 @@
   providers.
 * `write_zarr_array()` and `create_empty_zarr_array()` now warn when using the
   unstandardized / unregistered `lz4` and `zlib` codecs with Zarr v3.
+* `write_zarr_array()` no longer warns on oversized chunks for empty
+  dimensions. Based on a request from Robrecht Cannoodt, and motivated by the
+  use of empty arrays in anndataR.
+* In line of recent changes in Zarr v3 spec, 0-length chunk dimensions are
+  explicitly disallowed when writing. Reading arrays with 0-length chunk 
+  dimensions is still supported.
 
 ## Bug fixes
 

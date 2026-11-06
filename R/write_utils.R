@@ -160,3 +160,42 @@
 .is_all_fill <- function(x, fill) {
   .Call("is_all_fill", x, fill, PACKAGE = "Rarr")
 }
+
+
+.check_chunk_shape <- function(x_dim, chunk_dim) {
+  if (length(x_dim) != length(chunk_dim)) {
+    stop(
+      "The number of dimensions of the chunk (",
+      length(chunk_dim),
+      ") must equal the number of dimensions of the ",
+      "array (",
+      length(x_dim),
+      "). ",
+      "Please check the `chunk_dim` argument.",
+      call. = FALSE
+    )
+  }
+
+  oversized_chunk <- chunk_dim > x_dim
+  # One valid use case is empty arrays in anndata.
+  zero_dim <- x_dim == 0L
+
+  if (any(oversized_chunk & !zero_dim)) {
+    warning(
+      "Chunk dimensions are larger than array dimensions. ",
+      "This is allowed by the Zarr specification but may lead to inefficient storage and retrieval.\n",
+      "In most cases, this is likely to be a mistake. Please check your `chunk_dim` argument.",
+      call. = FALSE
+    )
+  }
+
+  valid_chunk_dim <- chunk_dim > 0L
+  if (!all(valid_chunk_dim)) {
+    stop(
+      "Chunk dimensions must be strictly positive.",
+      call. = FALSE
+    )
+  }
+
+  return(invisible(all(valid_chunk_dim & !(oversized_chunk & !zero_dim))))
+}
