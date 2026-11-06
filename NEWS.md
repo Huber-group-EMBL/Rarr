@@ -118,6 +118,9 @@
   expected from `data_type` (if specified). The previous situation could lead
   to doubles being marked as, e.g., `int` in the Zarr metadata, and encode
   incorrect values.
+* Zarr arrays with `v2` chunk key encoding are now explicitly supported. Zarr
+  arrays with unsupported chunk key encodings now return an explicit error
+  message.
 
 ## Bug fixes
 
