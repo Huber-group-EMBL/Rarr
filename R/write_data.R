@@ -656,9 +656,11 @@ update_zarr_array <- function(zarr_array_path, x, index) {
     )
   }
 
-  oversized_chunk <- any(chunk_dim > x_dim)
-  if (oversized_chunk) {
-    # One valid use case is nullable arrays in anndata.
+  oversized_chunk <- chunk_dim > x_dim
+  # One valid use case is empty arrays in anndata.
+  zero_dim <- x_dim == 0
+
+  if (any(oversized_chunk & !zero_dim)) {
     warning(
       "Chunk dimensions are larger than array dimensions. ",
       "This is allowed by the Zarr specification but may lead to inefficient storage and retrieval.\n",
@@ -667,8 +669,13 @@ update_zarr_array <- function(zarr_array_path, x, index) {
     )
   }
 
-  # https://github.com/zarr-developers/zarr-specs/issues/378
-  # we should potentially also check that the chunk size is not 0,
-  # but this is a conscious spec deviation we support
-  return(invisible(!oversized_chunk))
+  valid_chunk_dim <- chunk_dim > 0
+  if (!all(valid_chunk_dim)) {
+    stop(
+      "Chunk dimensions must be strictly positive.",
+      call. = FALSE
+    )
+  }
+
+  return(invisible(all(valid_chunk_dim & !(oversized_chunk & !zero_dim))))
 }
