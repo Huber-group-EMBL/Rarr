@@ -16,16 +16,19 @@
 #'
 #' @keywords internal
 .prepare_write_data <- function(x, metadata) {
-  same_type_lower_bytesize <- metadata$data_type %in%
-    c("int8", "int16", "float32")
+  same_type_lower_bytesize <- !is.list(metadata$data_type) &&
+    metadata$data_type %in% c("int8", "int16", "float32")
   lower_bytesize_type <- storage.mode(x) == "double" &&
+    !is.list(metadata$data_type) &&
     metadata$data_type == "float32"
 
   if (same_type_lower_bytesize || lower_bytesize_type) {
     x <- .truncate_overflow(x, metadata$datatype$nbytes)
   }
 
-  if (metadata$data_type == "bool" && anyNA(x)) {
+  if (
+    !is.list(metadata$data_type) && metadata$data_type == "bool" && anyNA(x)
+  ) {
     warning(
       "Zarr native 'bool' data type does not support NA values. ",
       "NA values will be converted to FALSE. ",
