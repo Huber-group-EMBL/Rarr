@@ -309,21 +309,6 @@ zarr_overview <- function(
     metadata$datatype,
     metadata$data_type
   )
-  if (
-    is.list(metadata$data_type) &&
-      metadata$data_type$name %in%
-        c("fixed_length_utf32", "null_terminated_bytes")
-  ) {
-    # It is annoying to have to handle both strings & lists in `data_type` in
-    # downstream code, so we convert the fixed-length string types to their v2
-    # equivalents here.
-    # Their length has been calculated in .parse_datatype_v3() and stored in nbytes.
-    metadata$data_type <- switch(
-      metadata$data_type$name,
-      "fixed_length_utf32" = "unicode",
-      "null_terminated_bytes" = "string"
-    )
-  }
 
   return(metadata)
 }
