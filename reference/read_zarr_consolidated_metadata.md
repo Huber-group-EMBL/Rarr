@@ -104,7 +104,7 @@ head(m)
 #> 
 #> $a$chunk_key_encoding
 #> $a$chunk_key_encoding$name
-#> [1] "default"
+#> [1] "v2"
 #> 
 #> $a$chunk_key_encoding$configuration
 #> $a$chunk_key_encoding$configuration$separator
@@ -196,7 +196,7 @@ head(m)
 #> 
 #> $b$chunk_key_encoding
 #> $b$chunk_key_encoding$name
-#> [1] "default"
+#> [1] "v2"
 #> 
 #> $b$chunk_key_encoding$configuration
 #> $b$chunk_key_encoding$configuration$separator
@@ -304,7 +304,7 @@ head(m)
 #> 
 #> $c$chunk_key_encoding
 #> $c$chunk_key_encoding$name
-#> [1] "default"
+#> [1] "v2"
 #> 
 #> $c$chunk_key_encoding$configuration
 #> $c$chunk_key_encoding$configuration$separator
