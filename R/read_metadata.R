@@ -304,6 +304,16 @@ zarr_overview <- function(
   } else if (metadata$node_type == "array" && metadata$zarr_format == 3L) {
     metadata <- .normalize_v3_metadata(metadata)
   }
+
+  if (length(metadata$shape) == 0L) {
+    # Empty tuple in shape means we are dealing with a scalar.
+    metadata$shape <- 1L
+    metadata$chunk_grid <- list(
+      name = "regular",
+      configuration = list(chunk_shape = 1L)
+    )
+  }
+
   metadata$fill_value <- .update_fill_value(
     metadata$fill_value,
     metadata$datatype,
@@ -321,10 +331,9 @@ zarr_overview <- function(
 #'
 #' 1. Parse the `data_type` string into an R-friendly `datatype` list.
 #' 2. Name `codecs` by their `name` field for O(1) lookup.
-#' 3. Normalise scalar arrays (empty `shape`) to shape `1`.
-#' 4. Inject a default `transpose` codec when absent (R uses F-order so we
+#' 3. Inject a default `transpose` codec when absent (R uses F-order so we
 #'    always need to know the intended order).
-#' 5. Replicate the `endian` field across all fields of struct datatypes so
+#' 4. Replicate the `endian` field across all fields of struct datatypes so
 #'    that downstream chunk-reading code can treat it uniformly.
 #'
 #' @param metadata A list as returned by [.read_json_file()] for a Zarr v3
@@ -344,15 +353,6 @@ zarr_overview <- function(
     function(x) x$name,
     character(1L)
   )
-
-  if (length(metadata$shape) == 0L) {
-    # Empty tuple in shape means we are dealing with a scalar.
-    metadata$shape <- 1L
-    metadata$chunk_grid <- list(
-      name = "regular",
-      configuration = list(chunk_shape = 1L)
-    )
-  }
 
   # This needs to happen after we address the scalar edge case
   if (is.null(metadata$codecs[["transpose"]])) {
