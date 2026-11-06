@@ -18,4 +18,9 @@ test_that("scalar can be read", {
     package = "Rarr"
   )
   expect_identical(read_zarr_array(scalar_v3), structure(42L, dim = 1))
+
+  expect_identical(
+    jsonlite::read_json(file.path(scalar_v3, "zarr.json"))$shape,
+    list()
+  )
 })

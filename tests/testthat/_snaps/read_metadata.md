@@ -214,32 +214,32 @@
       42             float32     little      blosc             9, 9            9, 9
       43             float32     little      blosc             9, 9            9, 9
       44             float32     little      blosc             9, 9            9, 9
-      45             float64     little       <NA>                1               1
+      45             float64     little       <NA>             NULL            NULL
       46             float64     little      blosc                9               9
       47             float64     little      blosc                9               9
-      48               int64     little       <NA>                1               1
+      48               int64     little       <NA>             NULL            NULL
       49             float32     little      blosc             9, 9            9, 9
       50             float32     little      blosc             9, 9            9, 9
-      51               int64     little       <NA>                1               1
+      51               int64     little       <NA>             NULL            NULL
       52             float32     little      blosc             9, 9            9, 9
-      53             float64     little       <NA>                1               1
-      54               int64     little       <NA>                1               1
-      55               int64     little       <NA>                1               1
+      53             float64     little       <NA>             NULL            NULL
+      54               int64     little       <NA>             NULL            NULL
+      55               int64     little       <NA>             NULL            NULL
       56             float32     little      blosc             9, 9            9, 9
-      57             float64     little       <NA>                1               1
+      57             float64     little       <NA>             NULL            NULL
       58             float64     little      blosc                9               9
       59             float64     little      blosc                9               9
       60             float32     little      blosc             9, 9            9, 9
-      61               int64     little       <NA>                1               1
+      61               int64     little       <NA>             NULL            NULL
       62             float32     little      blosc             9, 9            9, 9
-      63               int64     little       <NA>                1               1
-      64             float64     little       <NA>                1               1
+      63               int64     little       <NA>             NULL            NULL
+      64             float64     little       <NA>             NULL            NULL
       65             float32     little      blosc             9, 9            9, 9
       66             float32     little      blosc             9, 9            9, 9
-      67               int64     little       <NA>                1               1
+      67               int64     little       <NA>             NULL            NULL
       68             float32     little      blosc             9, 9            9, 9
       69             float32     little      blosc             9, 9            9, 9
-      70               int64     little       <NA>                1               1
+      70               int64     little       <NA>             NULL            NULL
       71              uint16     little      blosc     10980, 10980      1830, 1830
       72              uint16     little      blosc     10980, 10980      1830, 1830
       73              uint16     little      blosc     10980, 10980      1830, 1830
@@ -314,7 +314,7 @@
       142              uint8       <NA>      blosc       1830, 1830        305, 305
       143              int64     little      blosc             1830            1830
       144              int64     little      blosc             1830            1830
-      145              int64     little       <NA>                1               1
+      145              int64     little       <NA>             NULL            NULL
       146              uint8       <NA>      blosc       5490, 5490        915, 915
       147              uint8       <NA>      blosc       5490, 5490        915, 915
       148              int64     little      blosc             5490            5490
@@ -364,32 +364,32 @@
       42           1, 1       TRUE
       43           1, 1       TRUE
       44           1, 1       TRUE
-      45              1       TRUE
+      45                      TRUE
       46              1       TRUE
       47              1       TRUE
-      48              1       TRUE
+      48                      TRUE
       49           1, 1       TRUE
       50           1, 1       TRUE
-      51              1       TRUE
+      51                      TRUE
       52           1, 1       TRUE
-      53              1       TRUE
-      54              1       TRUE
-      55              1       TRUE
+      53                      TRUE
+      54                      TRUE
+      55                      TRUE
       56           1, 1       TRUE
-      57              1       TRUE
+      57                      TRUE
       58              1       TRUE
       59              1       TRUE
       60           1, 1       TRUE
-      61              1       TRUE
+      61                      TRUE
       62           1, 1       TRUE
-      63              1       TRUE
-      64              1       TRUE
+      63                      TRUE
+      64                      TRUE
       65           1, 1       TRUE
       66           1, 1       TRUE
-      67              1       TRUE
+      67                      TRUE
       68           1, 1       TRUE
       69           1, 1       TRUE
-      70              1       TRUE
+      70                      TRUE
       71           6, 6       TRUE
       72           6, 6       TRUE
       73           6, 6       TRUE
@@ -464,7 +464,7 @@
       142          6, 6       TRUE
       143             1       TRUE
       144             1       TRUE
-      145             1       TRUE
+      145                     TRUE
       146          6, 6       TRUE
       147          6, 6       TRUE
       148             1       TRUE
