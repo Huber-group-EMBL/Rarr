@@ -178,7 +178,7 @@
 
   oversized_chunk <- chunk_dim > x_dim
   # One valid use case is empty arrays in anndata.
-  zero_dim <- x_dim == 0
+  zero_dim <- x_dim == 0L
 
   if (any(oversized_chunk & !zero_dim)) {
     warning(
@@ -189,7 +189,7 @@
     )
   }
 
-  valid_chunk_dim <- chunk_dim > 0
+  valid_chunk_dim <- chunk_dim > 0L
   if (!all(valid_chunk_dim)) {
     stop(
       "Chunk dimensions must be strictly positive.",
