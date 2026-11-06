@@ -24,7 +24,7 @@ test_that("zarr_consolidate_metadata() on v2", {
   )
 })
 
-test_that("zarr_consoliate_metadata() on v3", {
+test_that("zarr_consolidate_metadata() on v3", {
   zarr_v3 <- withr::local_tempfile(fileext = ".zarr")
   write_zarr_group(zarr_v3, "", zarr_version = 3L)
   write_zarr_array(

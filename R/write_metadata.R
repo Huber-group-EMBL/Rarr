@@ -36,7 +36,7 @@
     fill_value = fill_value,
     dimension_separator = dimension_separator,
     order = order,
-    zarr_format = 2L,
+    zarr_format = zarr_version,
     filters = filters,
     compressor = compressor
   )
