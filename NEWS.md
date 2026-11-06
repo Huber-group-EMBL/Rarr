@@ -132,6 +132,9 @@
   `write_zarr_array()` now takes into account the length of the fill value (if
   specified) when computing the default value for the `nchar` argument (if
   unspecified).
+* `write_zarr_array()` no longer warns on oversized chunks for empty
+  dimensions. Based on a request from Robrecht Cannoodt, and motivated by the
+  use of empty arrays in anndataR.
 
 ## Bug fixes
 
