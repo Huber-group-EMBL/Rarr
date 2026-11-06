@@ -1,4 +1,15 @@
 .create_chunk_names <- function(chunk_indices, metadata) {
+  chunk_key_encoding_name <- metadata$chunk_key_encoding$name %||% "default"
+  if (chunk_key_encoding_name %notin% SUPPORTED_KEY_ENCODINGS) {
+    stop(
+      "Unsupported chunk key encoding: ",
+      chunk_key_encoding_name,
+      "\nPlease open an issue at ",
+      "https://github.com/Huber-group-EMBL/Rarr/issues.",
+      call. = FALSE
+    )
+  }
+
   if (nrow(chunk_indices) == 0L) {
     # In the DelayedArray framework, we can have integer(0) indices
     # https://github.com/Huber-group-EMBL/Rarr/issues/112.
