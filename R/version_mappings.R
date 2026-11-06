@@ -10,11 +10,6 @@
 
   dt <- metadata$datatype
 
-  if (length(metadata$shape) == 0L) {
-    # Empty tuple in shape means we are dealing with a scalar.
-    metadata$shape <- metadata$chunks <- 1L
-  }
-
   metadata_v3 <- list(
     node_type = "array",
     zarr_format = metadata$zarr_format,
