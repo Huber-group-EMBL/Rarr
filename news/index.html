@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.57</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.58</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,6 +102,8 @@
 <li>S3 access with credentials is now more robust and compatible with more providers.</li>
 <li>
 <code><a href="../reference/write_zarr_array.html">write_zarr_array()</a></code> and <code><a href="../reference/create_empty_zarr_array.html">create_empty_zarr_array()</a></code> now warn when using the unstandardized / unregistered <code>lz4</code> and <code>zlib</code> codecs with Zarr v3.</li>
+<li>
+<code><a href="../reference/write_zarr_array.html">write_zarr_array()</a></code> now errors if <code>x</code> has a different storage mode than expected from <code>data_type</code> (if specified). The previous situation could lead to doubles being marked as, e.g., <code>int</code> in the Zarr metadata, and encode incorrect values.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-2-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-2-1"></a></h3>
