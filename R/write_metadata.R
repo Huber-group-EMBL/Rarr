@@ -62,7 +62,6 @@
       version_from = 2L,
       version_to = 3L
     )
-    metadata_v3$zarr_format <- 3L
     if (!is.null(dimension_names)) {
       metadata_v3$dimension_names <- dimension_names
     }
