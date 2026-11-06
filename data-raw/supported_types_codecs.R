@@ -31,6 +31,7 @@ SUPPORTED_V3_TYPES <- list(
   list2env(hash = TRUE, parent = emptyenv())
 
 SUPPORTED_KEY_ENCODINGS <- c(
+  "v2",
   "default"
 )
 

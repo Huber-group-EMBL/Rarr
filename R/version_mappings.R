@@ -7,9 +7,6 @@
     )
     # nocov end
   }
-  if (metadata$zarr_format == version_to) {
-    return(metadata)
-  }
 
   dt <- metadata$datatype
 
@@ -20,7 +17,7 @@
 
   metadata_v3 <- list(
     node_type = "array",
-    zarr_format = version_from,
+    zarr_format = metadata$zarr_format,
     datatype = dt,
     data_type = .convert_dtype_version(
       dt$base_type,
@@ -34,13 +31,21 @@
       name = "regular",
       configuration = list(chunk_shape = metadata$chunks)
     ),
-    chunk_key_encoding = list(
-      name = "default",
-      configuration = list(
-        # The default was "." in v2
-        separator = metadata$dimension_separator %||% "."
+    chunk_key_encoding = if (metadata$zarr_format == 2L) {
+      list(
+        name = "v2",
+        configuration = list(
+          separator = metadata$dimension_separator %||% "."
+        )
       )
-    ),
+    } else {
+      list(
+        name = "default",
+        configuration = list(
+          separator = metadata$dimension_separator %||% "/"
+        )
+      )
+    },
     fill_value = metadata$fill_value,
     codecs = list()
   )

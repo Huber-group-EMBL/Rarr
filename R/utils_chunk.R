@@ -15,7 +15,7 @@
     # https://github.com/Huber-group-EMBL/Rarr/issues/112.
     return(character(0L))
   }
-  if (metadata$zarr_format == 3L && identical(metadata$shape, 1L)) {
+  if (chunk_key_encoding_name == "default" && identical(metadata$shape, 1L)) {
     # Special case for scalar in v3
     return("c")
   }
@@ -27,7 +27,7 @@
     rep("%s", ncol(chunk_indices)),
     collapse = dim_separator
   )
-  if (metadata$zarr_format == 3L) {
+  if (chunk_key_encoding_name == "default") {
     chunk_name_template <- paste("c", chunk_name_template, sep = dim_separator)
   }
 
