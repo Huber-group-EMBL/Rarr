@@ -33,6 +33,7 @@ Suggests:
     BiocStyle,
     knitr,
     progressr,
+    reticulate,
     rmarkdown,
     testthat (>= 3.0.0),
     withr
