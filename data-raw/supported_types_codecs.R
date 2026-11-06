@@ -30,6 +30,10 @@ SUPPORTED_V3_TYPES <- list(
 ) |>
   list2env(hash = TRUE, parent = emptyenv())
 
+SUPPORTED_KEY_ENCODINGS <- c(
+  "default"
+)
+
 METADATA_V2_FILES <- c(
   ".zarray",
   ".zgroup",
@@ -47,6 +51,7 @@ usethis::use_data(
   CODEC_ARRAY_BYTES,
   METADATA_V2_FILES,
   METADATA_V3_FILES,
+  SUPPORTED_KEY_ENCODINGS,
   internal = TRUE,
   overwrite = TRUE
 )
