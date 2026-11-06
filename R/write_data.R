@@ -298,7 +298,7 @@ write_zarr_array <- function(
   dimension_separator = if (zarr_version == 2L) "." else "/",
   zarr_version = 3L
 ) {
-  if (!is.array(x) && !is.atomic(x)) {
+  if (!(is.array(x) && is.atomic(x))) {
     stop(
       "`x` must be an atomic array. ",
       "You can maybe coerce your object with `as.array()`.",
