@@ -33,3 +33,11 @@ test_that("error when setting up compressors with invalid level", {
     "`level` value is ignored"
   )
 })
+
+test_that("has_zstd() returns a single TRUE or FALSE", {
+  res <- has_zstd()
+
+  expect_type(res, "logical")
+  expect_length(res, 1L)
+  expect_false(anyNA(res))
+})
