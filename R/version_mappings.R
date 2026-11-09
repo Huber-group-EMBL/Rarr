@@ -126,7 +126,7 @@
       "unicode" = list(
         name = "fixed_length_utf32",
         configuration = list(
-          length_bytes = 8L * nbytes
+          length_bytes = nbytes
         )
       ),
       "string" = list(
