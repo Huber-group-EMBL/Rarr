@@ -31,7 +31,7 @@ codec_zlib_decode <- codec_gzip_decode <- function(bytes, ...) {
   )
 }
 
-codec_zlib_encode <- codec_gzip_encode <- function(bytes, ...) {
+codec_zlib_encode <- function(bytes, ...) {
   memCompress(
     from = bytes,
     type = "gzip"
