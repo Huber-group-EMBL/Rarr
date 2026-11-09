@@ -67,6 +67,8 @@ datatype support.  It will be updated as progress is made.
 | V3 structured data types | &#x2714; / &#x274C; | This type is superseded by V3 struct data types.and the specification says implementation MUST NOT implement writing. (via `{grumpy}`) |
 | V3 struct data types | &#x2714; / &#x274C; | (via `{grumpy}`) |
 
+Scalars can only be written via `update_zarr_array()`. `write_zarr_array()` requires `x` to be an array so it can only write arrays with a single dimensions of length 1 (which behave mostly like a scalar in R).
+
 ### Codecs
 
 #### Compression codecs
@@ -88,7 +90,7 @@ Please open an [issue](https://github.com/Huber-group-EMBL/Rarr/issues) if suppo
 |-----------|:------------------------------:|-------|
 |`endian`   | &#x2714; / &#x274C;            | (via `{grumpy}`) |
 |`transpose`| &#x2714; / &#x2714;            |       |
-|`VLen-UTF8`| &#x2714; / &#x2714; *          | Writing supported only via `update_zarr_array()` |
+|`VLen-UTF8`| &#x2714; / &#x2714; *          | Through using the `data_type = "string"` argument in `write_zarr_array()` |
 |`sharding_indexed` | &#x2714; / &#x274C;    |  |
 
 ### Optional fields or features
