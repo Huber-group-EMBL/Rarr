@@ -35,7 +35,7 @@ test_that("Denied access errors return clear error messages", {
   # This is a real zarr store, but we don't have access
   expect_error(
     zarr_overview("https://huber.buckets.embl.de/rarr-testing/lzma.zarr"),
-    "Denied"
+    "Forbidden"
   )
 })
 
