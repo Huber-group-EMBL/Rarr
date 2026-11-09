@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.62</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.63</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,6 +110,9 @@
 <li>Endian configuration in metadata for the <code>bytes</code> codec is now omitted for single byte types (<code>bool</code>, <code>uint8</code>, <code>int8</code>).</li>
 <li>
 <code><a href="../reference/create_empty_zarr_array.html">create_empty_zarr_array()</a></code> now errors when the specified length for fixed-width string types is too short to fit the fill value. Similarly, <code><a href="../reference/write_zarr_array.html">write_zarr_array()</a></code> now takes into account the length of the fill value (if specified) when computing the default value for the <code>nchar</code> argument (if unspecified).</li>
+<li>
+<code><a href="../reference/write_zarr_array.html">write_zarr_array()</a></code> no longer warns on oversized chunks for empty dimensions. Based on a request from Robrecht Cannoodt, and motivated by the use of empty arrays in anndataR.</li>
+<li>In line of recent changes in Zarr v3 spec, 0-length chunk dimensions are explicitly disallowed when writing. Reading arrays with 0-length chunk dimensions is still supported.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-2-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-2-1"></a></h3>

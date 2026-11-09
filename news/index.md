@@ -182,6 +182,13 @@
   now takes into account the length of the fill value (if specified)
   when computing the default value for the `nchar` argument (if
   unspecified).
+- [`write_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/write_zarr_array.md)
+  no longer warns on oversized chunks for empty dimensions. Based on a
+  request from Robrecht Cannoodt, and motivated by the use of empty
+  arrays in anndataR.
+- In line of recent changes in Zarr v3 spec, 0-length chunk dimensions
+  are explicitly disallowed when writing. Reading arrays with 0-length
+  chunk dimensions is still supported.
 
 ### Bug fixes
 
