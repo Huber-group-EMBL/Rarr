@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.60</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.61</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -123,6 +123,8 @@
 <code><a href="../reference/compressors.html">use_gzip()</a></code> now uses GZIP (RFC 1952) instead of ZLIB (RFC 1950). Thanks to a report from Patrick Ellis.</li>
 <li>Zarr v3 arrays compressed with Python’s <code>numcodecs.zlib</code> can now be read by Rarr. Thanks to a report from Patrick Ellis.</li>
 <li>Large arrays (at least one <code>shape</code> element larger <code>Machine$integer.max</code>) <strong>and</strong> arrays with large chunks can now be written and read correctly. Thanks to a report and reproducible example from Robrecht Cannoodt.</li>
+<li>
+<code><a href="../reference/create_empty_zarr_array.html">create_empty_zarr_array()</a></code> no longer coerces scalars to dim 1 arrays in the Zarr metadata. Thanks to a report from Robrecht Cannoodt.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="internal-changes-2-1">Internal changes<a class="anchor" aria-label="anchor" href="#internal-changes-2-1"></a></h3>

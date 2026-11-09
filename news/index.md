@@ -209,6 +209,9 @@
   `Machine$integer.max`) **and** arrays with large chunks can now be
   written and read correctly. Thanks to a report and reproducible
   example from Robrecht Cannoodt.
+- [`create_empty_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/create_empty_zarr_array.md)
+  no longer coerces scalars to dim 1 arrays in the Zarr metadata. Thanks
+  to a report from Robrecht Cannoodt.
 
 ### Internal changes
 
