@@ -24,6 +24,12 @@ is made.
 
 [TABLE]
 
+Scalars can only be written via
+[`update_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/update_zarr_array.md).
+[`write_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/write_zarr_array.md)
+requires `x` to be an array so it can only write arrays with a single
+dimensions of length 1 (which behave mostly like a scalar in R).
+
 ### Codecs
 
 #### Compression codecs

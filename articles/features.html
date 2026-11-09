@@ -270,6 +270,10 @@ specification says implementation MUST NOT implement writing. (via
 </tr>
 </tbody>
 </table>
+<p>Scalars can only be written via <code><a href="../reference/update_zarr_array.html">update_zarr_array()</a></code>.
+<code><a href="../reference/write_zarr_array.html">write_zarr_array()</a></code> requires <code>x</code> to be an array
+so it can only write arrays with a single dimensions of length 1 (which
+behave mostly like a scalar in R).</p>
 </div>
 <div class="section level3">
 <h3 id="codecs">Codecs<a class="anchor" aria-label="anchor" href="#codecs"></a>
@@ -347,7 +351,8 @@ support for a required compression codec is missing.</p>
 <tr class="odd">
 <td><code>VLen-UTF8</code></td>
 <td align="center">✔ / ✔ *</td>
-<td>Writing supported only via <code><a href="../reference/update_zarr_array.html">update_zarr_array()</a></code>
+<td>Through using the <code>data_type = "string"</code> argument in
+<code><a href="../reference/write_zarr_array.html">write_zarr_array()</a></code>
 </td>
 </tr>
 <tr class="even">
