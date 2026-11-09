@@ -18,16 +18,15 @@
 #'
 #' @keywords internal
 .prepare_write_data <- function(x, metadata) {
-  lower_bytesize_int <- !is.list(metadata$data_type) &&
-    metadata$data_type %in% c("int8", "int16")
+  data_type <- metadata$data_type
+  # structured data types carry a list here and have no overflow or NA checks
+  is_scalar_type <- !is.list(data_type)
 
-  if (lower_bytesize_int) {
+  if (is_scalar_type && data_type %in% c("int8", "int16")) {
     x <- .truncate_overflow(x, metadata$datatype$nbytes)
   }
 
-  if (
-    !is.list(metadata$data_type) && metadata$data_type == "bool" && anyNA(x)
-  ) {
+  if (is_scalar_type && data_type == "bool" && anyNA(x)) {
     warning(
       "Zarr native 'bool' data type does not support NA values. ",
       "NA values will be converted to FALSE. ",
