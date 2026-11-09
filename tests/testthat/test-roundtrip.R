@@ -64,13 +64,14 @@ test_that("zarr arrays can be written and read with various compression methods"
 
   # Testing LZMA compression
   path <- withr::local_tempfile(pattern = "lzma_", fileext = ".zarr")
-  expect_silent(
+  expect_warning(
     res <- write_zarr_array(
       x = x,
       zarr_array_path = path,
       chunk_dim = c(2, 5, 1),
       compressor = use_lzma()
-    )
+    ),
+    "interoperability"
   )
   expect_identical(read_zarr_array(path), x)
 
@@ -89,13 +90,14 @@ test_that("zarr arrays can be written and read with various compression methods"
 
   # Testing BZIP2 compression
   path <- withr::local_tempfile(pattern = "bz2_", fileext = ".zarr")
-  expect_silent(
+  expect_warning(
     res <- write_zarr_array(
       x = x,
       zarr_array_path = path,
       chunk_dim = c(2, 5, 1),
       compressor = use_bz2()
-    )
+    ),
+    "interoperability"
   )
   expect_identical(read_zarr_array(path), x)
 
