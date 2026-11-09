@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.61</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.62</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,10 +103,13 @@
 <li>Performance has been improved when reading</li>
 <li>S3 access with credentials is now more robust and compatible with more providers.</li>
 <li>
-<code><a href="../reference/write_zarr_array.html">write_zarr_array()</a></code> and <code><a href="../reference/create_empty_zarr_array.html">create_empty_zarr_array()</a></code> now warn when using the unstandardized / unregistered <code>lz4</code> and <code>zlib</code> codecs with Zarr v3.</li>
+<code><a href="../reference/write_zarr_array.html">write_zarr_array()</a></code> and <code><a href="../reference/create_empty_zarr_array.html">create_empty_zarr_array()</a></code> now warn when using the unstandardized / unregistered <code>lz4</code>, <code>lzma</code>, <code>bz2</code> and <code>zlib</code> codecs with Zarr v3.</li>
 <li>
 <code><a href="../reference/write_zarr_array.html">write_zarr_array()</a></code> now errors if <code>x</code> has a different storage mode than expected from <code>data_type</code> (if specified). The previous situation could lead to doubles being marked as, e.g., <code>int</code> in the Zarr metadata, and encode incorrect values.</li>
 <li>Zarr arrays with <code>v2</code> chunk key encoding are now explicitly supported. Zarr arrays with unsupported chunk key encodings now return an explicit error message.</li>
+<li>Endian configuration in metadata for the <code>bytes</code> codec is now omitted for single byte types (<code>bool</code>, <code>uint8</code>, <code>int8</code>).</li>
+<li>
+<code><a href="../reference/create_empty_zarr_array.html">create_empty_zarr_array()</a></code> now errors when the specified length for fixed-width string types is too short to fit the fill value. Similarly, <code><a href="../reference/write_zarr_array.html">write_zarr_array()</a></code> now takes into account the length of the fill value (if specified) when computing the default value for the <code>nchar</code> argument (if unspecified).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-2-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-2-1"></a></h3>

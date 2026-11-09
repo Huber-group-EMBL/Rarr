@@ -163,8 +163,8 @@
 - [`write_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/write_zarr_array.md)
   and
   [`create_empty_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/create_empty_zarr_array.md)
-  now warn when using the unstandardized / unregistered `lz4` and `zlib`
-  codecs with Zarr v3.
+  now warn when using the unstandardized / unregistered `lz4`, `lzma`,
+  `bz2` and `zlib` codecs with Zarr v3.
 - [`write_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/write_zarr_array.md)
   now errors if `x` has a different storage mode than expected from
   `data_type` (if specified). The previous situation could lead to
@@ -173,6 +173,15 @@
 - Zarr arrays with `v2` chunk key encoding are now explicitly supported.
   Zarr arrays with unsupported chunk key encodings now return an
   explicit error message.
+- Endian configuration in metadata for the `bytes` codec is now omitted
+  for single byte types (`bool`, `uint8`, `int8`).
+- [`create_empty_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/create_empty_zarr_array.md)
+  now errors when the specified length for fixed-width string types is
+  too short to fit the fill value. Similarly,
+  [`write_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/write_zarr_array.md)
+  now takes into account the length of the fill value (if specified)
+  when computing the default value for the `nchar` argument (if
+  unspecified).
 
 ### Bug fixes
 

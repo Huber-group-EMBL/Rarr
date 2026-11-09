@@ -98,6 +98,7 @@ write_zarr_array(
   x = x, zarr_array_path = bzip2_path, chunk_dim = c(2, 5, 1),
   compressor = bzip2_compression
 )
+#> Warning: `zlib`, `lz4`, `bz2`, `lzma` codecs are not fully standardized in Zarr v3, and interoperability with other Zarr implementations may be limited.
 
 ## the contents of the two arrays should be the same
 identical(read_zarr_array(blosc_path), read_zarr_array(bzip2_path))
