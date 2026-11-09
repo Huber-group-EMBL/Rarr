@@ -166,6 +166,9 @@
   Thanks to a report and reproducible example from Robrecht Cannoodt.
 * `create_empty_zarr_array()` no longer coerces scalars to dim 1 arrays in the
   Zarr metadata. Thanks to a report from Robrecht Cannoodt.
+* `write_zarr_array()` and `update_zarr_array()` no longer clamp `float32`
+  values beyond the int32 range (including `Inf` and `-Inf`) to
+  `±2147483648` (#304).
 
 ## Internal changes
 
