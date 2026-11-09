@@ -36,7 +36,19 @@
       call. = FALSE
     )
   }
-
+  if (
+    is.list(metadata$data_type) &&
+      metadata$data_type$name %in%
+        c("null_terminated_bytes", "fixed_length_utf32") &&
+      anyNA(x)
+  ) {
+    warning(
+      "Zarr 'null_terminated_bytes' and 'fixed_length_utf32' data types do not support NA values. ",
+      "NA values will be converted to empty strings. ",
+      "Use a known mask value (typically, a string absent from your data) to preserve NA values.",
+      call. = FALSE
+    )
+  }
   return(x)
 }
 
