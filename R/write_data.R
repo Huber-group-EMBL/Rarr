@@ -110,6 +110,13 @@
         "character data types and be a positive integer"
       )
     }
+    if (nchar(fill_value, allowNA = TRUE) > nchar) {
+      stop(
+        "The 'nchar' argument must be at least ",
+        "as long as the number of characters in the fill value",
+        call. = FALSE
+      )
+    }
     data_type <- paste0(data_type, as.integer(nchar))
   }
 
@@ -317,7 +324,8 @@ write_zarr_array <- function(
     # +1 to add NUL terminator
     # c(0, ) to deal with array full of NAs
     # base::nchar() to avoid collision with var name
-    nchar <- max(c(0L, base::nchar(x)), na.rm = TRUE) + 1L
+    nchar <- max(c(0L, base::nchar(fill_value), base::nchar(x)), na.rm = TRUE) +
+      1L
   }
   if (data_type == "integer") {
     data_type <- .guess_int_size(x, data_type)
