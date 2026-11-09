@@ -58,6 +58,38 @@ test_that("float32 zarr arrays can be written", {
   )
 })
 
+test_that("float32 values beyond the int32 range are not clamped", {
+  f32_zarr <- withr::local_tempfile(fileext = ".zarr")
+
+  content_f32_array <- array(c(-Inf, -1e10, 1.5, 1e10, Inf))
+
+  expect_no_warning(
+    write_zarr_array(
+      content_f32_array,
+      f32_zarr,
+      data_type = "float32",
+      chunk_dim = 5L,
+      compressor = NULL
+    )
+  )
+
+  expect_identical(read_zarr_array(f32_zarr), content_f32_array)
+})
+
+test_that("float32 values beyond the float32 range become Inf", {
+  f32_zarr <- withr::local_tempfile(fileext = ".zarr")
+
+  write_zarr_array(
+    array(c(-1e39, 1e39)),
+    f32_zarr,
+    data_type = "float32",
+    chunk_dim = 2L,
+    compressor = NULL
+  )
+
+  expect_identical(read_zarr_array(f32_zarr), array(c(-Inf, Inf)))
+})
+
 test_that("v2 and v3 return identical results", {
   zarr_v2 <- system.file(
     "extdata",
