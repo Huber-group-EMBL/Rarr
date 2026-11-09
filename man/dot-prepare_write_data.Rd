@@ -22,9 +22,9 @@ Applies the two pre-write data checks that are needed identically in both
 \enumerate{
 \item If the target type is an integer type narrower than R's native
 representation (\code{int8}, \code{int16}), clamp out-of-range values via
-\code{.truncate_overflow()}. Floats are not clamped: \code{writeBin()} follows
-IEEE 754 when narrowing to \code{float32}, so values beyond its range become
-\code{Inf}/\code{-Inf}.
+\code{.truncate_overflow()}. Floats are not clamped, since \code{writeBin()}
+follows IEEE 754 when narrowing to \code{float32}, values beyond its range
+become \code{Inf} or \code{-Inf}.
 \item If the target type is \code{bool}, warn when \code{x} contains \code{NA} values (which
 the Zarr bool type cannot represent).
 }
