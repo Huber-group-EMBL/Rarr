@@ -55,6 +55,9 @@
 - Character arrays are now written as VLen-UTF8 by default if
   `write_zarr_array(data_type = )` argument is left empty or
   `"character"` **and** no NAs are present.
+- `null_terminated_bytes` (`|S` in Zarr v2) and `fixed_length_utf32`
+  (`<U` in Zarr v2) no longer support preserving `NA` in roundtrip as
+  this resulted in data unreadable by other Zarr implementations.
 
 ### New features
 

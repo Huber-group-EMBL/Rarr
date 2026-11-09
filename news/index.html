@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.59</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.60</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,6 +58,8 @@
 <li>Functions related to the <code>DelayedArray</code> backend have been dropped entirely after being deprecated in the previous release. To use the <code>DelayedArray</code> backend, or lazy reading or Zarr datasets, look at the <code>ZarrArray</code> package.</li>
 <li>Empty or missing attributes are now returned as <code>NULL</code> instead of an empty list by <code><a href="../reference/read_zarr_attributes.html">read_zarr_attributes()</a></code>.</li>
 <li>Character arrays are now written as VLen-UTF8 by default if <code>write_zarr_array(data_type = )</code> argument is left empty or <code>"character"</code> <strong>and</strong> no NAs are present.</li>
+<li>
+<code>null_terminated_bytes</code> (<code>|S</code> in Zarr v2) and <code>fixed_length_utf32</code> (<code>&lt;U</code> in Zarr v2) no longer support preserving <code>NA</code> in roundtrip as this resulted in data unreadable by other Zarr implementations.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-features-2-1">New features<a class="anchor" aria-label="anchor" href="#new-features-2-1"></a></h3>
