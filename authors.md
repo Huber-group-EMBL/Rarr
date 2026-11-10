@@ -13,6 +13,10 @@
 
 - **Sharla Gelfand**. Contributor.
 
+- **Robrecht Cannoodt**. Contributor.
+  [](https://orcid.org/0000-0003-3641-729X)  
+  rcannood
+
 - **German Network for Bioinformatics Infrastructure - de.NBI**. Funder.
   [![ROR](https://raw.githubusercontent.com/ror-community/ror-logos/main/ror-icon-rgb.svg)](https://ror.org/01vmpm840)
 
