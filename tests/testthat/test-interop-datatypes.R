@@ -82,9 +82,7 @@ cases <- list(
     name = "float32 beyond the int32 range",
     dtype = "float32",
     x = c(-Inf, -3.4028234663852886e38, -2^40, 2^40, Inf),
-    known_issue = list(
-      write = "float32 values beyond the int32 range are clamped when writing"
-    )
+    known_issue = list(write = "#304")
   ),
   interop_case(
     name = "float64",
