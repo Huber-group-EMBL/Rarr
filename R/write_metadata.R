@@ -296,7 +296,8 @@ zarr_consolidate_metadata <- function(
   metadata_files <- metadata_files[metadata_files != "zarr.json"]
 
   consolidated <- lapply(
-    paste0(zarr_store_path, metadata_files),
+    # recycle0 to handle the case of an empty v3 store
+    paste0(zarr_store_path, metadata_files, recycle0 = TRUE),
     .read_json_file,
     s3_client = s3_client
   )
