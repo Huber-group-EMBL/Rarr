@@ -26,13 +26,13 @@ Source:
 [`DESCRIPTION`](https://github.com/Huber-group-EMBL/Rarr/blob/devel/DESCRIPTION)
 
 Smith M, Gruson H (2026). *Rarr: A Simple and Performant Native R Reader
-& Writer for Zarr Arrays*. R package version 2.1.64,
+& Writer for Zarr Arrays*. R package version 2.1.65,
 <https://huber-group-embl.github.io/Rarr/>.
 
     @Manual{,
       title = {Rarr: A Simple and Performant Native R Reader & Writer for Zarr Arrays},
       author = {Mike Smith and Hugo Gruson},
       year = {2026},
-      note = {R package version 2.1.64},
+      note = {R package version 2.1.65},
       url = {https://huber-group-embl.github.io/Rarr/},
     }
