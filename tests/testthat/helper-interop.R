@@ -3,9 +3,12 @@
 #' @param name Name of the case, used in the test descriptions
 #' @param dtype Zarr v3 data type, passed to both zarr-python and
 #'   `write_zarr_array()`
-#' @param x The values to write, converted to an array
+#' @param x The values to write, converted to an array of shape `shape`
+#' @param shape Shape of the array, `dim(x)` by default, or `length(x)` if `x`
+#'   has no dimensions. Use `integer(0)` for a scalar (zero-dimensional array),
+#'   which R can't represent as an array, so `x` is kept as is.
 #' @param expected What `read_zarr_array()` should return when reading the
-#'   array written by zarr-python, `x` by default
+#'   array written by zarr-python, `x` as an array by default
 #' @param chunk_dim Chunk dimensions
 #' @param supported Which directions Rarr supports: `"read"` (Rarr reads what
 #'   zarr-python wrote) and/or `"write"` (zarr-python reads what Rarr wrote).
@@ -18,15 +21,25 @@ interop_case <- function(
   name,
   dtype,
   x,
-  expected = array(x),
+  shape = if (is.null(dim(x))) length(x) else dim(x),
+  expected = NULL,
   chunk_dim = 2L,
   supported = c("read", "write"),
   known_issue = list()
 ) {
+  shape <- as.integer(shape)
+  if (length(shape) > 0L) {
+    x <- array(x, dim = shape)
+  }
+  if (is.null(expected)) {
+    expected <- if (is.array(x)) x else array(x)
+  }
+
   list(
     name = name,
     dtype = dtype,
-    x = array(x),
+    x = x,
+    shape = shape,
     expected = expected,
     chunk_dim = chunk_dim,
     supported = supported,
@@ -49,7 +62,7 @@ py_write_array <- function(path, case) {
 
   arr <- zarr$create_array(
     store = path,
-    shape = reticulate::tuple(as.list(dim(case$x))),
+    shape = reticulate::tuple(as.list(case$shape)),
     chunks = reticulate::tuple(as.list(as.integer(case$chunk_dim))),
     dtype = dtype,
     zarr_format = 3L
@@ -57,6 +70,29 @@ py_write_array <- function(path, case) {
   reticulate::py_set_item(arr, reticulate::py_ellipsis(), values)
 
   invisible(arr)
+}
+
+#' Write a test case with Rarr
+#'
+#' Rarr warns when the chunks are larger than the array, except along
+#' zero-length dimensions. The spec allows this, so expect the warning rather
+#' than let it fail the test.
+r_write_array <- function(path, case) {
+  write <- function() {
+    write_zarr_array(
+      x = case$x,
+      zarr_array_path = path,
+      chunk_dim = case$chunk_dim,
+      data_type = case$dtype,
+      zarr_version = 3L
+    )
+  }
+
+  if (any(case$chunk_dim > case$shape & case$shape != 0L)) {
+    testthat::expect_warning(write(), "Chunk dimensions are larger")
+  } else {
+    write()
+  }
 }
 
 #' Expect two zarr-python arrays to have the same shape, dtype and values
@@ -114,13 +150,7 @@ test_interop_cases <- function(cases) {
         path_r <- withr::local_tempfile(fileext = ".zarr")
 
         py_write_array(path_py, case)
-        write_zarr_array(
-          x = case$x,
-          zarr_array_path = path_r,
-          chunk_dim = case$chunk_dim,
-          data_type = case$dtype,
-          zarr_version = 3L
-        )
+        r_write_array(path_r, case)
 
         expect_equal_py(
           zarr$open_array(path_r, mode = "r"),
