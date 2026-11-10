@@ -24,3 +24,26 @@ test_that("scalar can be read", {
     list()
   )
 })
+
+test_that("'pseudo-scalar' (dim = 1L) use c/0 chunk key encoding", {
+  pseudo_scalar <- withr::local_tempfile(fileext = ".zarr")
+  write_zarr_array(array(1.5, 1L), chunk_dim = 1L, pseudo_scalar) |>
+    expect_no_condition()
+  list.files(pseudo_scalar, recursive = TRUE, include.dirs = FALSE) |>
+    expect_identical(c("c/0", "zarr.json"))
+
+  actual_scalar <- withr::local_tempfile(fileext = ".zarr")
+  create_empty_zarr_array(
+    actual_scalar,
+    dim = integer(0),
+    chunk_dim = integer(0),
+    data_type = "double",
+    zarr_version = 3L
+  )
+  update_zarr_array(actual_scalar, x = 1.5, index = list(1))
+
+  expect_identical(
+    list.files(actual_scalar, recursive = TRUE, include.dirs = FALSE),
+    c("c", "zarr.json")
+  )
+})
