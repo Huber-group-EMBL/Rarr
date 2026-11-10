@@ -162,3 +162,32 @@ check_index <- function(index, metadata) {
 is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
   all(abs(x - round(x)) < tol)
 }
+
+.mode_from_datatype <- function(data_type) {
+  if (is.list(data_type)) {
+    mode <- switch(
+      data_type$name,
+      "fixed_length_utf32" = "character",
+      "null_terminated_bytes" = "character",
+      "struct" = "list",
+      "structured" = "list"
+    )
+  } else {
+    mode <- switch(
+      data_type,
+      "bool" = "logical",
+      "int8" = "integer",
+      "int16" = "integer",
+      "int32" = "integer",
+      "int64" = "integer",
+      "uint8" = "integer",
+      "uint16" = "integer",
+      "uint32" = "integer",
+      "uint64" = "integer",
+      "float32" = "double",
+      "float64" = "double",
+      "string" = "character"
+    )
+  }
+  return(mode)
+}

@@ -107,7 +107,7 @@
       
       
 
-# zarr_consoliate_metadata() on v3
+# zarr_consolidate_metadata() on v3
 
     Code
       zarr_consolidate_metadata(zarr_v3, action = "return")
