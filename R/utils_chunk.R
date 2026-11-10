@@ -24,7 +24,7 @@
 
   # Faster and ready for https://github.com/zarr-developers/zarr-extensions/pull/69
   chunk_name_template <- paste(
-    rep("%s", ncol(chunk_indices)),
+    rep("%d", ncol(chunk_indices)),
     collapse = dim_separator
   )
   if (chunk_key_encoding_name == "default") {
@@ -139,7 +139,12 @@
   per_dim <- lapply(results_by_dim, `[[`, "per_dim")
   in_chunk <- lapply(results_by_dim, `[[`, "in_chunk")
 
-  chunk_keys <- do.call(expand.grid, lapply(per_dim, names))
+  chunk_keys <- do.call(
+    expand.grid,
+    # Without as.numeric(), we can end up with c/1e5 as a chunk name
+    # https://github.com/Huber-group-EMBL/Rarr/pull/310
+    lapply(per_dim, function(x) as.numeric(names(x)))
+  )
   key_strings <- .create_chunk_names(chunk_keys, metadata)
   key_pos <- do.call(expand.grid, lapply(per_dim, seq_along))
 

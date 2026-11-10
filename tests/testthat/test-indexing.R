@@ -109,3 +109,35 @@ test_that("out of order indices are handled correctly", {
     read_zarr_array(zarr_v2)[c(30:1), c(20:1), c(10:1)]
   )
 })
+
+test_that("large chunk indices are handled correctly", {
+  # A bug used to write large chunk indices with scientific notation (c/1e+05 instead of c/100001)
+  # https://github.com/Huber-group-EMBL/Rarr/pull/309
+  many_chunks <- withr::local_tempfile(fileext = ".zarr")
+  create_empty_zarr_array(
+    many_chunks,
+    dim = 200000L,
+    chunk_dim = 1L,
+    data_type = "int32",
+    fill_value = 0L,
+    zarr_version = 3L,
+    compressor = NULL
+  )
+  update_zarr_array(
+    many_chunks,
+    x = array(7L),
+    index = list(as.numeric(100001))
+  )
+  expect_identical(
+    list.files(many_chunks, recursive = TRUE),
+    c("c/100000", "zarr.json")
+  )
+  expect_identical(
+    read_zarr_array(many_chunks, index = list(as.numeric(100001))),
+    array(7L)
+  )
+  expect_identical(
+    read_zarr_array(many_chunks, index = list(100001L)),
+    array(7L)
+  )
+})
