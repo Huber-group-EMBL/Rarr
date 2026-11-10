@@ -18,13 +18,13 @@ NULL
 
 # "Backport" from R 4.6.0
 has_zstd <- function() {
-  r_ver <- R.version[c("major", "minor", "svn rev")] |>
-    paste(collapse = ".") |>
-    numeric_version()
-
-  if (r_ver >= "4.6.2.90773") {
-    return(capabilities("zstd"))
+  # empty if this R version predates the "zstd" capability
+  cap <- capabilities("zstd")
+  if (length(cap) == 1L) {
+    return(unname(cap))
   }
+
+  r_ver <- getRversion()
   if (r_ver >= "4.6.0") {
     return(nzchar(extSoftVersion()["zstd"]))
   }

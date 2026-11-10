@@ -36,7 +36,7 @@
     fill_value = fill_value,
     dimension_separator = dimension_separator,
     order = order,
-    zarr_format = 2L,
+    zarr_format = zarr_version,
     filters = filters,
     compressor = compressor
   )
@@ -62,7 +62,6 @@
       version_from = 2L,
       version_to = 3L
     )
-    metadata_v3$zarr_format <- 3L
     if (!is.null(dimension_names)) {
       metadata_v3$dimension_names <- dimension_names
     }
