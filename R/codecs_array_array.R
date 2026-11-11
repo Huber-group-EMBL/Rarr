@@ -1,44 +1,17 @@
 # -- Transpose -------------------
 codec_transpose_encode <- function(array, indices = seq_along(dim(array))) {
-  # FIXME: we do two copies here (aperm and dim assignment) which can be expensive for large arrays
-  inv_indices <- order(indices)
-  array <- aperm(array, inv_indices)
-  dim(array) <- dim(array)[inv_indices]
-
-  return(array)
+  # Transpose codec itself
+  B <- aperm(array, indices)
+  # C<->F order conversion
+  array(as.vector(aperm(B, rev(seq_along(indices)))), dim = dim(B))
 }
 
 codec_transpose_decode <- function(array, indices = seq_along(dim(array))) {
-  # FIXME: we manually dispatch aperm() to t() but eventually, there should be
-  # an aperm.matrix() method.
-  # https://bugs.r-project.org/show_bug.cgi?id=19133
-  # When this happens, we only have to handle the drop() case.
-  to_drop <- dim(array) == 1L
-
-  if (sum(!to_drop) < 2L) {
-    # "1D-like" array.
-    # R transpose would turn into a column vector, but since Zarr transpose
-    # keeps the shape, that's actually identity.
-    return(array)
-  }
-
-  if (any(to_drop)) {
-    final_dim <- dim(array)
-    array <- drop(array)
-    indices <- order(indices[!to_drop])
-  }
-
-  if (is.matrix(array) && all(indices == c(2L, 1L))) {
-    dim(array) <- rev(dim(array))
-    array <- t(array)
-  } else {
-    dim(array) <- dim(array)[indices]
-    array <- aperm(array, indices)
-  }
-
-  # Restore dropped dimensions
-  if (any(to_drop)) {
-    dim(array) <- final_dim
-  }
-  return(array)
+  # C<->F order conversion
+  B <- aperm(
+    array(as.vector(array), dim = rev(dim(array)[indices])),
+    rev(seq_along(indices))
+  )
+  # Transpose codec itself
+  aperm(B, order(indices))
 }
