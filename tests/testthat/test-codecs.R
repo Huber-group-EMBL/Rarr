@@ -19,13 +19,12 @@ test_that("codec: transpose", {
   # When writing a standard (F-order) matrix in R, and applying what looks like
   # a no-op transpose, we actually get a C-order interpretation of the data, as
   # expected by python.
-  # rev() to emulate what is done in .configure_codecs()
   expect_identical(
-    codec_transpose_decode(f, rev(c(1L, 2L))),
+    codec_transpose_decode(f),
     c
   )
   expect_identical(
-    codec_transpose_encode(c, rev(c(1L, 2L))),
+    codec_transpose_encode(c),
     f
   )
 })
