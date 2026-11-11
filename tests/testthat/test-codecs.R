@@ -1,27 +1,32 @@
 test_that("codec: transpose", {
   x <- array(1:60, dim = c(3, 4, 5))
 
-  expect_identical(
-    x |> codec_transpose_encode(c(1, 2, 3)),
-    x
-  )
+  for (perm in list(
+    c(1L, 2L, 3L),
+    c(3L, 2L, 1L),
+    c(2L, 3L, 1L),
+    c(3L, 1L, 2L),
+    c(1L, 3L, 2L),
+    c(2L, 1L, 3L)
+  )) {
+    decoded <- codec_transpose_encode(x, perm) |>
+      codec_transpose_decode(perm)
+    expect_identical(decoded, x)
+  }
 
-  ind <- c(2, 3, 1)
+  c <- matrix(1:10, 2, 5, byrow = TRUE)
+  f <- matrix(1:10, 2, 5, byrow = FALSE)
+  # When writing a standard (F-order) matrix in R, and applying what looks like
+  # a no-op transpose, we actually get a C-order interpretation of the data, as
+  # expected by python.
+  # rev() to emulate what is done in .configure_codecs()
   expect_identical(
-    x |> codec_transpose_encode(ind) |> codec_transpose_decode(ind),
-    x
+    codec_transpose_decode(f, rev(c(1L, 2L))),
+    c
   )
-
-  ind <- c(3, 1, 2)
   expect_identical(
-    x |> codec_transpose_encode(ind) |> codec_transpose_decode(ind),
-    x
-  )
-
-  ind <- c(1, 3, 2)
-  expect_identical(
-    x |> codec_transpose_encode(ind) |> codec_transpose_decode(ind),
-    x
+    codec_transpose_encode(c, rev(c(1L, 2L))),
+    f
   )
 })
 
