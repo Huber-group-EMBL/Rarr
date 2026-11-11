@@ -56,6 +56,14 @@
   if ("transpose" %in% array_array_codecs) {
     # R is already F ordered, so we reverse the order in config
     cfg <- unlist(codecs$transpose$configuration$order) + 1L
+    if (length(cfg) > 1L && !is.consecutive(cfg, direction = "either")) {
+      stop(
+        "This transpose configuration is currently unsupported. ",
+        "Please open an issue requesting support at ",
+        "https://github.com/Huber-group-EMBL/Rarr/issues.",
+        call. = FALSE
+      )
+    }
     if ("sharding_indexed" %notin% array_bytes_codecs) {
       # For sharding_indexed, the bytes->array function already transposes the
       # array, so we don't need to reverse the order here.
