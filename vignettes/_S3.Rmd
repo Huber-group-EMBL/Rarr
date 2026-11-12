@@ -11,7 +11,7 @@ author:
       - EMBL Heidelberg
 package: "`r BiocStyle::pkg_ver('Rarr')`"
 vignette: >
-  %\VignetteIndexEntry{"Working with **remote** Zarr arrays in R"}
+  %\VignetteIndexEntry{Working with **remote** Zarr arrays in R}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 output:

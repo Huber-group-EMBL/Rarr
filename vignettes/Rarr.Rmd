@@ -8,7 +8,7 @@ affiliation:
 email: mike.smith@embl.de
 package: "`r BiocStyle::pkg_ver('Rarr')`"
 vignette: >
-  %\VignetteIndexEntry{"Working with Zarr arrays in R"}
+  %\VignetteIndexEntry{Working with Zarr arrays in R}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 output:

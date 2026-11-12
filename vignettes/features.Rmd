@@ -3,7 +3,7 @@ title: "Supported Zarr features in Rarr"
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('Rarr')`"
 vignette: >
-  %\VignetteIndexEntry{"Supported Zarr features in Rarr"}
+  %\VignetteIndexEntry{Supported Zarr features in Rarr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 output:
