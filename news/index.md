@@ -230,6 +230,12 @@
 - [`create_empty_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/create_empty_zarr_array.md)
   no longer coerces scalars to dim 1 arrays in the Zarr metadata. Thanks
   to a report from Robrecht Cannoodt.
+- [`write_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/write_zarr_array.md)
+  and
+  [`update_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/update_zarr_array.md)
+  no longer clamp `float32` values beyond the int32 range (including
+  `Inf` and `-Inf`) to `±2147483648`
+  ([\#304](https://github.com/Huber-group-EMBL/Rarr/issues/304)).
 
 ### Internal changes
 

@@ -9,7 +9,7 @@ write_zarr_array() and update_zarr_array():"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.67</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.68</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,9 +71,11 @@ write_zarr_array() and update_zarr_array():"></head><body>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
 
-<ol><li><p>If the target type is narrower than R's native representation (e.g.
-<code>int8</code>, <code>int16</code>, <code>float32</code>), clamp out-of-range values via
-<code>.truncate_overflow()</code>.</p></li>
+<ol><li><p>If the target type is an integer type narrower than R's native
+representation (<code>int8</code>, <code>int16</code>), clamp out-of-range values via
+<code>.truncate_overflow()</code>. Floats are not clamped, since <code><a href="https://rdrr.io/r/base/readBin.html" class="external-link">writeBin()</a></code>
+follows IEEE 754 when narrowing to <code>float32</code>, values beyond its range
+become <code>Inf</code> or <code>-Inf</code>.</p></li>
 <li><p>If the target type is <code>bool</code>, warn when <code>x</code> contains <code>NA</code> values (which
 the Zarr bool type cannot represent).</p></li>
 </ol></div>

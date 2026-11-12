@@ -29,9 +29,12 @@ and
 
 ## Details
 
-1.  If the target type is narrower than R's native representation (e.g.
-    `int8`, `int16`, `float32`), clamp out-of-range values via
-    `.truncate_overflow()`.
+1.  If the target type is an integer type narrower than R's native
+    representation (`int8`, `int16`), clamp out-of-range values via
+    `.truncate_overflow()`. Floats are not clamped, since
+    [`writeBin()`](https://rdrr.io/r/base/readBin.html) follows IEEE 754
+    when narrowing to `float32`, values beyond its range become `Inf` or
+    `-Inf`.
 
 2.  If the target type is `bool`, warn when `x` contains `NA` values
     (which the Zarr bool type cannot represent).

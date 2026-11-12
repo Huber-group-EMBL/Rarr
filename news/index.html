@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.67</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.68</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -132,6 +132,8 @@
 <li>Large arrays (at least one <code>shape</code> element larger <code>Machine$integer.max</code>) <strong>and</strong> arrays with large chunks can now be written and read correctly. Thanks to a report and reproducible example from Robrecht Cannoodt.</li>
 <li>
 <code><a href="../reference/create_empty_zarr_array.html">create_empty_zarr_array()</a></code> no longer coerces scalars to dim 1 arrays in the Zarr metadata. Thanks to a report from Robrecht Cannoodt.</li>
+<li>
+<code><a href="../reference/write_zarr_array.html">write_zarr_array()</a></code> and <code><a href="../reference/update_zarr_array.html">update_zarr_array()</a></code> no longer clamp <code>float32</code> values beyond the int32 range (including <code>Inf</code> and <code>-Inf</code>) to <code>±2147483648</code> (<a href="https://github.com/Huber-group-EMBL/Rarr/issues/304" class="external-link">#304</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="internal-changes-2-1">Internal changes<a class="anchor" aria-label="anchor" href="#internal-changes-2-1"></a></h3>
