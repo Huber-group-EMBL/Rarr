@@ -68,31 +68,33 @@
 
   # Fast path: min()/max() avoid allocating logical vectors. All-NA input
   # gives Inf/-Inf (with a warning) and correctly takes the early return.
-  in_range <- suppressWarnings(
-    min(x, na.rm = TRUE) >= min_value && max(x, na.rm = TRUE) <= max_value
-  )
-  if (in_range) {
-    return(x)
-  }
+  has_positive_overflow <- suppressWarnings(max(x, na.rm = TRUE)) > max_value
+  has_negative_overflow <- suppressWarnings(min(x, na.rm = TRUE)) < min_value
 
-  positive_overflow <- x > max_value
-  negative_overflow <- x < min_value
-  if (any(positive_overflow | negative_overflow)) {
+  if (has_positive_overflow) {
+    positive_overflow <- x > max_value
     warning(
       "Some values in 'x' are too large to be represented by the ",
       "specified data type and will be truncated to the type range ",
-      "(",
-      min_value,
-      " to ",
-      max_value,
-      ") when written. ",
-      "To avoid this, use a wider data type or check that 'x' does ",
-      "not contain out-of-range values.",
+      "(max: ",
+      format(max_value),
+      ")",
       call. = FALSE
     )
     storage.mode(max_value) <- storage.mode(x)
-    storage.mode(min_value) <- storage.mode(x)
     x[positive_overflow] <- max_value
+  }
+  if (has_negative_overflow) {
+    negative_overflow <- x < min_value
+    warning(
+      "Some values in 'x' are too small to be represented by the ",
+      "specified data type and will be truncated to the type range ",
+      "(min: ",
+      format(min_value),
+      ")",
+      call. = FALSE
+    )
+    storage.mode(min_value) <- storage.mode(x)
     x[negative_overflow] <- min_value
   }
   return(x)
