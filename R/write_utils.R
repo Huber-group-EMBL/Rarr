@@ -22,8 +22,15 @@
   # structured data types carry a list here and have no overflow or NA checks
   is_scalar_type <- !is.list(data_type)
 
-  if (is_scalar_type && data_type %in% c("int8", "int16")) {
-    x <- .truncate_overflow(x, metadata$datatype$nbytes)
+  if (
+    is_scalar_type &&
+      data_type %in% c("int8", "int16", "uint8", "uint16", "uint32", "uint64")
+  ) {
+    x <- .truncate_overflow(
+      x,
+      metadata$datatype$nbytes,
+      signed = startsWith(data_type, "int")
+    )
   }
 
   if (is_scalar_type && data_type == "bool" && anyNA(x)) {
@@ -50,9 +57,14 @@
   return(x)
 }
 
-.truncate_overflow <- function(x, nbytes) {
-  max_value <- 2L^(nbytes * 8L - 1L) - 1L
-  min_value <- -max_value - 1L
+.truncate_overflow <- function(x, nbytes, signed = TRUE) {
+  if (signed) {
+    max_value <- 2L^(nbytes * 8L - 1L) - 1L
+    min_value <- -max_value - 1L
+  } else {
+    max_value <- 2L^(nbytes * 8L) - 1L
+    min_value <- 0L
+  }
 
   # Fast path: min()/max() avoid allocating logical vectors. All-NA input
   # gives Inf/-Inf (with a warning) and correctly takes the early return.
