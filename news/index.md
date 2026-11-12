@@ -189,6 +189,8 @@
 - In line of recent changes in Zarr v3 spec, 0-length chunk dimensions
   are explicitly disallowed when writing. Reading arrays with 0-length
   chunk dimensions is still supported.
+- A clear error is now returned for unsupported transpose
+  configurations.
 
 ### Bug fixes
 

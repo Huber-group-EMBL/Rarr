@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.66</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.67</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -113,6 +113,7 @@
 <li>
 <code><a href="../reference/write_zarr_array.html">write_zarr_array()</a></code> no longer warns on oversized chunks for empty dimensions. Based on a request from Robrecht Cannoodt, and motivated by the use of empty arrays in anndataR.</li>
 <li>In line of recent changes in Zarr v3 spec, 0-length chunk dimensions are explicitly disallowed when writing. Reading arrays with 0-length chunk dimensions is still supported.</li>
+<li>A clear error is now returned for unsupported transpose configurations.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-2-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-2-1"></a></h3>
