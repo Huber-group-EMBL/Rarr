@@ -187,6 +187,9 @@
   [grumpy CRAN package](https://cran.r-project.org/package=grumpy).
 * When reading a Zarr array composed of a single chunk, `read_zarr_array()` 
   now takes a shortcut which saves a data copy.
+* Round-trip tests against zarr-python, using reticulate, check that Rarr
+  reads Zarr v3 arrays written by zarr-python and that zarr-python reads
+  arrays written by Rarr, starting with the data types (#295).
 
 # Rarr 1.99
 

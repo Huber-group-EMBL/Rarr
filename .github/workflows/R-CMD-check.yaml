@@ -30,6 +30,10 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      # fail instead of skipping the zarr-python tests, and test against
+      # zarr-python release candidates too
+      RARR_TEST_REQUIRE_PYTHON: true
+      UV_PRERELEASE: allow
 
     steps:
       - uses: actions/checkout@v6
