@@ -171,5 +171,7 @@
       SIMPLIFY = FALSE
     ),
     key_strings
-  )
+  ) |>
+    # Performance degrades heavily for large number of chunks if we keep it in a list.
+    list2env(hash = TRUE)
 }
