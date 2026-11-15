@@ -41,3 +41,24 @@ test_that("has_zstd() returns a single TRUE or FALSE", {
   expect_length(res, 1L)
   expect_false(anyNA(res))
 })
+
+test_that("zstd works with checksum TRUE or FALSE", {
+  expect_identical(
+    read_zarr_array(system.file(
+      "extdata",
+      "zarr_examples",
+      "compression",
+      "zstd_v3.zarr",
+      package = "Rarr"
+    )),
+    read_zarr_array(
+      system.file(
+        "extdata",
+        "zarr_examples",
+        "compression",
+        "zstd_checksum_v3.zarr",
+        package = "Rarr"
+      )
+    )
+  )
+})
