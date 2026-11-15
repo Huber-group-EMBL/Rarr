@@ -9,17 +9,15 @@ is.consecutive <- function(
   n <- length(x)
   res <- n > 0L &&
     !anyNA(x) &&
-    as.double(x[n]) - x[1L] == n - 1L
+    max(x) - min(x) == n - 1L
   direction <- match.arg(direction)
   switch(
     direction,
-    increasing = return(res && !is.unsorted(x, strictly = TRUE)),
-    decreasing = return(res && !is.unsorted(rev(x), strictly = TRUE)),
-    either = return(
-      res &&
-        (!is.unsorted(x, strictly = TRUE) ||
-          !is.unsorted(rev(x), strictly = TRUE))
-    )
+    increasing = res && !is.unsorted(x, strictly = TRUE),
+    decreasing = res && !is.unsorted(rev(x), strictly = TRUE),
+    either = res &&
+      (!is.unsorted(x, strictly = TRUE) ||
+        !is.unsorted(rev(x), strictly = TRUE))
   )
 }
 

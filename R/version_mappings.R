@@ -10,11 +10,6 @@
 
   dt <- metadata$datatype
 
-  if (length(metadata$shape) == 0L) {
-    # Empty tuple in shape means we are dealing with a scalar.
-    metadata$shape <- metadata$chunks <- 1L
-  }
-
   metadata_v3 <- list(
     node_type = "array",
     zarr_format = metadata$zarr_format,
@@ -76,10 +71,16 @@
     metadata_v3$data_type <- "string"
     metadata_v3$datatype$base_type <- "string"
   } else {
-    metadata_v3$codecs$bytes <- list(
-      name = "bytes",
-      configuration = list("endian" = dt$endian %||% NA_character_)
-    )
+    # For single byte datatypes, we omit the config entirely
+    metadata_v3$codecs$bytes <- if (all(dt$nbytes == 1L)) {
+      list(name = "bytes")
+    } else {
+      # FIXME: be careful if we ever start use this to write structured
+      # as structured types return a vector in dt$endian, where we
+      # expect a single endian value in the json configuration.
+      # But this is convenient for our internal representation for now.
+      list(name = "bytes", configuration = list("endian" = dt$endian))
+    }
   }
 
   if (!is.null(metadata$compressor$id)) {
@@ -125,7 +126,7 @@
       "unicode" = list(
         name = "fixed_length_utf32",
         configuration = list(
-          length_bytes = 8L * nbytes
+          length_bytes = nbytes
         )
       ),
       "string" = list(

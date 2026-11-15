@@ -83,3 +83,25 @@ test_that("uint64 zarr array can be written", {
     roundtrip_uint64_array
   )
 })
+
+test_that("negative values are clamped when writing", {
+  uint64_zarr <- withr::local_tempfile(fileext = ".zarr")
+
+  content_uint64_array <- array(c(-1L, -2L, -3L, -4L), dim = c(2, 2))
+
+  write_zarr_array(
+    content_uint64_array,
+    uint64_zarr,
+    data_type = "<u8",
+    chunk_dim = c(2, 2),
+    compressor = NULL
+  ) |>
+    expect_warning("too small")
+
+  roundtrip_uint64_array <- read_zarr_array(uint64_zarr)
+
+  expect_identical(
+    roundtrip_uint64_array,
+    array(0L, dim = c(2, 2))
+  )
+})

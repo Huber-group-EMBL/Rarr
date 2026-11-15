@@ -1,17 +1,25 @@
 # This file regroups the specific conscious spec deviations we have implemented
 
-test_that("chunk_size can be 0", {
+test_that("chunk_size of 0 can be read", {
+  # Chunk dimension of 0 can still be read (not written!), even though it's not
+  # in spec, because it doesn't cost us anything
   # https://github.com/zarr-developers/zarr-specs/issues/378
-  new_zarr_array <- tempfile(fileext = ".zarr")
+  empty_zarr <- withr::local_tempfile(fileext = ".zarr")
   write_zarr_array(
-    array(numeric(0)),
-    zarr_array_path = new_zarr_array,
-    chunk_dim = 0
+    array(integer(0)),
+    empty_zarr,
+    data_type = "int8",
+    chunk_dim = 1,
+    zarr_version = 2
   )
-  expect_identical(
-    read_zarr_array(new_zarr_array),
-    array(numeric(0))
-  )
+  jsonlite::read_json(file.path(empty_zarr, ".zarray")) |>
+    modifyList(list(chunks = as.list(0L))) |>
+    jsonlite::write_json(
+      file.path(empty_zarr, ".zarray"),
+      auto_unbox = TRUE,
+      null = "null"
+    )
+  expect_identical(read_zarr_array(empty_zarr), array(integer(0)))
 })
 
 test_that("dimension_names is written for v2", {

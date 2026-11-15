@@ -219,3 +219,19 @@ test_that("fill_value is converted to string", {
   )
   expect_identical(read_zarr_array(path), matrix("0", nrow = 4, ncol = 4))
 })
+
+test_that("fill_value too long", {
+  path <- withr::local_tempfile(fileext = ".zarr")
+  expect_error(
+    create_empty_zarr_array(
+      zarr_array_path = path,
+      dim = c(4, 4),
+      chunk_dim = c(2, 2),
+      data_type = "character",
+      fill_value = "This is too long",
+      nchar = 10,
+      zarr_version = 2
+    ),
+    "at least as long as"
+  )
+})

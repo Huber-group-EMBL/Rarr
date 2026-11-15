@@ -1,6 +1,6 @@
 Package: Rarr
 Title: A Simple and Performant Native R Reader & Writer for Zarr Arrays
-Version: 2.1.59
+Version: 2.1.68
 Authors@R: c(
     person("Mike", "Smith", role = c("aut", "ccp"),
            comment = c(ORCID = "0000-0002-7800-3848", "Maintainer from 2022 to 2025.")),
@@ -8,6 +8,8 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-4094-1476")),
     person("Artür", "Manukyan", role = "ctb"),
     person("Sharla", "Gelfand", role = "ctb"),
+    person("Robrecht", "Cannoodt", , "rcannood@gmail.com", role = "ctb",
+           comment = c(ORCID = "0000-0003-3641-729X", github = "rcannood")),
     person("German Network for Bioinformatics Infrastructure - de.NBI", role = "fnd",
            comment = c(ROR = "01vmpm840"))
   )

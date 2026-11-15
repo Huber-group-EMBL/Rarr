@@ -110,6 +110,13 @@
         "character data types and be a positive integer"
       )
     }
+    if (nchar(fill_value, allowNA = TRUE) > nchar) {
+      stop(
+        "The 'nchar' argument must be at least ",
+        "as long as the number of characters in the fill value",
+        call. = FALSE
+      )
+    }
     data_type <- paste0(data_type, as.integer(nchar))
   }
 
@@ -298,7 +305,7 @@ write_zarr_array <- function(
   dimension_separator = if (zarr_version == 2L) "." else "/",
   zarr_version = 3L
 ) {
-  if (!is.array(x) && !is.atomic(x)) {
+  if (!(is.array(x) && is.atomic(x))) {
     stop(
       "`x` must be an atomic array. ",
       "You can maybe coerce your object with `as.array()`.",
@@ -317,7 +324,8 @@ write_zarr_array <- function(
     # +1 to add NUL terminator
     # c(0, ) to deal with array full of NAs
     # base::nchar() to avoid collision with var name
-    nchar <- max(c(0L, base::nchar(x)), na.rm = TRUE) + 1L
+    nchar <- max(c(0L, base::nchar(fill_value), base::nchar(x)), na.rm = TRUE) +
+      1L
   }
   if (data_type == "integer") {
     data_type <- .guess_int_size(x, data_type)
@@ -642,35 +650,4 @@ update_zarr_array <- function(zarr_array_path, x, index) {
   writeBin(raw_chunk, con = chunk_path)
 
   return(invisible(TRUE))
-}
-
-.check_chunk_shape <- function(x_dim, chunk_dim) {
-  if (length(x_dim) != length(chunk_dim)) {
-    stop(
-      "The number of dimensions of the chunk (",
-      length(chunk_dim),
-      ") must equal the number of dimensions of the ",
-      "array (",
-      length(x_dim),
-      "). ",
-      "Please check the `chunk_dim` argument.",
-      call. = FALSE
-    )
-  }
-
-  oversized_chunk <- any(chunk_dim > x_dim)
-  if (oversized_chunk) {
-    # One valid use case is nullable arrays in anndata.
-    warning(
-      "Chunk dimensions are larger than array dimensions. ",
-      "This is allowed by the Zarr specification but may lead to inefficient storage and retrieval.\n",
-      "In most cases, this is likely to be a mistake. Please check your `chunk_dim` argument.",
-      call. = FALSE
-    )
-  }
-
-  # https://github.com/zarr-developers/zarr-specs/issues/378
-  # we should potentially also check that the chunk size is not 0,
-  # but this is a conscious spec deviation we support
-  return(invisible(!oversized_chunk))
 }

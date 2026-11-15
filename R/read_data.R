@@ -120,9 +120,11 @@ read_data <- function(
   chunk_exists <- .store_check_exist(zarr_array_path, chunk_names, s3_client)
   existing_idx <- which(chunk_exists)
 
-  warnings <- list()
-
-  if (length(existing_idx) == 1L && identical(chunk_dim, lengths(index))) {
+  if (
+    length(chunk_names) == 1L &&
+      chunk_exists &&
+      identical(chunk_dim, lengths(index))
+  ) {
     # If the chunk shape is the same as the requested shape, we can just return the
     # single chunk that was read.
     # This saves us from having to allocate a new array and copy the chunk into it.
@@ -149,6 +151,7 @@ read_data <- function(
   } else {
     p <- function(...) NULL
   }
+  warnings <- list()
 
   ## If we attempt to use parallel processing later, we have to change the
   ## approach since we cannot write to `output` in parallel.  For now, we just use a single thread.

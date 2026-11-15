@@ -49,3 +49,9 @@ test_that("zarr_consolidate_metadata() on v3", {
     transform = function(x) gsub("^(  )?Path: .*", "Path: <path>", x)
   )
 })
+
+test_that("zarr_consolidate_metadata() on empty store", {
+  empty_store <- withr::local_tempfile(fileext = ".zarr")
+  write_zarr_group(empty_store, "", zarr_version = 3L)
+  expect_no_condition(zarr_consolidate_metadata(empty_store, action = "write"))
+})

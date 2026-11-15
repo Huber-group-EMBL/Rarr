@@ -65,10 +65,13 @@
     if (!is.null(dimension_names)) {
       metadata_v3$dimension_names <- dimension_names
     }
-    if (length(intersect(names(metadata_v3$codecs), c("zlib", "lz4"))) > 0L) {
+    numcodecs_only <- c("zlib", "lz4", "bz2", "lzma")
+    if (length(intersect(names(metadata_v3$codecs), numcodecs_only)) > 0L) {
       warning(
-        "`zlib` and `lz4` codecs are not fully standardized in Zarr V3, and ",
-        "interoperability with other Zarr implementations may be limited."
+        toString(sprintf("`%s`", numcodecs_only)),
+        " codecs are not fully standardized in Zarr v3, ",
+        "and interoperability with other Zarr implementations may be limited.",
+        call. = FALSE
       )
     }
     # FIXME: get rid of these directly in the internal
@@ -293,7 +296,8 @@ zarr_consolidate_metadata <- function(
   metadata_files <- metadata_files[metadata_files != "zarr.json"]
 
   consolidated <- lapply(
-    paste0(zarr_store_path, metadata_files),
+    # recycle0 to handle the case of an empty v3 store
+    paste0(zarr_store_path, metadata_files, recycle0 = TRUE),
     .read_json_file,
     s3_client = s3_client
   )

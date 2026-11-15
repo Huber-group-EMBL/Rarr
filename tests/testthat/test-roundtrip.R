@@ -64,13 +64,14 @@ test_that("zarr arrays can be written and read with various compression methods"
 
   # Testing LZMA compression
   path <- withr::local_tempfile(pattern = "lzma_", fileext = ".zarr")
-  expect_silent(
+  expect_warning(
     res <- write_zarr_array(
       x = x,
       zarr_array_path = path,
       chunk_dim = c(2, 5, 1),
       compressor = use_lzma()
-    )
+    ),
+    "interoperability"
   )
   expect_identical(read_zarr_array(path), x)
 
@@ -89,13 +90,14 @@ test_that("zarr arrays can be written and read with various compression methods"
 
   # Testing BZIP2 compression
   path <- withr::local_tempfile(pattern = "bz2_", fileext = ".zarr")
-  expect_silent(
+  expect_warning(
     res <- write_zarr_array(
       x = x,
       zarr_array_path = path,
       chunk_dim = c(2, 5, 1),
       compressor = use_bz2()
-    )
+    ),
+    "interoperability"
   )
   expect_identical(read_zarr_array(path), x)
 
@@ -212,36 +214,5 @@ test_that("NAs roundtrip", {
   expect_identical(
     read_zarr_array(path_dbl),
     dbl_nas
-  )
-
-  char_nas <- array(c("z", NA_character_, "WORD"))
-  path_unicode <- withr::local_tempfile(fileext = ".zarr")
-  expect_silent(
-    write_zarr_array(
-      x = char_nas,
-      zarr_array_path = path_unicode,
-      chunk_dim = 3,
-      data_type = "<U"
-    )
-  )
-
-  expect_identical(
-    read_zarr_array(path_unicode),
-    char_nas
-  )
-
-  path_char <- withr::local_tempfile(fileext = ".zarr")
-  expect_silent(
-    write_zarr_array(
-      x = char_nas,
-      zarr_array_path = path_char,
-      chunk_dim = 3,
-      data_type = "|S"
-    )
-  )
-
-  expect_identical(
-    read_zarr_array(path_char),
-    char_nas
   )
 })

@@ -1,32 +1,46 @@
 test_that("An empty zarr array with dimension 0 can be created", {
   # This is used in anndataR for example
   empty_zarr <- withr::local_tempfile(fileext = ".zarr")
-  expect_no_condition(
-    Rarr::create_empty_zarr_array(
+  expect_error(
+    write_zarr_array(
+      array(integer(0)),
       empty_zarr,
-      dim = 0,
+      data_type = "int8",
       chunk_dim = 0,
-      data_type = "integer",
+      zarr_version = 2
+    ),
+    "strictly positive"
+  )
+  expect_no_condition(
+    write_zarr_array(
+      array(integer(0)),
+      empty_zarr,
+      data_type = "int8",
+      chunk_dim = 1,
       zarr_version = 2
     )
   )
   empty_metadata <- Rarr::zarr_overview(empty_zarr, as_data_frame = TRUE)
   expect_identical(empty_metadata$dim, list(0L))
-  expect_identical(empty_metadata$chunk_dim, list(0L))
+  expect_identical(empty_metadata$chunk_dim, list(1L))
+
+  expect_identical(read_zarr_array(empty_zarr), array(integer(0)))
 
   empty_zarr_v3 <- withr::local_tempfile(fileext = ".zarr")
   expect_no_condition(
     Rarr::create_empty_zarr_array(
       empty_zarr_v3,
       dim = 0,
-      chunk_dim = 0,
+      chunk_dim = 1,
       data_type = "integer",
       zarr_version = 3
     )
   )
   empty_metadata_v3 <- Rarr::zarr_overview(empty_zarr_v3, as_data_frame = TRUE)
   expect_identical(empty_metadata_v3$dim, list(0L))
-  expect_identical(empty_metadata_v3$chunk_dim, list(0L))
+  expect_identical(empty_metadata_v3$chunk_dim, list(1L))
+
+  expect_identical(read_zarr_array(empty_zarr_v3), array(integer(0)))
 })
 
 test_that("Empty zarr arrays have expected metadata", {

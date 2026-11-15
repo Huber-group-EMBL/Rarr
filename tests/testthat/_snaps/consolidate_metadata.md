@@ -195,11 +195,6 @@
       $consolidated_metadata$metadata$array1$codecs[[2]]$name
       [1] "bytes"
       
-      $consolidated_metadata$metadata$array1$codecs[[2]]$configuration
-      $consolidated_metadata$metadata$array1$codecs[[2]]$configuration$endian
-      NULL
-      
-      
       
       $consolidated_metadata$metadata$array1$codecs[[3]]
       $consolidated_metadata$metadata$array1$codecs[[3]]$name

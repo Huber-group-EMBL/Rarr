@@ -40,6 +40,9 @@
 * Character arrays are now written as VLen-UTF8 by default if 
   `write_zarr_array(data_type = )` argument is left empty or `"character"`
   **and** no NAs are present.
+* `null_terminated_bytes` (`|S` in Zarr v2) and `fixed_length_utf32` (`<U` in 
+  Zarr v2) no longer support preserving `NA` in roundtrip as this resulted in
+  data unreadable by other Zarr implementations.
 
 ## New features
 
@@ -113,7 +116,8 @@
 * S3 access with credentials is now more robust and compatible with more
   providers.
 * `write_zarr_array()` and `create_empty_zarr_array()` now warn when using the
-  unstandardized / unregistered `lz4` and `zlib` codecs with Zarr v3.
+  unstandardized / unregistered `lz4`, `lzma`, `bz2` and `zlib` codecs with Zarr
+  v3.
 * `write_zarr_array()` now errors if `x` has a different storage mode than
   expected from `data_type` (if specified). The previous situation could lead
   to doubles being marked as, e.g., `int` in the Zarr metadata, and encode
@@ -121,6 +125,20 @@
 * Zarr arrays with `v2` chunk key encoding are now explicitly supported. Zarr
   arrays with unsupported chunk key encodings now return an explicit error
   message.
+* Endian configuration in metadata for the `bytes` codec is now omitted for 
+  single byte types (`bool`, `uint8`, `int8`).
+* `create_empty_zarr_array()` now errors when the specified length for 
+  fixed-width string types is too short to fit the fill value. Similarly,
+  `write_zarr_array()` now takes into account the length of the fill value (if
+  specified) when computing the default value for the `nchar` argument (if
+  unspecified).
+* `write_zarr_array()` no longer warns on oversized chunks for empty
+  dimensions. Based on a request from Robrecht Cannoodt, and motivated by the
+  use of empty arrays in anndataR.
+* In line of recent changes in Zarr v3 spec, 0-length chunk dimensions are
+  explicitly disallowed when writing. Reading arrays with 0-length chunk 
+  dimensions is still supported.
+* A clear error is now returned for unsupported transpose configurations.
 
 ## Bug fixes
 
@@ -146,6 +164,11 @@
 * Large arrays (at least one `shape` element larger `Machine$integer.max`) 
   **and** arrays with large chunks can now be written and read correctly. 
   Thanks to a report and reproducible example from Robrecht Cannoodt.
+* `create_empty_zarr_array()` no longer coerces scalars to dim 1 arrays in the
+  Zarr metadata. Thanks to a report from Robrecht Cannoodt.
+* `write_zarr_array()` and `update_zarr_array()` no longer clamp `float32`
+  values beyond the int32 range (including `Inf` and `-Inf`) to
+  `±2147483648` (#304).
 
 ## Internal changes
 

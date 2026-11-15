@@ -3,9 +3,11 @@
 #' Applies the two pre-write data checks that are needed identically in both
 #' [write_zarr_array()] and [update_zarr_array()]:
 #'
-#' 1. If the target type is narrower than R's native representation (e.g.
-#'    `int8`, `int16`, `float32`), clamp out-of-range values via
-#'    `.truncate_overflow()`.
+#' 1. If the target type is an integer type narrower than R's native
+#'    representation (`int8`, `int16`), clamp out-of-range values via
+#'    `.truncate_overflow()`. Floats are not clamped, since `writeBin()`
+#'    follows IEEE 754 when narrowing to `float32`, values beyond its range
+#'    become `Inf` or `-Inf`.
 #' 2. If the target type is `bool`, warn when `x` contains `NA` values (which
 #'    the Zarr bool type cannot represent).
 #'
@@ -16,19 +18,22 @@
 #'
 #' @keywords internal
 .prepare_write_data <- function(x, metadata) {
-  same_type_lower_bytesize <- !is.list(metadata$data_type) &&
-    metadata$data_type %in% c("int8", "int16", "float32")
-  lower_bytesize_type <- storage.mode(x) == "double" &&
-    !is.list(metadata$data_type) &&
-    metadata$data_type == "float32"
-
-  if (same_type_lower_bytesize || lower_bytesize_type) {
-    x <- .truncate_overflow(x, metadata$datatype$nbytes)
-  }
+  data_type <- metadata$data_type
+  # structured data types carry a list here and have no overflow or NA checks
+  is_scalar_type <- !is.list(data_type)
 
   if (
-    !is.list(metadata$data_type) && metadata$data_type == "bool" && anyNA(x)
+    is_scalar_type &&
+      data_type %in% c("int8", "int16", "uint8", "uint16", "uint32", "uint64")
   ) {
+    x <- .truncate_overflow(
+      x,
+      metadata$datatype$nbytes,
+      signed = startsWith(data_type, "int")
+    )
+  }
+
+  if (is_scalar_type && data_type == "bool" && anyNA(x)) {
     warning(
       "Zarr native 'bool' data type does not support NA values. ",
       "NA values will be converted to FALSE. ",
@@ -36,41 +41,60 @@
       call. = FALSE
     )
   }
-
+  if (
+    is.list(metadata$data_type) &&
+      metadata$data_type$name %in%
+        c("null_terminated_bytes", "fixed_length_utf32") &&
+      anyNA(x)
+  ) {
+    warning(
+      "Zarr 'null_terminated_bytes' and 'fixed_length_utf32' data types do not support NA values. ",
+      "NA values will be converted to empty strings. ",
+      "Use a known mask value (typically, a string absent from your data) to preserve NA values.",
+      call. = FALSE
+    )
+  }
   return(x)
 }
 
-.truncate_overflow <- function(x, nbytes) {
-  max_value <- 2L^(nbytes * 8L - 1L) - 1L
-  min_value <- -max_value - 1L
+.truncate_overflow <- function(x, nbytes, signed = TRUE) {
+  if (signed) {
+    max_value <- 2L^(nbytes * 8L - 1L) - 1L
+    min_value <- -max_value - 1L
+  } else {
+    max_value <- 2L^(nbytes * 8L) - 1L
+    min_value <- 0L
+  }
 
   # Fast path: min()/max() avoid allocating logical vectors. All-NA input
   # gives Inf/-Inf (with a warning) and correctly takes the early return.
-  in_range <- suppressWarnings(
-    min(x, na.rm = TRUE) >= min_value && max(x, na.rm = TRUE) <= max_value
-  )
-  if (in_range) {
-    return(x)
-  }
+  has_positive_overflow <- suppressWarnings(max(x, na.rm = TRUE)) > max_value
+  has_negative_overflow <- suppressWarnings(min(x, na.rm = TRUE)) < min_value
 
-  positive_overflow <- x > max_value
-  negative_overflow <- x < min_value
-  if (any(positive_overflow | negative_overflow)) {
+  if (has_positive_overflow) {
+    positive_overflow <- x > max_value
     warning(
       "Some values in 'x' are too large to be represented by the ",
       "specified data type and will be truncated to the type range ",
-      "(",
-      min_value,
-      " to ",
-      max_value,
-      ") when written. ",
-      "To avoid this, use a wider data type or check that 'x' does ",
-      "not contain out-of-range values.",
+      "(max: ",
+      format(max_value),
+      ")",
       call. = FALSE
     )
     storage.mode(max_value) <- storage.mode(x)
-    storage.mode(min_value) <- storage.mode(x)
     x[positive_overflow] <- max_value
+  }
+  if (has_negative_overflow) {
+    negative_overflow <- x < min_value
+    warning(
+      "Some values in 'x' are too small to be represented by the ",
+      "specified data type and will be truncated to the type range ",
+      "(min: ",
+      format(min_value),
+      ")",
+      call. = FALSE
+    )
+    storage.mode(min_value) <- storage.mode(x)
     x[negative_overflow] <- min_value
   }
   return(x)
@@ -162,4 +186,43 @@
 #' @keywords internal
 .is_all_fill <- function(x, fill) {
   .Call("is_all_fill", x, fill, PACKAGE = "Rarr")
+}
+
+
+.check_chunk_shape <- function(x_dim, chunk_dim) {
+  if (length(x_dim) != length(chunk_dim)) {
+    stop(
+      "The number of dimensions of the chunk (",
+      length(chunk_dim),
+      ") must equal the number of dimensions of the ",
+      "array (",
+      length(x_dim),
+      "). ",
+      "Please check the `chunk_dim` argument.",
+      call. = FALSE
+    )
+  }
+
+  oversized_chunk <- chunk_dim > x_dim
+  # One valid use case is empty arrays in anndata.
+  zero_dim <- x_dim == 0L
+
+  if (any(oversized_chunk & !zero_dim)) {
+    warning(
+      "Chunk dimensions are larger than array dimensions. ",
+      "This is allowed by the Zarr specification but may lead to inefficient storage and retrieval.\n",
+      "In most cases, this is likely to be a mistake. Please check your `chunk_dim` argument.",
+      call. = FALSE
+    )
+  }
+
+  valid_chunk_dim <- chunk_dim > 0L
+  if (!all(valid_chunk_dim)) {
+    stop(
+      "Chunk dimensions must be strictly positive.",
+      call. = FALSE
+    )
+  }
+
+  return(invisible(all(valid_chunk_dim & !(oversized_chunk & !zero_dim))))
 }
