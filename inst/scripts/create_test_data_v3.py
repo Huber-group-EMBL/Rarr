@@ -1,4 +1,3 @@
-import numcodecs.zarr3
 import numpy as np
 import zarr
 from zarr.core.dtype.npy.structured import Struct
@@ -181,31 +180,31 @@ z = zarr.create_array('inst/extdata/zarr_examples/column-first/boolean_v3.zarr',
                chunks=(10, 10), dtype='b1', overwrite=True)
 z[0, :] = 1
 
-compressor = numcodecs.zarr3.Zlib(level = 6)
+compressor = zarr.codecs.Zlib(level = 6)
 z = zarr.create_array('inst/extdata/zarr_examples/compression/zlib_v3.zarr', shape=(20, 10),
               chunks=(10, 10), dtype='i4', filters = (zarr.codecs.TransposeCodec(order = [1, 0])), compressors=compressor, overwrite=True)
 z[0, :] = np.arange(start=1, stop=11)
 z[:, 0] = np.arange(start=1, stop=60, step=3)
 
-compressor = numcodecs.zarr3.BZ2(level = 6)
+compressor = zarr.codecs.BZ2(level = 6)
 z = zarr.create_array('inst/extdata/zarr_examples/compression/bzip2_v3.zarr', shape=(20, 10),
               chunks=(10, 10), dtype='i4', filters = (zarr.codecs.TransposeCodec(order = [1, 0])), compressors=compressor, overwrite=True)
 z[0, :] = np.arange(start=1, stop=11)
 z[:, 0] = np.arange(start=1, stop=60, step=3)
 
-compressor = numcodecs.zarr3.LZMA()
+compressor = zarr.codecs.LZMA()
 z = zarr.create_array('inst/extdata/zarr_examples/compression/lzma_v3.zarr', shape=(20, 10),
               chunks=(10, 10), dtype='i4', filters = (zarr.codecs.TransposeCodec(order = [1, 0])), compressors=compressor, overwrite=True)
 z[0, :] = np.arange(start=1, stop=11)
 z[:, 0] = np.arange(start=1, stop=60, step=3)
 
-compressor = numcodecs.zarr3.LZ4()
+compressor = zarr.codecs.LZ4()
 z = zarr.create_array('inst/extdata/zarr_examples/compression/lz4_v3.zarr', shape=(20, 10),
               chunks=(10, 10), dtype='i4', filters = (zarr.codecs.TransposeCodec(order = [1, 0])), compressors=compressor, overwrite=True)
 z[0, :] = np.arange(start=1, stop=11)
 z[:, 0] = np.arange(start=1, stop=60, step=3)
 
-compressor = numcodecs.zarr3.Zstd()
+compressor = zarr.codecs.ZstdCodec()
 z = zarr.create_array('inst/extdata/zarr_examples/compression/zstd_v3.zarr', shape=(20, 10),
               chunks=(10, 10), dtype='i4', filters = (zarr.codecs.TransposeCodec(order = [1, 0])), compressors=compressor, overwrite=True)
 z[0, :] = np.arange(start=1, stop=11)
