@@ -37,8 +37,11 @@
       }
     },
     {
-      "name": "numcodecs.zstd",
-      "configuration": {}
+      "name": "zstd",
+      "configuration": {
+        "level": 0,
+        "checksum": false
+      }
     }
   ],
   "attributes": {},
