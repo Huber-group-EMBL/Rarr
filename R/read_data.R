@@ -122,6 +122,8 @@ read_data <- function(
   # https://github.com/Huber-group-EMBL/Rarr/issues/112
   chunk_paths <- paste0(root, existing_chunks, recycle0 = TRUE)
 
+  chunk_sizes <- .store_get_size(zarr_array_path, existing_chunks, s3_client)
+
   if (
     length(chunk_names) == 1L &&
       chunk_exists &&
@@ -138,7 +140,8 @@ read_data <- function(
       chunk_dim = chunk_dim,
       s3_client = s3_client,
       s3_bucket = bucket,
-      chunk_positions = chunk_positions
+      chunk_positions = chunk_positions,
+      chunk_size = chunk_sizes[1L]
     )[[1L]])
   }
 
@@ -169,7 +172,8 @@ read_data <- function(
           chunk_dim = chunk_dim,
           s3_client = s3_client,
           s3_bucket = bucket,
-          chunk_positions = chunk_positions
+          chunk_positions = chunk_positions,
+          chunk_size = chunk_sizes[i]
         )
         index_in_result <- chunk_and_idx[[2L]]
         rlang::inject(output[!!!index_in_result] <- chunk_and_idx[[1L]]) # nolint: implicit_assignment_linter.
@@ -206,9 +210,11 @@ read_data <- function(
   chunk_dim,
   s3_client,
   s3_bucket,
-  chunk_positions
+  chunk_positions,
+  chunk_size
 ) {
   ## find elements to select from the chunk and what in the output we replace
+  # FIXME: avoid copying chunk_info. Pass only the relevant indexed element.
   chunk_info <- chunk_positions[[chunk_name]]
   index_in_result <- chunk_info$positions
   index_in_chunk <- chunk_info$index_in_chunk
@@ -222,7 +228,8 @@ read_data <- function(
   raw_chunk <- .store_get_bytes(
     path = current_chunk_path,
     s3_client = s3_client,
-    s3_bucket = s3_bucket
+    s3_bucket = s3_bucket,
+    length = chunk_size
   )
 
   ## read this chunk

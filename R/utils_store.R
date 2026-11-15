@@ -79,18 +79,26 @@
   }
 }
 
-.store_get_bytes <- function(path, s3_client = NULL, s3_bucket = NULL) {
+.store_get_bytes <- function(path, s3_client = NULL, s3_bucket = NULL, length) {
   if (is.null(s3_client)) {
     # It's faster to calculate the theoretical max chunk size from the
     # data type and chunk dims but it can fail in some pathological cases where
     # the compression algorithm produces a larger output than the input.
-    size <- file.info(path, extra_cols = FALSE)$size
-    readBin(con = path, what = "raw", n = size)
+    length <- length %||% file.info(path, extra_cols = FALSE)$size
+    readBin(con = path, what = "raw", n = length)
   } else {
     s3_client$get_object(
       Bucket = s3_bucket,
       Key = path
     )$Body
+  }
+}
+
+.store_get_size <- function(path, files, s3_client = NULL) {
+  if (is.null(s3_client)) {
+    file.info(paste0(path, files), extra_cols = FALSE)$size
+  } else {
+    NULL
   }
 }
 
