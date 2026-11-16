@@ -11,7 +11,7 @@ CODEC_BYTES_BYTES <- c(
   "numcodecs.lz4",
   "zstd"
 )
-CODEC_ARRAY_ARRAY <- c("transpose")
+CODEC_ARRAY_ARRAY <- c("transpose", "delta")
 CODEC_ARRAY_BYTES <- c("bytes", "vlen-utf8", "sharding_indexed")
 
 SUPPORTED_V3_TYPES <- list(
@@ -47,6 +47,39 @@ METADATA_V3_FILES <- c(
   "zarr.json"
 )
 
+INT_TYPES_RANGE <- data.frame(
+  data_type = c(
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64"
+  ),
+  min = c(
+    -2L^(8L - 1L),
+    -2L^(16L - 1L),
+    -2L^(32L - 1L),
+    -2L^(64L - 1L),
+    0L,
+    0L,
+    0L,
+    0L
+  ),
+  max = c(
+    2L^(8L - 1L) - 1L,
+    2L^(16L - 1L) - 1L,
+    2L^(32L - 1L) - 1L,
+    2L^(64L - 1L) - 1L,
+    2L^8L - 1L,
+    2L^16L - 1L,
+    2L^32L - 1L,
+    2L^64L - 1L
+  )
+)
+
 usethis::use_data(
   SUPPORTED_V3_TYPES,
   CODEC_BYTES_BYTES,
@@ -55,6 +88,7 @@ usethis::use_data(
   METADATA_V2_FILES,
   METADATA_V3_FILES,
   SUPPORTED_KEY_ENCODINGS,
+  INT_TYPES_RANGE,
   internal = TRUE,
   overwrite = TRUE
 )

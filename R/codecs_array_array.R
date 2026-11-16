@@ -42,3 +42,17 @@ codec_transpose_decode <- function(array, indices = seq_along(dim(array))) {
   }
   return(array)
 }
+
+codec_delta_decode <- function(array, data_type = NULL) {
+  # as.numeric to avoid integer overflow during cumsum
+  res <- cumsum(as.numeric(array))
+  if (data_type %in% INT_TYPES_RANGE$data_type) {
+    range <- INT_TYPES_RANGE[INT_TYPES_RANGE$data_type %in% data_type, ]
+    res <- (res - range$min) %% (range$max - range$min + 1) + range$min
+    if (max(res) <= .Machine$integer.max) {
+      storage.mode(res) <- "integer"
+    }
+  }
+  dim(res) <- dim(array)
+  return(res)
+}
