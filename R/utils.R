@@ -80,6 +80,17 @@ check_index <- function(index, metadata) {
     }
     if (typestr$name == "struct") {
       internal_types <- lapply(typestr$configuration$fields, function(field) {
+        if (
+          is.list(field$data_type) &&
+            field$data_type$name %in% c("struct", "structured")
+        ) {
+          stop(
+            "Nested structured data types are not supported.\n",
+            "Please open an issue at ",
+            "https://github.com/Huber-group-EMBL/Rarr/issues to request support.",
+            call. = FALSE
+          )
+        }
         .parse_datatype_v3(field$data_type)
       })
       return(
@@ -101,6 +112,17 @@ check_index <- function(index, metadata) {
     }
     if (typestr$name == "structured") {
       internal_types <- lapply(typestr$configuration$fields, function(field) {
+        if (
+          is.list(field$data_type) &&
+            field$data_type$name %in% c("struct", "structured")
+        ) {
+          stop(
+            "Nested structured data types are not supported.\n",
+            "Please open an issue at ",
+            "https://github.com/Huber-group-EMBL/Rarr/issues to request support.",
+            call. = FALSE
+          )
+        }
         .parse_datatype_v3(field[[2L]])
       })
       return(
