@@ -4,9 +4,11 @@ CODEC_BYTES_BYTES <- c(
   "numcodecs.zlib",
   "gzip",
   "bz2",
+  "numcodecs.bz2",
   "lzma",
-  "numcodecs.lz4",
+  "numcodecs.lzma",
   "lz4",
+  "numcodecs.lz4",
   "zstd"
 )
 CODEC_ARRAY_ARRAY <- c("transpose")
