@@ -90,3 +90,18 @@ test_that("v3 structured data types", {
     expect_all_true(vapply(el, is.double, FUN.VALUE = logical(1)))
   }
 })
+
+test_that("nested structured data types are not supported", {
+  nested_struct_file <- system.file(
+    "extdata",
+    "zarr_examples",
+    "structured",
+    "nested_structured_v3.zarr",
+    package = "Rarr"
+  )
+
+  expect_error(
+    read_zarr_array(nested_struct_file),
+    "not supported"
+  )
+})
