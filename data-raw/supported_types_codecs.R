@@ -47,38 +47,17 @@ METADATA_V3_FILES <- c(
   "zarr.json"
 )
 
-INT_TYPES_RANGE <- data.frame(
-  data_type = c(
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64"
-  ),
-  min = c(
-    -2L^(8L - 1L),
-    -2L^(16L - 1L),
-    -2L^(32L - 1L),
-    -2L^(64L - 1L),
-    0L,
-    0L,
-    0L,
-    0L
-  ),
-  max = c(
-    2L^(8L - 1L) - 1L,
-    2L^(16L - 1L) - 1L,
-    2L^(32L - 1L) - 1L,
-    2L^(64L - 1L) - 1L,
-    2L^8L - 1L,
-    2L^16L - 1L,
-    2L^32L - 1L,
-    2L^64L - 1L
-  )
-)
+INT_TYPES_RANGE <- list(
+  "int8" = c(min = -2^(8 - 1), max = 2^(8 - 1) - 1),
+  "int16" = c(min = -2^(16 - 1), max = 2^(16 - 1) - 1),
+  "int32" = c(min = -2^(32 - 1), max = 2^(32 - 1) - 1),
+  "int64" = c(min = -2^(64 - 1), max = 2^(64 - 1) - 1),
+  "uint8" = c(min = 0, max = 2^8 - 1),
+  "uint16" = c(min = 0, max = 2^16 - 1),
+  "uint32" = c(min = 0, max = 2^32 - 1),
+  "uint64" = c(min = 0, max = 2^64 - 1)
+) |>
+  list2env(hash = TRUE, parent = emptyenv())
 
 usethis::use_data(
   SUPPORTED_V3_TYPES,
