@@ -96,6 +96,8 @@
       candidate_codec,
       "numcodecs.lz4" = "lz4",
       "numcodecs.zlib" = "zlib",
+      "numcodecs.bz2" = "bz2",
+      "numcodecs.lzma" = "lzma",
       "zstd" = if (has_zstd()) {
         "zstd_base"
       } else {
