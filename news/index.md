@@ -221,8 +221,9 @@
 - [`use_gzip()`](https://huber-group-embl.github.io/Rarr/reference/compressors.md)
   now uses GZIP (RFC 1952) instead of ZLIB (RFC 1950). Thanks to a
   report from Patrick Ellis.
-- Zarr v3 arrays compressed with Python’s `numcodecs.zlib` can now be
-  read by Rarr. Thanks to a report from Patrick Ellis.
+- Zarr v3 arrays compressed with Python’s `numcodecs.zlib`,
+  `numcodecs.lz4`, `numcodecs.bz2` and `numcodecs.lzma` can now be read
+  by Rarr. Thanks to a report from Patrick Ellis.
 - Large arrays (at least one `shape` element larger
   `Machine$integer.max`) **and** arrays with large chunks can now be
   written and read correctly. Thanks to a report and reproducible
