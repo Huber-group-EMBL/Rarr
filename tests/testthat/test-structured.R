@@ -44,7 +44,7 @@ test_that("inconsistent endian structured data types", {
   )
 
   expect_shape(res, dim = c(10, 10))
-  expect_length(res[[1]], 5)
+  expect_length(res[[1]], 6)
   expect_type(res[[1]], "list")
 })
 

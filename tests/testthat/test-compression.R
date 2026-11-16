@@ -62,3 +62,33 @@ test_that("zstd works with checksum TRUE or FALSE", {
     )
   )
 })
+
+test_that("v3 numcodecs only compression codecs can be read", {
+  expect_no_condition(
+    read_zarr_array(system.file(
+      "extdata",
+      "zarr_examples",
+      "compression",
+      "bzip2_v3.zarr",
+      package = "Rarr"
+    ))
+  )
+  expect_no_condition(
+    read_zarr_array(system.file(
+      "extdata",
+      "zarr_examples",
+      "compression",
+      "lzma_v3.zarr",
+      package = "Rarr"
+    ))
+  )
+  expect_no_condition(
+    read_zarr_array(system.file(
+      "extdata",
+      "zarr_examples",
+      "compression",
+      "zlib_v3.zarr",
+      package = "Rarr"
+    ))
+  )
+})
