@@ -30,6 +30,24 @@ test_that("unicode structured data types", {
   expect_shape(res, dim = c(10, 10))
 })
 
+test_that("inconsistent endian structured data types", {
+  inconsistent_endian_file <- system.file(
+    "extdata",
+    "zarr_examples",
+    "structured",
+    "inconsistent_endian.zarr",
+    package = "Rarr"
+  )
+
+  expect_no_condition(
+    res <- read_zarr_array(inconsistent_endian_file)
+  )
+
+  expect_shape(res, dim = c(10, 10))
+  expect_length(res[[1]], 5)
+  expect_type(res[[1]], "list")
+})
+
 test_that("v3 structured data types", {
   v3_struct_file <- system.file(
     "extdata",
