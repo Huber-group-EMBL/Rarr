@@ -17,12 +17,12 @@ Read a JSON file from local disk or S3
 - s3_client:
 
   An S3 client produced by
-  [`paws.storage::s3()`](https://paws-r.r-universe.dev/paws.storage/reference/s3.html),
+  [`paws.storage::s3()`](https://rdrr.io/pkg/paws.storage/man/s3.html),
   or `NULL` for local files.
 
 ## Value
 
 A list as returned by
-[`jsonlite::read_json()`](https://jeroen.r-universe.dev/jsonlite/reference/read_json.html)
+[`jsonlite::read_json()`](https://rdrr.io/pkg/jsonlite/man/read_json.html)
 /
-[`jsonlite::fromJSON()`](https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html).
+[`jsonlite::fromJSON()`](https://rdrr.io/pkg/jsonlite/man/fromJSON.html).

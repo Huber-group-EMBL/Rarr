@@ -26,7 +26,7 @@ zarr_consolidate_metadata(
 - s3_client:
 
   A list representing an S3 client. This should be produced by
-  [`paws.storage::s3()`](https://paws-r.r-universe.dev/paws.storage/reference/s3.html).
+  [`paws.storage::s3()`](https://rdrr.io/pkg/paws.storage/man/s3.html).
 
 - action:
 
@@ -178,11 +178,11 @@ zarr_consolidate_metadata(zarr_v2, action = "return")
 zarr_consolidate_metadata(zarr_v2, action = "write")
 zarr_overview(zarr_v2)
 #> Type: Group of Arrays
-#> Path: /tmp/RtmpTCM1w3/file1e46786b7955.zarr
+#> Path: /tmp/Rtmp7XSv2M/file1e5a4b729430.zarr
 #> Attributes: no
 #> Arrays:
 #> ---
-#>   Path: /tmp/RtmpTCM1w3/file1e46786b7955.zarr/array1
+#>   Path: /tmp/Rtmp7XSv2M/file1e5a4b729430.zarr/array1
 #>   Zarr Format: 2
 #>   Shape: 2 x 2
 #>   Chunk Shape: 1 x 2
@@ -192,7 +192,7 @@ zarr_overview(zarr_v2)
 #>   Compressor: zstd
 #>   Attributes: yes
 #> ---
-#>   Path: /tmp/RtmpTCM1w3/file1e46786b7955.zarr/array2
+#>   Path: /tmp/Rtmp7XSv2M/file1e5a4b729430.zarr/array2
 #>   Zarr Format: 2
 #>   Shape: 2 x 2
 #>   Chunk Shape: 1 x 2

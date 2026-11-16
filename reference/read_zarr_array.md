@@ -27,7 +27,7 @@ read_zarr_array(zarr_array_path, index, s3_client = NULL)
 - s3_client:
 
   Object created by
-  [`paws.storage::s3()`](https://paws-r.r-universe.dev/paws.storage/reference/s3.html).
+  [`paws.storage::s3()`](https://rdrr.io/pkg/paws.storage/man/s3.html).
   Only required for a file on S3. Leave as `NULL` for a file on local
   storage.
 

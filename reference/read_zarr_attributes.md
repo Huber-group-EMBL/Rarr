@@ -23,7 +23,7 @@ read_zarr_attributes(
 - s3_client:
 
   A list representing an S3 client. This should be produced by
-  [`paws.storage::s3()`](https://paws-r.r-universe.dev/paws.storage/reference/s3.html).
+  [`paws.storage::s3()`](https://rdrr.io/pkg/paws.storage/man/s3.html).
 
 - missing:
 

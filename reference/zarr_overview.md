@@ -24,7 +24,7 @@ zarr_overview(zarr_array_path, s3_client = NULL, as_data_frame = FALSE)
 - s3_client:
 
   A list representing an S3 client. This should be produced by
-  [`paws.storage::s3()`](https://paws-r.r-universe.dev/paws.storage/reference/s3.html).
+  [`paws.storage::s3()`](https://rdrr.io/pkg/paws.storage/man/s3.html).
 
 - as_data_frame:
 
