@@ -118,15 +118,20 @@ codec_sharding_indexed_decode <- function(
     index_raw <- input[seq_len(index_nbytes)]
   }
 
-  index <- readBin(
+  # NOTE: we cannot read directly as uint because 2^64 - 1 is represented as a
+  # double, which doesn't allow us to represent values exactly.
+  # Equality comparison (to find empty chunks) then doesn't work properly.
+  # We convert empty chunks from -1 to NA to handle them correctly first, and
+  # **then** convert to uint64.
+  index <- convert_bytes_to_array(
     index_raw,
-    what = "integer",
-    n = index_length,
-    size = 8L,
-    endian = config$index_codecs$bytes$configuration[["endian"]] %||%
-      .Platform$endian
+    "int",
+    index_shape,
+    8L,
+    endian = config$index_codecs$bytes$configuration[["endian"]]
   )
-  dim(index) <- index_shape
+  index[index == -1] <- NA
+  index <- uint64_to_int64(index)
   index <- codec_transpose_decode(
     index,
     c(1L, seq.int(from = nb_dims + 1L, to = 2L))
@@ -178,7 +183,7 @@ codec_sharding_indexed_decode <- function(
   index_in_chunk <- lapply(chunk_dim, seq_len)
   n_chunks <- dim(index)[-1L]
   index <- matrix(index, nrow = 2L)
-  non_empty <- index[2L, ] > 0L
+  non_empty <- !is.na(index[2L, ])
   to_read <- which(non_empty & needed)
   for (i in to_read) {
     # Offset caused by index being at the start is already contained in the
