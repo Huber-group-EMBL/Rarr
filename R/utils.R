@@ -214,7 +214,7 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
   return(mode)
 }
 
-uint64_to_int64 <- function(x) {
+int64_to_uint64 <- function(x) {
   x[!is.na(x) & x < 0] <- x[!is.na(x) & x < 0] + 2^64
   return(x)
 }
