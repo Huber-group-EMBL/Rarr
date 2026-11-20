@@ -218,6 +218,7 @@ read_data <- function(
   chunk_info <- chunk_positions[[chunk_name]]
   index_in_result <- chunk_info$positions
   index_in_chunk <- chunk_info$index_in_chunk
+  full_chunk <- chunk_info$full_chunk
 
   # When we get here, we know the chunk exists, so we can read it without worrying about
   # handling missing.
@@ -244,7 +245,7 @@ read_data <- function(
 
   # Extract the required elements from the chunk if not a full read.
   # If a full read, we save an extra copy of the chunk by not subsetting it.
-  if (!identical(index_in_chunk, lapply(chunk_dim, seq_len))) {
+  if (!full_chunk) {
     chunk <- .extract_chunk(chunk, index_in_chunk)
   }
   return(list(chunk, index_in_result))

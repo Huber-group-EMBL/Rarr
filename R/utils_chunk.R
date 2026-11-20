@@ -56,6 +56,9 @@
 #'     the corresponding `index` vector that map to that chunk.
 #'   * `index_in_chunk`: a per-dimension list of 1-based integer vectors
 #'     giving the within-chunk coordinates corresponding to `positions`.
+#'   * `full_chunk`: a logical vector indicating whether each chunk is taken in
+#'     full before inserting into the final array. It allows us to skip
+#'     subsetting the chunk in some cases.
 #'
 #' @keywords internal
 #' @noRd
@@ -81,7 +84,14 @@
         positions_by_chunk <- setNames(chopped, 0L:(length(chopped) - 1L))
         list(
           per_dim = positions_by_chunk,
-          in_chunk = lapply(positions_by_chunk, seq_along)
+          in_chunk = lapply(positions_by_chunk, seq_along),
+          full_chunk = setNames(
+            c(
+              rep_len(TRUE, length(positions_by_chunk) - 1L),
+              length(chopped[length(chopped)]) == chunk_size
+            ),
+            names(positions_by_chunk)
+          )
         )
       } else if (consecutive) {
         n <- length(dim_index)
@@ -117,6 +127,14 @@
               SIMPLIFY = FALSE
             ),
             ids
+          ),
+          full_chunk = setNames(
+            c(
+              FALSE,
+              rep_len(TRUE, rest %/% chunk_size),
+              last_len > 0L
+            ),
+            ids
           )
         )
       } else {
@@ -128,7 +146,11 @@
         positions_by_chunk <- split(seq_along(chunk_id), chunk_id)
         list(
           per_dim = positions_by_chunk,
-          in_chunk = lapply(positions_by_chunk, \(pos) index_in_chunk[pos])
+          in_chunk = lapply(positions_by_chunk, \(pos) index_in_chunk[pos]),
+          # FIXME: This is a bit of a sweeping assumption but actually
+          # computing whether each chunk is full might take longer than what we
+          # gain from skipping the subset later on.
+          full_chunk = rep_len(FALSE, length(positions_by_chunk))
         )
       }
     },
@@ -138,6 +160,7 @@
   )
   per_dim <- lapply(results_by_dim, `[[`, "per_dim")
   in_chunk <- lapply(results_by_dim, `[[`, "in_chunk")
+  full_chunk <- lapply(results_by_dim, `[[`, "full_chunk")
 
   chunk_keys <- do.call(
     expand.grid,
@@ -150,24 +173,32 @@
 
   # Full cross-product of positions and in-chunk indices for each dimension, grouped by dim.
   by_dim <- mapply(
-    \(pd, ic, kk) list(positions = pd[kk], in_chunk = ic[kk]),
+    \(pd, ic, fc, kk) {
+      list(positions = pd[kk], in_chunk = ic[kk], full_chunk = fc[kk])
+    },
     per_dim,
     in_chunk,
+    full_chunk,
     key_pos,
     SIMPLIFY = FALSE
   )
   positions_by_dim <- lapply(by_dim, `[[`, "positions")
   in_chunk_by_dim <- lapply(by_dim, `[[`, "in_chunk")
+  full_chunk_by_dim <- lapply(by_dim, `[[`, "full_chunk")
 
   # Full cross-product of positions and in-chunk indices for each chunk, grouped by chunk.
   positions_per_chunk <- .mapply(list, positions_by_dim, NULL)
   in_chunk_per_chunk <- .mapply(list, in_chunk_by_dim, NULL)
+  full_chunk_per_chunk <- .mapply(all, full_chunk_by_dim, NULL)
 
   setNames(
     mapply(
-      \(pos, ic) list(positions = pos, index_in_chunk = ic),
+      \(pos, ic, fc) {
+        list(positions = pos, index_in_chunk = ic, full_chunk = fc)
+      },
       positions_per_chunk,
       in_chunk_per_chunk,
+      full_chunk_per_chunk,
       SIMPLIFY = FALSE
     ),
     key_strings
