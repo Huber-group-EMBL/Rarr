@@ -131,7 +131,7 @@ codec_sharding_indexed_decode <- function(
     endian = config$index_codecs$bytes$configuration[["endian"]]
   )
   index[index == -1] <- NA
-  index <- uint64_to_int64(index)
+  index <- int64_to_uint64(index)
   if (any(index > 2^53, na.rm = TRUE)) {
     stop(
       "Some index values exceed 2^53 ",
