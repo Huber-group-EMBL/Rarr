@@ -107,3 +107,33 @@ SEXP is_all_fill(SEXP x, SEXP _fill) {
 
   return ScalarLogical(result);
 }
+
+SEXP is_integerish(SEXP x) {
+  R_xlen_t n = XLENGTH(x);
+  bool result = true;
+
+  switch (TYPEOF(x)) {
+  case INTSXP: {
+    // All integers are integerish
+    break;
+  }
+  case LGLSXP: {
+    // Logical values are integerish
+    break;
+  }
+  case REALSXP: {
+    const double *px = REAL(x);
+    for (R_xlen_t i = 0; i < n; i++) {
+      if (!ISNAN(px[i]) && px[i] != floor(px[i])) {
+        result = false;
+        break;
+      }
+    }
+    break;
+  }
+  default:
+    result = false;
+  }
+
+  return ScalarLogical(result);
+}
