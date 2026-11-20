@@ -132,6 +132,14 @@ codec_sharding_indexed_decode <- function(
   )
   index[index == -1] <- NA
   index <- uint64_to_int64(index)
+  if (any(index > 2^53, na.rm = TRUE)) {
+    stop(
+      "Some index values exceed 2^53 ",
+      "and may not be represented exactly as doubles.",
+      "The decoding may produce incorrect results for these values.",
+      call. = FALSE
+    )
+  }
   index <- codec_transpose_decode(
     index,
     c(1L, seq.int(from = nb_dims + 1L, to = 2L))
