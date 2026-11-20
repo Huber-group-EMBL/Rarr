@@ -27,7 +27,7 @@ check_index <- function(index, metadata) {
         # Converting to integer and checking for equality doesn't work here
         # because large integers are stored as doubles but still valid index
         # values.
-        !(is.integer(index[[i]]) || is.wholenumber(index[[i]]))
+        !is_integerish(index[[i]])
     ) {
       failed[i] <- TRUE
     }
@@ -181,8 +181,8 @@ check_index <- function(index, metadata) {
   ))
 }
 
-is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
-  all(abs(x - round(x)) < tol)
+is_integerish <- function(x) {
+  .Call("is_integerish", x)
 }
 
 .mode_from_datatype <- function(data_type) {
