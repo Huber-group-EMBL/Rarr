@@ -1,6 +1,6 @@
 ---
 title: "Working with **remote** Zarr arrays in R"
-date: "23 June 2026"
+date: "21 November 2026"
 author:
   - name: Hugo Gruson
     affiliation:
@@ -9,7 +9,7 @@ author:
   - name: Mike Smith
     affiliation:
       - EMBL Heidelberg
-package: "Rarr 2.1.18"
+package: "Rarr 2.1.70"
 vignette: >
   %\VignetteIndexEntry{Working with **remote** Zarr arrays in R}
   %\VignetteEngine{knitr::rmarkdown}
@@ -38,19 +38,21 @@ We can again use `zarr_overview()` to quickly retrieve the array metadata.
 
 
 ``` r
-s3_address <- "https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0"
+s3_address <- "https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/0/"
 zarr_overview(s3_address)
 ```
 
 ```
 ## Type: Array
-## Path: https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0
-## Shape: 50 x 494 x 464
-## Chunk Shape: 1 x 494 x 464
-## No. of Chunks: 50 (50 x 1 x 1)
-## Data Type: float64
-## Endianness: little
+## Path: https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/0
+## Zarr Format: 2
+## Shape: 1 x 27 x 1 x 2500 x 2500
+## Chunk Shape: 1 x 1 x 1 x 1024 x 1024
+## No. of Chunks: 243 (1 x 27 x 1 x 3 x 3)
+## Data Type: uint8
+## Endianness: NA
 ## Compressor: blosc
+## Attributes: no
 ```
 
 You can also pass an S3 client to the function, which is useful if you need to set credentials or other options for accessing the bucket. See the section \@ref(s3-client) for more details.
@@ -59,12 +61,12 @@ This is equivalent to the previous code block:
 
 
 ``` r
-s3_address <- "https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0"
+s3_address <- "https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/0/"
 s3_client <- paws.storage::s3(
   config = list(
     credentials = list(anonymous = TRUE),
     region = "auto",
-    endpoint = "https://uk1s3.embassy.ebi.ac.uk"
+    endpoint = "https://livingobjects.ebi.ac.uk"
   )
 )
 zarr_overview(s3_address, s3_client = s3_client)
@@ -72,44 +74,63 @@ zarr_overview(s3_address, s3_client = s3_client)
 
 ```
 ## Type: Array
-## Path: https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0
-## Shape: 50 x 494 x 464
-## Chunk Shape: 1 x 494 x 464
-## No. of Chunks: 50 (50 x 1 x 1)
-## Data Type: float64
-## Endianness: little
+## Path: https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/0
+## Zarr Format: 2
+## Shape: 1 x 27 x 1 x 2500 x 2500
+## Chunk Shape: 1 x 1 x 1 x 1024 x 1024
+## No. of Chunks: 243 (1 x 27 x 1 x 3 x 3)
+## Data Type: uint8
+## Endianness: NA
 ## Compressor: blosc
+## Attributes: no
 ```
 
-The output above indicates that the array is stored in 50 chunks, each
-containing a slice of the overall data. In the example below we use the `index`
+The output above indicates that the array is stored in 243 chunks, each
+containing one channel, and one section of the overall data. In the example below we use the `index`
 argument to extract the first and tenth slices from the array. Choosing to read only
-2 of the 50 slices is much faster than if we opted to download the entire array
+4 of the 27 channels is much faster than if we opted to download the entire array
 before accessing the data.
 
 
 ``` r
 z2 <- read_zarr_array(
   s3_address,
-  index = list(c(1, 10), NULL, NULL)
+  index = list(NULL, 1L:4L, NULL, NULL, NULL)
 )
 ```
 
-We then plot our two slices on top of one another using the `image()` function.
+We then plot our four channels on top of one another using the `image()` function.
 
 
 ``` r
-## plot the first slice in blue
+## plot the first channel in red (alpha = 0.5)
+z2 <- drop(z2)
 image(
   log2(z2[1, , ]),
-  col = hsv(h = 0.6, v = 1, s = 1, alpha = 0:100 / 100),
+  col = rgb(1, 0, 0, 0.3),
   asp = dim(z2)[2] / dim(z2)[3],
   axes = FALSE
 )
-## overlay the tenth slice in green
+## overlay the second channel in green
 image(
   log2(z2[2, , ]),
-  col = hsv(h = 0.3, v = 1, s = 1, alpha = 0:100 / 100),
+  col = rgb(0, 1, 0, 0.5),
+  asp = dim(z2)[2] / dim(z2)[3],
+  axes = FALSE,
+  add = TRUE
+)
+## overlay the third channel in blue
+image(
+  log2(z2[3, , ]),
+  col = rgb(0, 0, 1, 0.3),
+  asp = dim(z2)[2] / dim(z2)[3],
+  axes = FALSE,
+  add = TRUE
+)
+## overlay the fourth channel in magenta
+image(
+  log2(z2[4, , ]),
+  col = rgb(1, 0, 1, 0.2),
   asp = dim(z2)[2] / dim(z2)[3],
   axes = FALSE,
   add = TRUE
@@ -133,12 +154,12 @@ credentials.  For example, lets try reading a file in a private S3 bucket:
 
 
 ``` r
-zarr_overview("https://huber.buckets.embl.de/rarr-testing/bzip2.zarr")
+zarr_overview("https://s3.embl.de/rarr-testing/bzip2.zarr")
 ```
 
 ```
 ## Error:
-## ! AccessDenied (HTTP 403). Access Denied.
+## ! The path does not contain any metadata files.
 ```
 
 We can see the "Access Denied" message in our output, indicating that we don't
@@ -149,21 +170,15 @@ we're now able to interrogate the files with functions in *Rarr*.
 
 ``` r
 Sys.setenv(
-  "AWS_ACCESS_KEY_ID" = "NFXMU48714DJHNGTB825",
-  "AWS_SECRET_ACCESS_KEY" = "FZ0_p4_NrrB_fnm_e1DEEP7g3772I9uP3igu5D_C"
+  "AWS_ACCESS_KEY_ID" = "bYUBYVg1AsEreuDgtg5K",
+  "AWS_SECRET_ACCESS_KEY" = "r8FrLXc9dseD6V1P3htsu7ZBzP7Gszsd3sM1G4KX"
 )
-zarr_overview("https://huber.buckets.embl.de/rarr-testing/bzip2.zarr")
+zarr_overview("https://s3.embl.de/rarr-testing/bzip2.zarr")
 ```
 
 ```
-## Type: Array
-## Path: https://huber.buckets.embl.de/rarr-testing/bzip2.zarr
-## Shape: 20 x 10
-## Chunk Shape: 10 x 10
-## No. of Chunks: 2 (2 x 1)
-## Data Type: int32
-## Endianness: little
-## Compressor: bz2
+## Error:
+## ! The path does not contain any metadata files.
 ```
 
 Behind the scenes **Rarr** makes use of the **paws** suite of packages
@@ -185,12 +200,13 @@ environment variable in the previous section.
 
 
 ``` r
-s3_address <- "https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0"
+s3_address <- "https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/0/"
 zarr_overview(s3_address)
 ```
 
 ```
-## 
+## Error:
+## ! The path does not contain any metadata files.
 ```
 
 You might encounter similar problems if you're trying to access multiple buckets
@@ -207,7 +223,7 @@ s3_client <- paws.storage::s3(
   config = list(
     credentials = list(anonymous = TRUE),
     region = "auto",
-    endpoint = "https://uk1s3.embassy.ebi.ac.uk"
+    endpoint = "https://livingobjects.ebi.ac.uk"
   )
 )
 ```
@@ -233,13 +249,15 @@ zarr_overview(s3_address, s3_client = s3_client)
 
 ```
 ## Type: Array
-## Path: https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0
-## Shape: 50 x 494 x 464
-## Chunk Shape: 1 x 494 x 464
-## No. of Chunks: 50 (50 x 1 x 1)
-## Data Type: float64
-## Endianness: little
+## Path: https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/0
+## Zarr Format: 2
+## Shape: 1 x 27 x 1 x 2500 x 2500
+## Chunk Shape: 1 x 1 x 1 x 1024 x 1024
+## No. of Chunks: 243 (1 x 27 x 1 x 3 x 3)
+## Data Type: uint8
+## Endianness: NA
 ## Compressor: blosc
+## Attributes: no
 ```
 
 Most functions in **Rarr** have the `s3_client` argument and it
