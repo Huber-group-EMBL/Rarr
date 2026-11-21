@@ -29,10 +29,8 @@ The modified `metadata` list.
 
 2.  Name `codecs` by their `name` field for O(1) lookup.
 
-3.  Normalise scalar arrays (empty `shape`) to shape `1`.
-
-4.  Inject a default `transpose` codec when absent (R uses F-order so we
+3.  Inject a default `transpose` codec when absent (R uses F-order so we
     always need to know the intended order).
 
-5.  Replicate the `endian` field across all fields of struct datatypes
+4.  Replicate the `endian` field across all fields of struct datatypes
     so that downstream chunk-reading code can treat it uniformly.

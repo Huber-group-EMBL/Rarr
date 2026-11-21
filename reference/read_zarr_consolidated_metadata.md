@@ -72,14 +72,14 @@ head(m)
 #> [1] 2
 #> 
 #> $a$datatype
-#> $a$datatype$endian
-#> [1] "little"
-#> 
 #> $a$datatype$base_type
 #> [1] "float"
 #> 
 #> $a$datatype$nbytes
 #> [1] 8
+#> 
+#> $a$datatype$endian
+#> [1] "little"
 #> 
 #> 
 #> $a$data_type
@@ -158,14 +158,14 @@ head(m)
 #> [1] 2
 #> 
 #> $b$datatype
-#> $b$datatype$endian
-#> [1] "little"
-#> 
 #> $b$datatype$base_type
 #> [1] "float"
 #> 
 #> $b$datatype$nbytes
 #> [1] 8
+#> 
+#> $b$datatype$endian
+#> [1] "little"
 #> 
 #> 
 #> $b$data_type
@@ -260,14 +260,14 @@ head(m)
 #> [1] 2
 #> 
 #> $c$datatype
-#> $c$datatype$endian
-#> [1] "little"
-#> 
 #> $c$datatype$base_type
 #> [1] "float"
 #> 
 #> $c$datatype$nbytes
 #> [1] 8
+#> 
+#> $c$datatype$endian
+#> [1] "little"
 #> 
 #> 
 #> $c$data_type

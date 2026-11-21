@@ -71,6 +71,22 @@ library(Rarr)
 **Rarr** can be used to read files either on local disk or on remote S3
 storage systems. First lets take a look at reading from a local file.
 
+**Rarr** uses the
+[progressr](https://cran.r-project.org/package=progressr) package to
+provide progress updates when reading or writing Zarr arrays. If you
+want to see the progress updates, you need to set up a progress handler.
+The simplest way to do this is with the
+[`handlers()`](https://progressr.futureverse.org/reference/handlers.html)
+function:
+
+``` r
+
+library(progressr)
+old_handlers <- handlers("txtprogressbar")
+# Remove the progress bar setting when exiting this session
+on.exit(handlers(old_handlers))
+```
+
 ## Reading a from a local Zarr array
 
 To demonstrate reading a local file, we’ll pick the example file
@@ -90,7 +106,7 @@ zarr_example <- system.file(
 ### Exploring the data
 
 We can get an summary of the array properties, such as its shape and
-datatype, using the function
+datatype, or group properties, using the function
 [`zarr_overview()`](https://huber-group-embl.github.io/Rarr/reference/zarr_overview.md)[^2].
 
 ``` r
@@ -100,13 +116,15 @@ zarr_overview(zarr_example)
 
 ``` R
 ## Type: Array
-## Path: /tmp/Rtmp3ZvhzD/temp_libpath541a2b36c23a/Rarr/extdata/zarr_examples/column-first/int32.zarr
+## Path: /tmp/RtmpN7QCt8/temp_libpath105384558e8086/Rarr/extdata/zarr_examples/column-first/int32.zarr
+## Zarr Format: 2
 ## Shape: 30 x 20 x 10
 ## Chunk Shape: 10 x 10 x 5
 ## No. of Chunks: 12 (3 x 2 x 2)
 ## Data Type: int32
 ## Endianness: little
-## Compressor: blosc
+## Compressor: zstd
+## Attributes: no
 ```
 
 You can use this to check that the location is a valid Zarr array, and
@@ -150,70 +168,9 @@ read_zarr_array(zarr_example, index = index)
 
 ## Reading from S3 storage
 
-Reading files in S3 storage works in a very similar fashion to local
-disk. This time the path needs to be a URL to the Zarr array. We can
-again use
-[`zarr_overview()`](https://huber-group-embl.github.io/Rarr/reference/zarr_overview.md)
-to quickly retrieve the array metadata.
-
-``` r
-
-s3_address <- "https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0"
-zarr_overview(s3_address)
-```
-
-``` R
-## Type: Array
-## Path: https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0
-## Shape: 50 x 494 x 464
-## Chunk Shape: 1 x 494 x 464
-## No. of Chunks: 50 (50 x 1 x 1)
-## Data Type: float64
-## Endianness: little
-## Compressor: blosc
-```
-
-The output above indicates that the array is stored in 50 chunks, each
-containing a slice of the overall data. In the example below we use the
-`index` argument to extract the first and tenth slices from the array.
-Choosing to read only 2 of the 50 slices is much faster than if we opted
-to download the entire array before accessing the data.
-
-``` r
-
-z2 <- read_zarr_array(s3_address, index = list(c(1, 10), NULL, NULL))
-```
-
-We then plot our two slices on top of one another using the
-[`image()`](https://rdrr.io/r/graphics/image.html) function.
-
-``` r
-
-## plot the first slice in blue
-image(
-  log2(z2[1, , ]),
-  col = hsv(h = 0.6, v = 1, s = 1, alpha = 0:100 / 100),
-  asp = dim(z2)[2] / dim(z2)[3],
-  axes = FALSE
-)
-## overlay the tenth slice in green
-image(
-  log2(z2[2, , ]),
-  col = hsv(h = 0.3, v = 1, s = 1, alpha = 0:100 / 100),
-  asp = dim(z2)[2] / dim(z2)[3],
-  axes = FALSE,
-  add = TRUE
-)
-```
-
-![](inst/rmd/imgs/plot-raster-1.jpeg)
-
-**Note:** if you receive the error message
-`"Error in stop(aws_error(request$error)) : bad error message"` it is
-likely you have some AWS credentials available in to your R session,
-which are being inappropriately used to access this public bucket.
-Please see the section @ref(s3-client) for details on how to set
-credentials for a specific request.
+Read the dedicated [“Working with **remote** Zarr arrays in R”
+vignette](https://huber-group-embl.github.io/Rarr/articles/S3.html) for
+more information on reading Zarr arrays from S3 storage.
 
 ## Writing to a Zarr array
 
@@ -301,7 +258,8 @@ survey](https://www.surveymonkey.de/r/denbi-service?sc=hd-hub&tool=rarr).
 [^1]: you only need to do the installation step once
 
 [^2]: This is essentially reading and formatting the array metadata that
-    accompanies any Zarr array.
+    accompanies any Zarr array, or the consolidated metadata if present
+    in the case of a Zarr group.
 
 # Package index
 

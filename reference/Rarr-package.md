@@ -35,5 +35,9 @@ Other contributors:
 
 - Sharla Gelfand \[contributor\]
 
+- Robrecht Cannoodt <rcannood@gmail.com>
+  ([ORCID](https://orcid.org/0000-0003-3641-729X)) (github: rcannood)
+  \[contributor\]
+
 - German Network for Bioinformatics Infrastructure - de.NBI
   ([ROR](https://ror.org/01vmpm840)) \[funder\]

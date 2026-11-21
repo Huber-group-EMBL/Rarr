@@ -390,7 +390,7 @@ contents is as expected.
 
 ### Session info
 
-    ## R Under development (unstable) (2026-11-15 r90899)
+    ## R Under development (unstable) (2026-11-20 r90953)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 26.04.1 LTS
     ## 
@@ -411,19 +411,19 @@ contents is as expected.
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] progressr_1.1.0  Rarr_2.1.69      BiocStyle_2.40.0
+    ## [1] progressr_1.1.0  Rarr_2.1.70      BiocStyle_2.41.0
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] crayon_1.5.3        cli_3.6.6           knitr_1.52         
     ##  [4] rlang_1.3.0         xfun_0.62           otel_0.3.0         
-    ##  [7] textshaping_1.0.5   jsonlite_2.0.0      glue_1.8.1         
-    ## [10] grumpy_0.1.1        htmltools_0.5.9     ragg_1.5.2         
-    ## [13] sass_0.4.10         rmarkdown_2.32      evaluate_1.0.5     
+    ##  [7] textshaping_1.1.0   jsonlite_2.0.0      glue_1.8.1         
+    ## [10] grumpy_0.2.0        htmltools_0.5.9     ragg_1.5.2         
+    ## [13] sass_0.5.0          rmarkdown_2.32      evaluate_1.0.5     
     ## [16] jquerylib_0.1.4     fastmap_1.2.0       yaml_2.3.12        
     ## [19] lifecycle_1.0.5     httr2_1.3.0         bookdown_0.48      
     ## [22] BiocManager_1.30.27 compiler_4.7.0      fs_2.1.0           
     ## [25] Rcpp_1.1.2          R.oo_1.27.1         R.utils_2.13.0     
-    ## [28] systemfonts_1.3.2   digest_0.6.39       R6_2.6.1           
+    ## [28] systemfonts_1.3.4   digest_0.6.39       R6_2.6.1           
     ## [31] curl_8.1.0          paws.common_0.9.0   paws.storage_0.11.0
     ## [34] magrittr_2.0.5      R.methodsS3_1.8.2   bslib_0.12.0       
     ## [37] tools_4.7.0         pkgdown_2.2.1       cachem_1.1.0       

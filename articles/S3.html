@@ -19,7 +19,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.69</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.70</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@ Heidelberg<br><a class="author_email" href="mailto:#"></a><a href="mailto:hugo.g
                               <h4 data-toc-skip class="author">Mike
 Smith</h4>
             <address class="author_afil">
-      EMBL Heidelberg<br><h4 data-toc-skip class="date">23 June 2026</h4>
+      EMBL Heidelberg<br><h4 data-toc-skip class="date">21 November 2026</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Huber-group-EMBL/Rarr/blob/devel/vignettes/S3.Rmd" class="external-link"><code>vignettes/S3.Rmd</code></a></small>
       <div class="d-none name"><code>S3.Rmd</code></div>
@@ -91,64 +91,85 @@ disk. This time the path needs to be a URL to the Zarr array. We can
 again use <code><a href="../reference/zarr_overview.html">zarr_overview()</a></code> to quickly retrieve the array
 metadata.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">s3_address</span> <span class="op">&lt;-</span> <span class="st">"https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0"</span></span>
+<code class="sourceCode R"><span><span class="va">s3_address</span> <span class="op">&lt;-</span> <span class="st">"https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/0/"</span></span>
 <span><span class="fu"><a href="../reference/zarr_overview.html">zarr_overview</a></span><span class="op">(</span><span class="va">s3_address</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Type: Array</span></span>
-<span><span class="co">## Path: https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0</span></span>
-<span><span class="co">## Shape: 50 x 494 x 464</span></span>
-<span><span class="co">## Chunk Shape: 1 x 494 x 464</span></span>
-<span><span class="co">## No. of Chunks: 50 (50 x 1 x 1)</span></span>
-<span><span class="co">## Data Type: float64</span></span>
-<span><span class="co">## Endianness: little</span></span>
-<span><span class="co">## Compressor: blosc</span></span></code></pre>
+<span><span class="co">## Path: https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/0</span></span>
+<span><span class="co">## Zarr Format: 2</span></span>
+<span><span class="co">## Shape: 1 x 27 x 1 x 2500 x 2500</span></span>
+<span><span class="co">## Chunk Shape: 1 x 1 x 1 x 1024 x 1024</span></span>
+<span><span class="co">## No. of Chunks: 243 (1 x 27 x 1 x 3 x 3)</span></span>
+<span><span class="co">## Data Type: uint8</span></span>
+<span><span class="co">## Endianness: NA</span></span>
+<span><span class="co">## Compressor: blosc</span></span>
+<span><span class="co">## Attributes: no</span></span></code></pre>
 <p>You can also pass an S3 client to the function, which is useful if
 you need to set credentials or other options for accessing the bucket.
 See the section @ref(s3-client) for more details. If absent, <em><a href="https://bioconductor.org/packages/3.24/Rarr" class="external-link">Rarr</a></em> will
 try to find credentials and other settings on its own, which may not
 always be successful. This is equivalent to the previous code block:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">s3_address</span> <span class="op">&lt;-</span> <span class="st">"https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0"</span></span>
+<code class="sourceCode R"><span><span class="va">s3_address</span> <span class="op">&lt;-</span> <span class="st">"https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/0/"</span></span>
 <span><span class="va">s3_client</span> <span class="op">&lt;-</span> <span class="fu">paws.storage</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/paws.storage/man/s3.html" class="external-link">s3</a></span><span class="op">(</span></span>
 <span>  config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    credentials <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>anonymous <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    region <span class="op">=</span> <span class="st">"auto"</span>,</span>
-<span>    endpoint <span class="op">=</span> <span class="st">"https://uk1s3.embassy.ebi.ac.uk"</span></span>
+<span>    endpoint <span class="op">=</span> <span class="st">"https://livingobjects.ebi.ac.uk"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/zarr_overview.html">zarr_overview</a></span><span class="op">(</span><span class="va">s3_address</span>, s3_client <span class="op">=</span> <span class="va">s3_client</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Type: Array</span></span>
-<span><span class="co">## Path: https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0</span></span>
-<span><span class="co">## Shape: 50 x 494 x 464</span></span>
-<span><span class="co">## Chunk Shape: 1 x 494 x 464</span></span>
-<span><span class="co">## No. of Chunks: 50 (50 x 1 x 1)</span></span>
-<span><span class="co">## Data Type: float64</span></span>
-<span><span class="co">## Endianness: little</span></span>
-<span><span class="co">## Compressor: blosc</span></span></code></pre>
-<p>The output above indicates that the array is stored in 50 chunks,
-each containing a slice of the overall data. In the example below we use
-the <code>index</code> argument to extract the first and tenth slices
-from the array. Choosing to read only 2 of the 50 slices is much faster
-than if we opted to download the entire array before accessing the
-data.</p>
+<span><span class="co">## Path: https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/0</span></span>
+<span><span class="co">## Zarr Format: 2</span></span>
+<span><span class="co">## Shape: 1 x 27 x 1 x 2500 x 2500</span></span>
+<span><span class="co">## Chunk Shape: 1 x 1 x 1 x 1024 x 1024</span></span>
+<span><span class="co">## No. of Chunks: 243 (1 x 27 x 1 x 3 x 3)</span></span>
+<span><span class="co">## Data Type: uint8</span></span>
+<span><span class="co">## Endianness: NA</span></span>
+<span><span class="co">## Compressor: blosc</span></span>
+<span><span class="co">## Attributes: no</span></span></code></pre>
+<p>The output above indicates that the array is stored in 243 chunks,
+each containing one channel, and one section of the overall data. In the
+example below we use the <code>index</code> argument to extract the
+first and tenth slices from the array. Choosing to read only 4 of the 27
+channels is much faster than if we opted to download the entire array
+before accessing the data.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">z2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_zarr_array.html">read_zarr_array</a></span><span class="op">(</span></span>
 <span>  <span class="va">s3_address</span>,</span>
-<span>  index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>, <span class="cn">NULL</span>, <span class="cn">NULL</span><span class="op">)</span></span>
+<span>  index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="cn">NULL</span>, <span class="fl">1L</span><span class="op">:</span><span class="fl">4L</span>, <span class="cn">NULL</span>, <span class="cn">NULL</span>, <span class="cn">NULL</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>We then plot our two slices on top of one another using the
+<p>We then plot our four channels on top of one another using the
 <code><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image()</a></code> function.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## plot the first slice in blue</span></span>
+<code class="sourceCode R"><span><span class="co">## plot the first channel in red (alpha = 0.5)</span></span>
+<span><span class="va">z2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/drop.html" class="external-link">drop</a></span><span class="op">(</span><span class="va">z2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log2</a></span><span class="op">(</span><span class="va">z2</span><span class="op">[</span><span class="fl">1</span>, , <span class="op">]</span><span class="op">)</span>,</span>
-<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/hsv.html" class="external-link">hsv</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">0.6</span>, v <span class="op">=</span> <span class="fl">1</span>, s <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">100</span> <span class="op">/</span> <span class="fl">100</span><span class="op">)</span>,</span>
+<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0.3</span><span class="op">)</span>,</span>
 <span>  asp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">z2</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">z2</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>,</span>
 <span>  axes <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">## overlay the tenth slice in green</span></span>
+<span><span class="co">## overlay the second channel in green</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log2</a></span><span class="op">(</span><span class="va">z2</span><span class="op">[</span><span class="fl">2</span>, , <span class="op">]</span><span class="op">)</span>,</span>
-<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/hsv.html" class="external-link">hsv</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">0.3</span>, v <span class="op">=</span> <span class="fl">1</span>, s <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">100</span> <span class="op">/</span> <span class="fl">100</span><span class="op">)</span>,</span>
+<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>  asp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">z2</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">z2</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>,</span>
+<span>  axes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  add <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">## overlay the third channel in blue</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log2</a></span><span class="op">(</span><span class="va">z2</span><span class="op">[</span><span class="fl">3</span>, , <span class="op">]</span><span class="op">)</span>,</span>
+<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.3</span><span class="op">)</span>,</span>
+<span>  asp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">z2</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">z2</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>,</span>
+<span>  axes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  add <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">## overlay the fourth channel in magenta</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log2</a></span><span class="op">(</span><span class="va">z2</span><span class="op">[</span><span class="fl">4</span>, , <span class="op">]</span><span class="op">)</span>,</span>
+<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.2</span><span class="op">)</span>,</span>
 <span>  asp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">z2</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">z2</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>,</span>
 <span>  axes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  add <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -170,9 +191,9 @@ environment variables <code>AWS_ACCESS_KEY_ID</code> and
 <code>AWS_SECRET_ACCESS_KEY</code> to store your credentials. For
 example, lets try reading a file in a private S3 bucket:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/zarr_overview.html">zarr_overview</a></span><span class="op">(</span><span class="st">"https://huber.buckets.embl.de/rarr-testing/bzip2.zarr"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/zarr_overview.html">zarr_overview</a></span><span class="op">(</span><span class="st">"https://s3.embl.de/rarr-testing/bzip2.zarr"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Error:</span></span>
-<span><span class="co">## ! AccessDenied (HTTP 403). Access Denied.</span></span></code></pre>
+<span><span class="co">## ! The path does not contain any metadata files.</span></span></code></pre>
 <p>We can see the “Access Denied” message in our output, indicating that
 we don’t have permission to access this resource as an anonymous user.
 However, if we use the key pair below, which gives read-only access to
@@ -180,18 +201,12 @@ the objects in the <code>rarr-testing</code> bucket, we’re now able to
 interrogate the files with functions in <em>Rarr</em>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span></span>
-<span>  <span class="st">"AWS_ACCESS_KEY_ID"</span> <span class="op">=</span> <span class="st">"NFXMU48714DJHNGTB825"</span>,</span>
-<span>  <span class="st">"AWS_SECRET_ACCESS_KEY"</span> <span class="op">=</span> <span class="st">"FZ0_p4_NrrB_fnm_e1DEEP7g3772I9uP3igu5D_C"</span></span>
+<span>  <span class="st">"AWS_ACCESS_KEY_ID"</span> <span class="op">=</span> <span class="st">"bYUBYVg1AsEreuDgtg5K"</span>,</span>
+<span>  <span class="st">"AWS_SECRET_ACCESS_KEY"</span> <span class="op">=</span> <span class="st">"r8FrLXc9dseD6V1P3htsu7ZBzP7Gszsd3sM1G4KX"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/zarr_overview.html">zarr_overview</a></span><span class="op">(</span><span class="st">"https://huber.buckets.embl.de/rarr-testing/bzip2.zarr"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Type: Array</span></span>
-<span><span class="co">## Path: https://huber.buckets.embl.de/rarr-testing/bzip2.zarr</span></span>
-<span><span class="co">## Shape: 20 x 10</span></span>
-<span><span class="co">## Chunk Shape: 10 x 10</span></span>
-<span><span class="co">## No. of Chunks: 2 (2 x 1)</span></span>
-<span><span class="co">## Data Type: int32</span></span>
-<span><span class="co">## Endianness: little</span></span>
-<span><span class="co">## Compressor: bz2</span></span></code></pre>
+<span><span class="fu"><a href="../reference/zarr_overview.html">zarr_overview</a></span><span class="op">(</span><span class="st">"https://s3.embl.de/rarr-testing/bzip2.zarr"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Error:</span></span>
+<span><span class="co">## ! The path does not contain any metadata files.</span></span></code></pre>
 <p>Behind the scenes <strong>Rarr</strong> makes use of the
 <strong>paws</strong> suite of packages (<a href="https://paws-r.github.io/" class="external-link uri">https://paws-r.github.io/</a>) to interact with S3 storage.
 A comprehensive overview of the multiple ways credentials can be set and
@@ -212,9 +227,10 @@ of this below, where we access the same public bucket used in
 <code>AWS_ACCESS_KEY_ID</code> environment variable in the previous
 section.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">s3_address</span> <span class="op">&lt;-</span> <span class="st">"https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0"</span></span>
+<code class="sourceCode R"><span><span class="va">s3_address</span> <span class="op">&lt;-</span> <span class="st">"https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/0/"</span></span>
 <span><span class="fu"><a href="../reference/zarr_overview.html">zarr_overview</a></span><span class="op">(</span><span class="va">s3_address</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## Error:</span></span>
+<span><span class="co">## ! The path does not contain any metadata files.</span></span></code></pre>
 <p>You might encounter similar problems if you’re trying to access
 multiple buckets each of which require different credentials. The
 solution here is to create an “s3_client” using
@@ -229,7 +245,7 @@ bucket by creating a client with anonymous credentials.</p>
 <span>  config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    credentials <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>anonymous <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    region <span class="op">=</span> <span class="st">"auto"</span>,</span>
-<span>    endpoint <span class="op">=</span> <span class="st">"https://uk1s3.embassy.ebi.ac.uk"</span></span>
+<span>    endpoint <span class="op">=</span> <span class="st">"https://livingobjects.ebi.ac.uk"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>If you’re accessing a public bucket, the most important step is to
@@ -249,13 +265,15 @@ now works successfully.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/zarr_overview.html">zarr_overview</a></span><span class="op">(</span><span class="va">s3_address</span>, s3_client <span class="op">=</span> <span class="va">s3_client</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Type: Array</span></span>
-<span><span class="co">## Path: https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0</span></span>
-<span><span class="co">## Shape: 50 x 494 x 464</span></span>
-<span><span class="co">## Chunk Shape: 1 x 494 x 464</span></span>
-<span><span class="co">## No. of Chunks: 50 (50 x 1 x 1)</span></span>
-<span><span class="co">## Data Type: float64</span></span>
-<span><span class="co">## Endianness: little</span></span>
-<span><span class="co">## Compressor: blosc</span></span></code></pre>
+<span><span class="co">## Path: https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/0</span></span>
+<span><span class="co">## Zarr Format: 2</span></span>
+<span><span class="co">## Shape: 1 x 27 x 1 x 2500 x 2500</span></span>
+<span><span class="co">## Chunk Shape: 1 x 1 x 1 x 1024 x 1024</span></span>
+<span><span class="co">## No. of Chunks: 243 (1 x 27 x 1 x 3 x 3)</span></span>
+<span><span class="co">## Data Type: uint8</span></span>
+<span><span class="co">## Endianness: NA</span></span>
+<span><span class="co">## Compressor: blosc</span></span>
+<span><span class="co">## Attributes: no</span></span></code></pre>
 <p>Most functions in <strong>Rarr</strong> have the
 <code>s3_client</code> argument and it can be applied in the same
 way.</p>

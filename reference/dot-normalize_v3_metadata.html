@@ -11,7 +11,7 @@ rest of the package:"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.69</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.70</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,6 @@ array node (i.e. <code>metadata$zarr_format == 3L</code> and
 
 <ol><li><p>Parse the <code>data_type</code> string into an R-friendly <code>datatype</code> list.</p></li>
 <li><p>Name <code>codecs</code> by their <code>name</code> field for O(1) lookup.</p></li>
-<li><p>Normalise scalar arrays (empty <code>shape</code>) to shape <code>1</code>.</p></li>
 <li><p>Inject a default <code>transpose</code> codec when absent (R uses F-order so we
 always need to know the intended order).</p></li>
 <li><p>Replicate the <code>endian</code> field across all fields of struct datatypes so

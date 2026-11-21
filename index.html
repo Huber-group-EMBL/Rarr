@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.69</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.70</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,12 +114,18 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://huber-group-embl.github.io/Rarr/">Rarr</a></span><span class="op">)</span></span></code></pre></div>
 <p><strong>Rarr</strong> can be used to read files either on local disk or on remote S3 storage systems. First lets take a look at reading from a local file.</p>
+<p><strong>Rarr</strong> uses the <a href="https://cran.r-project.org/package=progressr" class="external-link">progressr</a> package to provide progress updates when reading or writing Zarr arrays. If you want to see the progress updates, you need to set up a progress handler. The simplest way to do this is with the <code><a href="https://progressr.futureverse.org/reference/handlers.html" class="external-link">handlers()</a></code> function:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://progressr.futureverse.org" class="external-link">progressr</a></span><span class="op">)</span></span>
+<span><span class="va">old_handlers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://progressr.futureverse.org/reference/handlers.html" class="external-link">handlers</a></span><span class="op">(</span><span class="st">"txtprogressbar"</span><span class="op">)</span></span>
+<span><span class="co"># Remove the progress bar setting when exiting this session</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/on.exit.html" class="external-link">on.exit</a></span><span class="op">(</span><span class="fu"><a href="https://progressr.futureverse.org/reference/handlers.html" class="external-link">handlers</a></span><span class="op">(</span><span class="va">old_handlers</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reading-a-from-a-local-zarr-array">Reading a from a local Zarr array<a class="anchor" aria-label="anchor" href="#reading-a-from-a-local-zarr-array"></a>
 </h2>
 <p>To demonstrate reading a local file, we’ll pick the example file containing 32-bit integers arranged in the “column first” ordering.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">zarr_example</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
 <span>  <span class="st">"extdata"</span>,</span>
 <span>  <span class="st">"zarr_examples"</span>,</span>
@@ -130,82 +136,51 @@
 <div class="section level3">
 <h3 id="exploring-the-data">Exploring the data<a class="anchor" aria-label="anchor" href="#exploring-the-data"></a>
 </h3>
-<p>We can get an summary of the array properties, such as its shape and datatype, using the function <code><a href="reference/zarr_overview.html">zarr_overview()</a></code><a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This is essentially reading and formatting the array metadata that accompanies any Zarr array.&lt;/p&gt;"><sup>2</sup></a>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p>We can get an summary of the array properties, such as its shape and datatype, or group properties, using the function <code><a href="reference/zarr_overview.html">zarr_overview()</a></code><a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This is essentially reading and formatting the array metadata that accompanies any Zarr array, or the consolidated metadata if present in the case of a Zarr group.&lt;/p&gt;"><sup>2</sup></a>.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/zarr_overview.html">zarr_overview</a></span><span class="op">(</span><span class="va">zarr_example</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="do">## Type: Array</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="do">## Path: /tmp/Rtmp3ZvhzD/temp_libpath541a2b36c23a/Rarr/extdata/zarr_examples/column-first/int32.zarr</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="do">## Shape: 30 x 20 x 10</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="do">## Chunk Shape: 10 x 10 x 5</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="do">## No. of Chunks: 12 (3 x 2 x 2)</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="do">## Data Type: int32</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="do">## Endianness: little</span></span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="do">## Compressor: blosc</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="do">## Type: Array</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="do">## Path: /tmp/RtmpN7QCt8/temp_libpath105384558e8086/Rarr/extdata/zarr_examples/column-first/int32.zarr</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="do">## Zarr Format: 2</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="do">## Shape: 30 x 20 x 10</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="do">## Chunk Shape: 10 x 10 x 5</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="do">## No. of Chunks: 12 (3 x 2 x 2)</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="do">## Data Type: int32</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="do">## Endianness: little</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="do">## Compressor: zstd</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="do">## Attributes: no</span></span></code></pre></div>
 <p>You can use this to check that the location is a valid Zarr array, and that the shape and datatype of the array content are what you are expecting. For example, we can see in the output above that the data type (<code>int32</code>) corresponds to what we expect.</p>
 </div>
 <div class="section level3">
 <h3 id="reading-the-zarr-array">Reading the Zarr array<a class="anchor" aria-label="anchor" href="#reading-the-zarr-array"></a>
 </h3>
 <p>The summary information retrieved above is required, as to read the array with <strong>Rarr</strong> you need to know the shape and size of the array (unless you want to read the entire array). From the previous output we can see our example array has three dimensions of size 30 x 20 x 10. We can select the subset we want to extract using a <code>list</code>. The list must have the same length as the number of dimensions in our array, with each element of the list corresponding to the indices you want to extract in that dimension.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p>We then extract the subset using <code><a href="reference/read_zarr_array.html">read_zarr_array()</a></code>:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/read_zarr_array.html">read_zarr_array</a></span><span class="op">(</span><span class="va">zarr_example</span>, index <span class="op">=</span> <span class="va">index</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="do">## , , 1</span></span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="do">##      [,1] [,2]</span></span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="do">## [1,]    1    2</span></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="do">## [2,]    1    0</span></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="do">## [3,]    1    0</span></span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="do">## [4,]    1    0</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="do">## , , 1</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="do">##      [,1] [,2]</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="do">## [1,]    1    2</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="do">## [2,]    1    0</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="do">## [3,]    1    0</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="do">## [4,]    1    0</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="reading-from-s3-storage">Reading from S3 storage<a class="anchor" aria-label="anchor" href="#reading-from-s3-storage"></a>
 </h2>
-<p>Reading files in S3 storage works in a very similar fashion to local disk. This time the path needs to be a URL to the Zarr array. We can again use <code><a href="reference/zarr_overview.html">zarr_overview()</a></code> to quickly retrieve the array metadata.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">s3_address</span> <span class="op">&lt;-</span> <span class="st">"https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0"</span></span>
-<span><span class="fu"><a href="reference/zarr_overview.html">zarr_overview</a></span><span class="op">(</span><span class="va">s3_address</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="do">## Type: Array</span></span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="do">## Path: https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0</span></span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="do">## Shape: 50 x 494 x 464</span></span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="do">## Chunk Shape: 1 x 494 x 464</span></span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="do">## No. of Chunks: 50 (50 x 1 x 1)</span></span>
-<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="do">## Data Type: float64</span></span>
-<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="do">## Endianness: little</span></span>
-<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="do">## Compressor: blosc</span></span></code></pre></div>
-<p>The output above indicates that the array is stored in 50 chunks, each containing a slice of the overall data. In the example below we use the <code>index</code> argument to extract the first and tenth slices from the array. Choosing to read only 2 of the 50 slices is much faster than if we opted to download the entire array before accessing the data.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">z2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_zarr_array.html">read_zarr_array</a></span><span class="op">(</span><span class="va">s3_address</span>, index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>, <span class="cn">NULL</span>, <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>We then plot our two slices on top of one another using the <code><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image()</a></code> function.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## plot the first slice in blue</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log2</a></span><span class="op">(</span><span class="va">z2</span><span class="op">[</span><span class="fl">1</span>, , <span class="op">]</span><span class="op">)</span>,</span>
-<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/hsv.html" class="external-link">hsv</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">0.6</span>, v <span class="op">=</span> <span class="fl">1</span>, s <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">100</span> <span class="op">/</span> <span class="fl">100</span><span class="op">)</span>,</span>
-<span>  asp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">z2</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">z2</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>,</span>
-<span>  axes <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">## overlay the tenth slice in green</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log2</a></span><span class="op">(</span><span class="va">z2</span><span class="op">[</span><span class="fl">2</span>, , <span class="op">]</span><span class="op">)</span>,</span>
-<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/hsv.html" class="external-link">hsv</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">0.3</span>, v <span class="op">=</span> <span class="fl">1</span>, s <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">100</span> <span class="op">/</span> <span class="fl">100</span><span class="op">)</span>,</span>
-<span>  asp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">z2</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">z2</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>,</span>
-<span>  axes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  add <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><img src="inst/rmd/imgs/plot-raster-1.jpeg" alt="" width="30%"></p>
-<p><strong>Note:</strong> if you receive the error message <code>"Error in stop(aws_error(request$error)) : bad error message"</code> it is likely you have some AWS credentials available in to your R session, which are being inappropriately used to access this public bucket. Please see the section @ref(s3-client) for details on how to set credentials for a specific request.</p>
+<p>Read the dedicated <a href="https://huber-group-embl.github.io/Rarr/articles/S3.html">“Working with <strong>remote</strong> Zarr arrays in R” vignette</a> for more information on reading Zarr arrays from S3 storage.</p>
 </div>
 <div class="section level2">
 <h2 id="writing-to-a-zarr-array">Writing to a Zarr array<a class="anchor" aria-label="anchor" href="#writing-to-a-zarr-array"></a>
 </h2>
 <p>Up until now we’ve only covered reading existing Zarr array into R. However, <strong>Rarr</strong> can also be used to write R data to disk following the Zarr specification. To explore this, lets create an example array we want to save as a Zarr. In this case it’s going to be a three dimensional array and store the values 1 to 600.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">600</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path_to_new_zarr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"new.zarr"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/write_zarr_array.html">write_zarr_array</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">x</span>,</span>
@@ -213,19 +188,19 @@
 <span>  chunk_dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">5</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>We can check that the contents of the Zarr array is what we’re expecting. Since the contents of the whole array will be too large to display here, we use the <code>index</code> argument to extract rows 6 to 10, from the 10th column and 1st slice. That should be the values 96, 97, 98, 99, 100, but retaining the 3-dimensional array structure of the original array. The second line below uses <code><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical()</a></code> to confirm that reading the whole Zarr returns something equivalent to our original input <code>x</code>.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/read_zarr_array.html">read_zarr_array</a></span><span class="op">(</span>zarr_array_path <span class="op">=</span> <span class="va">path_to_new_zarr</span>, index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">6</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="do">## , , 1</span></span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="do">##      [,1]</span></span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="do">## [1,]   96</span></span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="do">## [2,]   97</span></span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="do">## [3,]   98</span></span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="do">## [4,]   99</span></span>
-<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="do">## [5,]  100</span></span></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="do">## , , 1</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="do">##      [,1]</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="do">## [1,]   96</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="do">## [2,]   97</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="do">## [3,]   98</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="do">## [4,]   99</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="do">## [5,]  100</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="fu"><a href="reference/read_zarr_array.html">read_zarr_array</a></span><span class="op">(</span>zarr_array_path <span class="op">=</span> <span class="va">path_to_new_zarr</span><span class="op">)</span>, <span class="va">x</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="do">## [1] TRUE</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="do">## [1] TRUE</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level1">
