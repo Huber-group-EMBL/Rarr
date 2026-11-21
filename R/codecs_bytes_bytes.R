@@ -118,10 +118,10 @@ codec_zstd_custom_encode <- function(bytes, ...) {
   )
 }
 
-codec_zstd_base_decode <- function(bytes, ...) {
+codec_zstd_decode <- function(bytes, ...) {
   memDecompress(bytes, type = "zstd", asChar = FALSE)
 }
 
-codec_zstd_base_encode <- function(bytes, ...) {
+codec_zstd_encode <- function(bytes, ...) {
   memCompress(bytes, type = "zstd")
 }

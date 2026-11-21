@@ -99,7 +99,7 @@
       "numcodecs.bz2" = "bz2",
       "numcodecs.lzma" = "lzma",
       "zstd" = if (has_zstd()) {
-        "zstd_base"
+        "zstd"
       } else {
         "zstd_custom"
       },
