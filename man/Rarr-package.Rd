@@ -30,6 +30,7 @@ Other contributors:
 \itemize{
   \item Artür Manukyan [contributor]
   \item Sharla Gelfand [contributor]
+  \item Robrecht Cannoodt \email{rcannood@gmail.com} (\href{https://orcid.org/0000-0003-3641-729X}{ORCID}) (github: rcannood) [contributor]
   \item German Network for Bioinformatics Infrastructure - de.NBI (\href{https://ror.org/01vmpm840}{ROR}) [funder]
 }
 
