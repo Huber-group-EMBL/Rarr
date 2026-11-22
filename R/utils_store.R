@@ -65,6 +65,30 @@
   return(is_present)
 }
 
+.store_check_folder_exist <- function(
+  zarr_array_path,
+  folders,
+  s3_client = NULL
+) {
+  if (is.null(s3_client)) {
+    is_present <- setNames(
+      file.exists(file.path(zarr_array_path, folders), recycle0 = TRUE),
+      folders
+    )
+  } else {
+    parse_url <- parse_s3_path(zarr_array_path)
+    is_present <- vapply(
+      folders,
+      FUN = function(f) {
+        key <- paste0(parse_url$object, f, "/")
+        .s3_folder_exists(s3_client, parse_url$bucket, key)
+      },
+      FUN.VALUE = logical(1L)
+    )
+  }
+  return(is_present)
+}
+
 .store_list <- function(path, recursive, s3_client = NULL) {
   if (is.null(s3_client)) {
     list.files(
@@ -75,7 +99,7 @@
       no.. = TRUE
     )
   } else {
-    s3_client$list_objects(path, recursive = recursive)
+    s3_client$list_objects(path)
   }
 }
 

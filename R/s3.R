@@ -178,7 +178,7 @@ parse_s3_path <- function(path) {
       Key = Key
     ),
     error = function(e) {
-      if (e$status_code == 404) {
+      if (e$status_code == 404L) {
         return(e)
       }
       stop(e)
@@ -186,4 +186,13 @@ parse_s3_path <- function(path) {
   )
 
   return(!inherits(head, "error"))
+}
+
+.s3_folder_exists <- function(s3_client, Bucket, Key) {
+  exists <- s3_client$list_objects_v2(
+    Bucket = Bucket,
+    Prefix = Key
+  )$KeyCount >
+    0L
+  return(exists)
 }
