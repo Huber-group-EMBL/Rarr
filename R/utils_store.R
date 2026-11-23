@@ -99,7 +99,20 @@
       no.. = TRUE
     )
   } else {
-    s3_client$list_objects(path)
+    # FIXME: recursive is ignored on this branch
+    parse_url <- parse_s3_path(path)
+    s3_client$list_objects_v2(
+      Bucket = parse_url$bucket,
+      Prefix = parse_url$object
+    )$Contents |>
+      vapply(
+        FUN = function(x) x$Key,
+        FUN.VALUE = character(1L)
+      ) |>
+      # Convert to relative path within the S3 bucket prefix.
+      # According to paws.storage docs, the prefix may or may not be included
+      # depending on the bucket type
+      sub(paste0("^", parse_url$object), "", x = _)
   }
 }
 
