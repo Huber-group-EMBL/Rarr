@@ -11,7 +11,7 @@ test_that("Anonymous S3 access is detected properly", {
 })
 
 test_that("Authenticated S3 access works", {
-  skip_if_offline("s3.embl.de")
+  skip_if_offline("huber.buckets.embl.de")
 
   withr::with_envvar(
     c(
