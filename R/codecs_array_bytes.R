@@ -131,9 +131,9 @@ codec_sharding_indexed_decode <- function(
     8L,
     endian = config$index_codecs$bytes$configuration[["endian"]]
   )
-  index[index == -1] <- NA
+  index[index == -1L] <- NA
   index <- int64_to_uint64(index)
-  if (any(index > 2^53, na.rm = TRUE)) {
+  if (any(index > 2L^53L, na.rm = TRUE)) {
     stop(
       "Some index values exceed 2^53 ",
       "and may not be represented exactly as doubles.",
