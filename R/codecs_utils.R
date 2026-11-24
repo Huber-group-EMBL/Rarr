@@ -80,6 +80,40 @@
     }
   }
 
+  if ("sharding_indexed" %in% array_bytes_codecs) {
+    cfg <- codecs[["sharding_indexed"]]$configuration
+    inner_codecs <- cfg$codecs
+    inner_codecs <- inner_codecs |>
+      setNames(vapply(
+        inner_codecs,
+        function(x) x$name,
+        FUN.VALUE = character(1L)
+      ))
+    # Inner chunks are C-ordered like any other chunk, so inject the same default
+    # transpose codec that is added for unsharded arrays.
+    if (is.null(inner_codecs[["transpose"]])) {
+      inner_codecs <- c(
+        list(
+          transpose = list(
+            name = "transpose",
+            # Better than seq_along() - 1L for ALTREP representation
+            configuration = list(
+              order = seq.int(0L, length(cfg$chunk_shape) - 1L)
+            )
+          )
+        ),
+        inner_codecs
+      )
+    }
+    configured_inner_codecs <- .configure_codecs(
+      inner_codecs,
+      operation = operation
+    )
+    codecs[[
+      "sharding_indexed"
+    ]]$configuration$configured_inner_codecs <- configured_inner_codecs
+  }
+
   # No loop here since there is always a single array_bytes codec
   cfg <- codecs[[array_bytes_codecs]]$configuration %||% NA_character_
   func_name <- paste("codec", array_bytes_codecs, operation, sep = "_")
