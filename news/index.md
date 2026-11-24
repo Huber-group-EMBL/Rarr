@@ -1,5 +1,13 @@
 # Changelog
 
+## Rarr 2.3
+
+### Minor improvements
+
+- Working with integerish doubles (e.g., `1.0`, `103.0`, etc.) indices
+  is now faster. Using integers is still faster and the recommended
+  choice when possible.
+
 ## Rarr 2.1
 
 ### Breaking changes
