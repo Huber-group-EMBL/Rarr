@@ -8,7 +8,7 @@ write_zarr_array(
   x,
   zarr_array_path,
   chunk_dim,
-  data_type = storage.mode(x),
+  data_type = type(x),
   order = c("F", "C"),
   compressor = use_zstd(),
   fill_value = NULL,

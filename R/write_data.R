@@ -297,7 +297,7 @@ write_zarr_array <- function(
   x,
   zarr_array_path,
   chunk_dim,
-  data_type = storage.mode(x),
+  data_type = type(x),
   order = c("F", "C"),
   compressor = use_zstd(),
   fill_value = NULL,
@@ -305,9 +305,9 @@ write_zarr_array <- function(
   dimension_separator = if (zarr_version == 2L) "." else "/",
   zarr_version = 3L
 ) {
-  if (!(is.array(x) && is.atomic(x))) {
+  if (!inherits(x, "DelayedArray") && !(is.array(x) && is.atomic(x))) {
     stop(
-      "`x` must be an atomic array. ",
+      "`x` must be an atomic array or DelayedArray. ",
       "You can maybe coerce your object with `as.array()`.",
       call. = FALSE
     )
@@ -349,9 +349,7 @@ write_zarr_array <- function(
   # Related to https://github.com/Huber-group-EMBL/Rarr/issues/60.
   metadata <- .read_array_metadata(path)
 
-  # FIXME: this is not entirely consistent with `update_zarr_array()` which
-  # errors in case of mismatch. Harmonize?
-  if (storage.mode(x) != .mode_from_datatype(metadata$data_type)) {
+  if (type(x) != .mode_from_datatype(metadata$data_type)) {
     stop(
       "Storage mode of `x` does not match the mode required by `data_type`.\n",
       "Please convert `x` to the appropriate storage mode ",
@@ -481,7 +479,7 @@ update_zarr_array <- function(zarr_array_path, x, index) {
   index <- check_index(index, metadata = metadata)
 
   existing_storage <- .mode_from_datatype(metadata$data_type)
-  new_storage <- storage.mode(x)
+  new_storage <- type(x)
   if (new_storage != existing_storage) {
     stop(
       "New data is not of the same type as the existing array. ",

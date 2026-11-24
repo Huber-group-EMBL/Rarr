@@ -3,6 +3,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @importFrom BiocGenerics type type<-
 ## usethis namespace: end
 NULL
 

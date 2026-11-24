@@ -24,6 +24,7 @@ BugReports: https://github.com/Huber-group-EMBL/Rarr/issues
 Depends:
     R (>= 4.2.0)
 Imports:
+    BiocGenerics,
     curl,
     grumpy,
     jsonlite,
