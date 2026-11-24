@@ -19,6 +19,7 @@ src/Makevars
 src/compression_tools/blosc/Makefile
 src/compression_tools/blosc/lib/blosc-*/Makefile
 src/compression_tools/blosc/lib/snappy-*/Makefile
+autom4te.cache
 
 ## caches
 inst/rmd/*
