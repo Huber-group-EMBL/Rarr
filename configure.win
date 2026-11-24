@@ -3,6 +3,40 @@
 CC=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CC`
 MACHINE=`${CC} -dumpmachine 2>/dev/null`
 
+## zstd ships with Rtools, so use that copy when we can build against it.
+## Only fall back to the bundled library when it is unavailable.
+bundled_libs=no
+for arg in "$@"; do
+  case "${arg}" in
+    --with-bundled-libraries|--with-bundled-libraries=yes) bundled_libs=yes ;;
+  esac
+done
+
+ZSTD_HAVE=no
+if [ "${bundled_libs}" = "no" ]; then
+  ZSTD_CONFTEST="conftest_zstd_$$"
+  cat > "${ZSTD_CONFTEST}.c" <<'EOF'
+#include <zstd.h>
+int main(void) { return ZSTD_versionNumber() > 0 ? 0 : 1; }
+EOF
+  if ${CC} "${ZSTD_CONFTEST}.c" -lzstd -o "${ZSTD_CONFTEST}.exe" >/dev/null 2>&1; then
+    ZSTD_HAVE=yes
+  fi
+  rm -f "${ZSTD_CONFTEST}.c" "${ZSTD_CONFTEST}.exe"
+fi
+
+if [ "${ZSTD_HAVE}" = "yes" ]; then
+  ZSTD_INCLUDE=""
+  ZSTD_CPPFLAGS=""
+  ZSTD_LIB="-lzstd"
+  BUILD_ZSTD=""
+else
+  ZSTD_INCLUDE="-I../../../zstd-1.5.7"
+  ZSTD_CPPFLAGS="-DRARR_BUNDLED_ZSTD"
+  ZSTD_LIB="compression_tools/zstd-1.5.7/libzstd.a"
+  BUILD_ZSTD="libzstd.a"
+fi
+
 case "${MACHINE}" in
   aarch64*|arm64*)
     MSSE2=""
@@ -33,7 +67,7 @@ esac
              lines <- gsub("@SSE2_SHUFFLE_OBJ@", "'"${SSE2_SHUFFLE_OBJ}"'", lines);
              lines <- gsub("@SSE2_SHUFFLE@", "'"${SSE2_SHUFFLE}"'", lines);
              lines <- gsub("@NO_RLIB@", "", lines);
-             lines <- gsub("@ZSTD_INCLUDE@", "-I../../../zstd-1.5.7", lines);
+             lines <- gsub("@ZSTD_INCLUDE@", "'"${ZSTD_INCLUDE}"'", lines);
              out_file <- file("src/compression_tools/blosc/lib/blosc-1.21.6/Makefile", open="wb");
              writeLines(lines, con = out_file, sep = "\n");
              close(out_file);'
@@ -67,7 +101,9 @@ sed \
 -e "s^@CPICFLAGS@^${CPICFLAGS}^" \
 -e "s^@CXX@^${CXX}^" \
 -e "s^@CPPFLAGS@^${CPPFLAGS}^" \
--e "s^@ZSTD_CPPFLAGS@^-DRARR_BUNDLED_ZSTD^" \
+-e "s^@ZSTD_CPPFLAGS@^${ZSTD_CPPFLAGS}^" \
+-e "s^@ZSTD_LIB@^${ZSTD_LIB}^" \
+-e "s^@BUILD_ZSTD@^${BUILD_ZSTD}^" \
 -e "s^@RANLIB@^${RANLIB}^" \
 -e "s^@R_CPPFLAGS@^${R_CPPFLAGS}^" \
 src/Makevars.win.in > src/Makevars.win
