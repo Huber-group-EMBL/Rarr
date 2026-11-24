@@ -35,11 +35,11 @@ check_index <- function(index, metadata) {
 
   if (any(failed)) {
     stop(
-      "Selected indices for dimension(s) ",
+      "Invalid indices for dimension(s) ",
       paste(which(failed), collapse = " & "),
       " are out of range. ",
-      "Each dimension of `index` must contain values between 1 and the ",
-      "size of that dimension of the array (",
+      "Each dimension of `index` must contain integerish values between ",
+      "1 and the size of that dimension of the array (",
       toString(shape),
       ").",
       call. = FALSE
