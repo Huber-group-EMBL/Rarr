@@ -374,7 +374,7 @@ write_zarr_array <- function(
   chunk_paths <- paste0(path, chunk_names)
 
   if (requireNamespace("progressr", quietly = TRUE)) {
-    p <- progressr::progressor(along = chunk_names)
+    p <- function(...) NULL
   } else {
     p <- function(...) NULL
   }
@@ -524,7 +524,7 @@ update_zarr_array <- function(zarr_array_path, x, index) {
   )
 
   if (requireNamespace("progressr", quietly = TRUE)) {
-    p <- progressr::progressor(along = chunk_names)
+    p <- function(...) NULL
   } else {
     p <- function(...) NULL
   }
