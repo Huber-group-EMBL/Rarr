@@ -206,6 +206,8 @@ is_integerish <- function(x) {
       "uint16" = "integer",
       "uint32" = "integer",
       "uint64" = "integer",
+      "bfloat16" = "double",
+      "float16" = "double",
       "float32" = "double",
       "float64" = "double",
       "string" = "character"
