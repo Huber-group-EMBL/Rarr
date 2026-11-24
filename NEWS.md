@@ -7,6 +7,8 @@
   possible.
 * Performance on arrays with a very large number of chunks is greatly improved
   (~2.5x faster on an array with 100,000 chunks).
+* Reading sharded arrays is now slightly faster, following a report from
+  Robrecht Cannoodt.
 
 ## Build changes
 
