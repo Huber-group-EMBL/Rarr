@@ -123,6 +123,7 @@ codec_sharding_indexed_decode <- function(
   # Equality comparison (to find empty chunks) then doesn't work properly.
   # We convert empty chunks from -1 to NA to handle them correctly first, and
   # **then** convert to uint64.
+  # FIXME: eventually handle this through read_chunk()
   index <- convert_bytes_to_array(
     index_raw,
     "int",
@@ -144,30 +145,6 @@ codec_sharding_indexed_decode <- function(
     index,
     c(1L, seq.int(from = nb_dims + 1L, to = 2L))
   )
-
-  # FIXME: do all this, up to the .configure_codecs() step once, early on.
-  # It doesn't need to be in the loop.
-  inner_codecs <- config$codecs |>
-    setNames(vapply(
-      config$codecs,
-      function(x) x$name,
-      FUN.VALUE = character(1L)
-    ))
-  # Inner chunks are C-ordered like any other chunk, so inject the same default
-  # transpose codec that is added for unsharded arrays.
-  if (is.null(inner_codecs[["transpose"]])) {
-    inner_codecs <- c(
-      list(
-        transpose = list(
-          name = "transpose",
-          # Better than seq_along() - 1L for ALTREP representation
-          configuration = list(order = seq.int(0L, length(chunk_dim) - 1L))
-        )
-      ),
-      inner_codecs
-    )
-  }
-  configured_decoders <- .configure_codecs(inner_codecs, operation = "decode")
 
   # Inner chunks that don't overlap `index_in_chunk` are discarded by the
   # caller, so skip reading and decoding them. They stay as `fill_value`.
@@ -203,7 +180,7 @@ codec_sharding_indexed_decode <- function(
     chunk <- read_chunk(
       chunk_raw,
       chunk_dim = chunk_dim,
-      decoders = configured_decoders,
+      decoders = config$configured_inner_codecs,
       datatype = datatype,
       fill_value = fill_value
     )
