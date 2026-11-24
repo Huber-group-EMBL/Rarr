@@ -5,6 +5,7 @@
 * Working with integerish doubles (e.g., `1.0`, `103.0`, etc.) indices is now
   faster. Using integers is still faster and the recommended choice when
   possible.
+* Performance on arrays with a very large number of chunks is improved.
 
 ## Build changes
 
