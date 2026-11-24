@@ -58,6 +58,10 @@ check_index <- function(index, metadata) {
 #'
 #' @keywords internal
 .extract_chunk <- function(x, idx) {
+  # FIXME: use the extract_array() method instead of this?
+  if (inherits(x, "DelayedArray")) {
+    return(DelayedArray::extract_array(x, idx))
+  }
   # do.call() has the same performance if we ever need to drop rlang dependency
   # but this is more aesthetically pleasing and rlang is likely to always be
   # somewhere in the dependency tree.
