@@ -411,7 +411,7 @@ contents is as expected.
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] progressr_1.1.0  Rarr_2.3.3       BiocStyle_2.41.0
+    ## [1] progressr_1.1.0  Rarr_2.3.4       BiocStyle_2.41.0
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] crayon_1.5.3        cli_3.6.6           knitr_1.52         
