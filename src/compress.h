@@ -9,7 +9,11 @@
   #include "compression_tools/blosc/lib/blosc-1.21.6/blosc.h"
   #include "compression_tools/blosc/lib/lz4-1.10.0/lz4.h"
   #include "compression_tools/blosc/lib/lz4-1.10.0/lz4hc.h"
-  #include "compression_tools/zstd-1.5.7/zstd.h"
+  #if defined(RARR_BUNDLED_ZSTD)
+    #include "compression_tools/zstd-1.5.7/zstd.h"
+  #else
+    #include <zstd.h>
+  #endif
 #endif
 
 SEXP compress_chunk_BLOSC(

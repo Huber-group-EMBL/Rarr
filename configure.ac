@@ -106,11 +106,19 @@ if test -z "$HAVE_ZSTD"; then
   AC_MSG_NOTICE(compiling bundled Zstd library)
   AC_SUBST(BUILD_ZSTD, libzstd.a)
   AC_SUBST(ZSTD_LIB, ./compression_tools/zstd-1.5.7/libzstd.a)
+  dnl blosc needs to find the bundled zstd headers when they are what we build against
+  ZSTD_INCLUDE="-I../../../zstd-1.5.7"
+  dnl tells the package headers to include the bundled copy rather than <zstd.h>
+  ZSTD_CPPFLAGS="-DRARR_BUNDLED_ZSTD"
 else
   AC_MSG_NOTICE(Using system Zstd library)
   AC_SUBST(BUILD_ZSTD, "")
   AC_SUBST(ZSTD_LIB, -lzstd)
+  ZSTD_INCLUDE=""
+  ZSTD_CPPFLAGS=""
 fi
+AC_SUBST(ZSTD_INCLUDE)
+AC_SUBST(ZSTD_CPPFLAGS)
 
 ##############################
 

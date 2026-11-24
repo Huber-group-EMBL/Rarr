@@ -33,6 +33,7 @@ esac
              lines <- gsub("@SSE2_SHUFFLE_OBJ@", "'"${SSE2_SHUFFLE_OBJ}"'", lines);
              lines <- gsub("@SSE2_SHUFFLE@", "'"${SSE2_SHUFFLE}"'", lines);
              lines <- gsub("@NO_RLIB@", "", lines);
+             lines <- gsub("@ZSTD_INCLUDE@", "-I../../../zstd-1.5.7", lines);
              out_file <- file("src/compression_tools/blosc/lib/blosc-1.21.6/Makefile", open="wb");
              writeLines(lines, con = out_file, sep = "\n");
              close(out_file);'
@@ -66,6 +67,7 @@ sed \
 -e "s^@CPICFLAGS@^${CPICFLAGS}^" \
 -e "s^@CXX@^${CXX}^" \
 -e "s^@CPPFLAGS@^${CPPFLAGS}^" \
+-e "s^@ZSTD_CPPFLAGS@^-DRARR_BUNDLED_ZSTD^" \
 -e "s^@RANLIB@^${RANLIB}^" \
 -e "s^@R_CPPFLAGS@^${R_CPPFLAGS}^" \
 src/Makevars.win.in > src/Makevars.win
