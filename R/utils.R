@@ -215,6 +215,6 @@ is_integerish <- function(x) {
 }
 
 int64_to_uint64 <- function(x) {
-  x[!is.na(x) & x < 0] <- x[!is.na(x) & x < 0] + 2^64
+  x[!is.na(x) & x < 0L] <- x[!is.na(x) & x < 0L] + 2L^64L
   return(x)
 }
