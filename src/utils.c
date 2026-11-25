@@ -39,11 +39,6 @@ SEXP chop_vec(SEXP x, SEXP _size) {
 SEXP is_all_fill(SEXP x, SEXP _fill) {
   R_xlen_t n = Rf_xlength(x);
   bool result = true;
-
-  if (TYPEOF(x) == S4SXP) {
-    // FIXME: not supported yet
-    return ScalarLogical(false);
-  }
   
   // It can (rarely) happen that fill and x have different types. In particular,
   // large integers are stored as doubles in R.

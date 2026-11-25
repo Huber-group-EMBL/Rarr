@@ -184,6 +184,7 @@
 #' Implemented in C so it exits at the first mismatch without allocating.
 #'
 #' @keywords internal
+#' @noRd
 .is_all_fill <- function(x, fill) {
   .Call("is_all_fill", x, fill, PACKAGE = "Rarr")
 }

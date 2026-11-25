@@ -406,8 +406,13 @@ write_zarr_array <- function(
 
   chunk_in_mem <- extract_array(x, idx_in_array)
 
+  # Now seems like a good time to realize DelayedArray. We do not benefit from
+  # them being Delayed in array-array codecs but it's still probably the
+  # cleanest moment to do it.
+  # We do NOT want to do it inside .is_all_fill because we would be realizing
+  # it twice since it needs to be realized to be written to raw.
+  chunk_in_mem <- as.array(chunk_in_mem)
   if (.is_all_fill(chunk_in_mem, metadata$fill_value)) {
-    ## if the chunk only contains the fill value, we can skip writing it
     return(invisible(TRUE))
   }
 
