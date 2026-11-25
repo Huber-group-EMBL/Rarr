@@ -38,7 +38,7 @@ time the path needs to be a URL to the Zarr array.
 We can again use `zarr_overview()` to quickly retrieve the array metadata.
 
 ```{r, read-from-s3-shown}
-s3_address <- "https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0"
+s3_address <- "https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/0/"
 zarr_overview(s3_address)
 ```
 
@@ -47,44 +47,61 @@ If absent, `r BiocStyle::Biocpkg('Rarr')` will try to find credentials and other
 This is equivalent to the previous code block:
 
 ```{r, read-from-s3}
-s3_address <- "https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0"
+s3_address <- "https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/0/"
 s3_client <- paws.storage::s3(
   config = list(
     credentials = list(anonymous = TRUE),
     region = "auto",
-    endpoint = "https://uk1s3.embassy.ebi.ac.uk"
+    endpoint = "https://livingobjects.ebi.ac.uk"
   )
 )
 zarr_overview(s3_address, s3_client = s3_client)
 ```
 
-The output above indicates that the array is stored in 50 chunks, each
-containing a slice of the overall data. In the example below we use the `index`
+The output above indicates that the array is stored in 243 chunks, each
+containing one channel, and one section of the overall data. In the example below we use the `index`
 argument to extract the first and tenth slices from the array. Choosing to read only
-2 of the 50 slices is much faster than if we opted to download the entire array
+4 of the 27 channels is much faster than if we opted to download the entire array
 before accessing the data.
 
 ```{r, get-slices}
 z2 <- read_zarr_array(
   s3_address,
-  index = list(c(1, 10), NULL, NULL)
+  index = list(NULL, 1L:4L, NULL, NULL, NULL)
 )
 ```
 
-We then plot our two slices on top of one another using the `image()` function.
+We then plot our four channels on top of one another using the `image()` function.
 
 ```{r, plot-raster}
-## plot the first slice in blue
+## plot the first channel in red (alpha = 0.5)
+z2 <- drop(z2)
 image(
   log2(z2[1, , ]),
-  col = hsv(h = 0.6, v = 1, s = 1, alpha = 0:100 / 100),
+  col = rgb(1, 0, 0, 0.3),
   asp = dim(z2)[2] / dim(z2)[3],
   axes = FALSE
 )
-## overlay the tenth slice in green
+## overlay the second channel in green
 image(
   log2(z2[2, , ]),
-  col = hsv(h = 0.3, v = 1, s = 1, alpha = 0:100 / 100),
+  col = rgb(0, 1, 0, 0.5),
+  asp = dim(z2)[2] / dim(z2)[3],
+  axes = FALSE,
+  add = TRUE
+)
+## overlay the third channel in blue
+image(
+  log2(z2[3, , ]),
+  col = rgb(0, 0, 1, 0.3),
+  asp = dim(z2)[2] / dim(z2)[3],
+  axes = FALSE,
+  add = TRUE
+)
+## overlay the fourth channel in magenta
+image(
+  log2(z2[4, , ]),
+  col = rgb(1, 0, 1, 0.2),
   asp = dim(z2)[2] / dim(z2)[3],
   axes = FALSE,
   add = TRUE
@@ -139,7 +156,7 @@ environment variable in the previous section.
 
 
 ```{r, bad-s3, error = TRUE}
-s3_address <- "https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0076A/10501752.zarr/0"
+s3_address <- "https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/0/"
 zarr_overview(s3_address)
 ```
 
@@ -156,7 +173,7 @@ s3_client <- paws.storage::s3(
   config = list(
     credentials = list(anonymous = TRUE),
     region = "auto",
-    endpoint = "https://uk1s3.embassy.ebi.ac.uk"
+    endpoint = "https://livingobjects.ebi.ac.uk"
   )
 )
 ```

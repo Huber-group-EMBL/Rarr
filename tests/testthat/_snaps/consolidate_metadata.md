@@ -300,3 +300,263 @@
       
       
 
+# zarr_consolidate_metadata() on S3
+
+    Code
+      zarr_consolidate_metadata(
+        "https://huber.buckets.embl.de/rarr-testing/multiarray_store.zarr", action = "return")
+    Output
+      $zarr_format
+      [1] 3
+      
+      $node_type
+      [1] "group"
+      
+      $attributes
+      NULL
+      
+      $consolidated_metadata
+      $consolidated_metadata$kind
+      [1] "inline"
+      
+      $consolidated_metadata$must_understand
+      [1] FALSE
+      
+      $consolidated_metadata$metadata
+      $consolidated_metadata$metadata$b
+      $consolidated_metadata$metadata$b$shape
+      $consolidated_metadata$metadata$b$shape[[1]]
+      [1] 2
+      
+      $consolidated_metadata$metadata$b$shape[[2]]
+      [1] 2
+      
+      
+      $consolidated_metadata$metadata$b$data_type
+      [1] "float64"
+      
+      $consolidated_metadata$metadata$b$chunk_grid
+      $consolidated_metadata$metadata$b$chunk_grid$name
+      [1] "regular"
+      
+      $consolidated_metadata$metadata$b$chunk_grid$configuration
+      $consolidated_metadata$metadata$b$chunk_grid$configuration$chunk_shape
+      $consolidated_metadata$metadata$b$chunk_grid$configuration$chunk_shape[[1]]
+      [1] 2
+      
+      $consolidated_metadata$metadata$b$chunk_grid$configuration$chunk_shape[[2]]
+      [1] 2
+      
+      
+      
+      
+      $consolidated_metadata$metadata$b$chunk_key_encoding
+      $consolidated_metadata$metadata$b$chunk_key_encoding$name
+      [1] "default"
+      
+      $consolidated_metadata$metadata$b$chunk_key_encoding$configuration
+      $consolidated_metadata$metadata$b$chunk_key_encoding$configuration$separator
+      [1] "/"
+      
+      
+      
+      $consolidated_metadata$metadata$b$fill_value
+      [1] 0
+      
+      $consolidated_metadata$metadata$b$codecs
+      $consolidated_metadata$metadata$b$codecs[[1]]
+      $consolidated_metadata$metadata$b$codecs[[1]]$name
+      [1] "bytes"
+      
+      $consolidated_metadata$metadata$b$codecs[[1]]$configuration
+      $consolidated_metadata$metadata$b$codecs[[1]]$configuration$endian
+      [1] "little"
+      
+      
+      
+      $consolidated_metadata$metadata$b$codecs[[2]]
+      $consolidated_metadata$metadata$b$codecs[[2]]$name
+      [1] "zstd"
+      
+      $consolidated_metadata$metadata$b$codecs[[2]]$configuration
+      $consolidated_metadata$metadata$b$codecs[[2]]$configuration$level
+      [1] 0
+      
+      $consolidated_metadata$metadata$b$codecs[[2]]$configuration$checksum
+      [1] FALSE
+      
+      
+      
+      
+      $consolidated_metadata$metadata$b$attributes
+      named list()
+      
+      $consolidated_metadata$metadata$b$zarr_format
+      [1] 3
+      
+      $consolidated_metadata$metadata$b$node_type
+      [1] "array"
+      
+      $consolidated_metadata$metadata$b$storage_transformers
+      list()
+      
+      
+      $consolidated_metadata$metadata$c
+      $consolidated_metadata$metadata$c$shape
+      $consolidated_metadata$metadata$c$shape[[1]]
+      [1] 3
+      
+      $consolidated_metadata$metadata$c$shape[[2]]
+      [1] 3
+      
+      $consolidated_metadata$metadata$c$shape[[3]]
+      [1] 3
+      
+      
+      $consolidated_metadata$metadata$c$data_type
+      [1] "float64"
+      
+      $consolidated_metadata$metadata$c$chunk_grid
+      $consolidated_metadata$metadata$c$chunk_grid$name
+      [1] "regular"
+      
+      $consolidated_metadata$metadata$c$chunk_grid$configuration
+      $consolidated_metadata$metadata$c$chunk_grid$configuration$chunk_shape
+      $consolidated_metadata$metadata$c$chunk_grid$configuration$chunk_shape[[1]]
+      [1] 3
+      
+      $consolidated_metadata$metadata$c$chunk_grid$configuration$chunk_shape[[2]]
+      [1] 3
+      
+      $consolidated_metadata$metadata$c$chunk_grid$configuration$chunk_shape[[3]]
+      [1] 3
+      
+      
+      
+      
+      $consolidated_metadata$metadata$c$chunk_key_encoding
+      $consolidated_metadata$metadata$c$chunk_key_encoding$name
+      [1] "default"
+      
+      $consolidated_metadata$metadata$c$chunk_key_encoding$configuration
+      $consolidated_metadata$metadata$c$chunk_key_encoding$configuration$separator
+      [1] "/"
+      
+      
+      
+      $consolidated_metadata$metadata$c$fill_value
+      [1] 0
+      
+      $consolidated_metadata$metadata$c$codecs
+      $consolidated_metadata$metadata$c$codecs[[1]]
+      $consolidated_metadata$metadata$c$codecs[[1]]$name
+      [1] "bytes"
+      
+      $consolidated_metadata$metadata$c$codecs[[1]]$configuration
+      $consolidated_metadata$metadata$c$codecs[[1]]$configuration$endian
+      [1] "little"
+      
+      
+      
+      $consolidated_metadata$metadata$c$codecs[[2]]
+      $consolidated_metadata$metadata$c$codecs[[2]]$name
+      [1] "zstd"
+      
+      $consolidated_metadata$metadata$c$codecs[[2]]$configuration
+      $consolidated_metadata$metadata$c$codecs[[2]]$configuration$level
+      [1] 0
+      
+      $consolidated_metadata$metadata$c$codecs[[2]]$configuration$checksum
+      [1] FALSE
+      
+      
+      
+      
+      $consolidated_metadata$metadata$c$attributes
+      named list()
+      
+      $consolidated_metadata$metadata$c$zarr_format
+      [1] 3
+      
+      $consolidated_metadata$metadata$c$node_type
+      [1] "array"
+      
+      $consolidated_metadata$metadata$c$storage_transformers
+      list()
+      
+      
+      $consolidated_metadata$metadata$`subgroup/a`
+      $consolidated_metadata$metadata$`subgroup/a`$shape
+      $consolidated_metadata$metadata$`subgroup/a`$shape[[1]]
+      [1] 1
+      
+      
+      $consolidated_metadata$metadata$`subgroup/a`$data_type
+      [1] "float64"
+      
+      $consolidated_metadata$metadata$`subgroup/a`$chunk_grid
+      $consolidated_metadata$metadata$`subgroup/a`$chunk_grid$name
+      [1] "regular"
+      
+      $consolidated_metadata$metadata$`subgroup/a`$chunk_grid$configuration
+      $consolidated_metadata$metadata$`subgroup/a`$chunk_grid$configuration$chunk_shape
+      $consolidated_metadata$metadata$`subgroup/a`$chunk_grid$configuration$chunk_shape[[1]]
+      [1] 1
+      
+      
+      
+      
+      $consolidated_metadata$metadata$`subgroup/a`$chunk_key_encoding
+      $consolidated_metadata$metadata$`subgroup/a`$chunk_key_encoding$name
+      [1] "default"
+      
+      $consolidated_metadata$metadata$`subgroup/a`$chunk_key_encoding$configuration
+      $consolidated_metadata$metadata$`subgroup/a`$chunk_key_encoding$configuration$separator
+      [1] "/"
+      
+      
+      
+      $consolidated_metadata$metadata$`subgroup/a`$fill_value
+      [1] 0
+      
+      $consolidated_metadata$metadata$`subgroup/a`$codecs
+      $consolidated_metadata$metadata$`subgroup/a`$codecs[[1]]
+      $consolidated_metadata$metadata$`subgroup/a`$codecs[[1]]$name
+      [1] "bytes"
+      
+      $consolidated_metadata$metadata$`subgroup/a`$codecs[[1]]$configuration
+      $consolidated_metadata$metadata$`subgroup/a`$codecs[[1]]$configuration$endian
+      [1] "little"
+      
+      
+      
+      $consolidated_metadata$metadata$`subgroup/a`$codecs[[2]]
+      $consolidated_metadata$metadata$`subgroup/a`$codecs[[2]]$name
+      [1] "zstd"
+      
+      $consolidated_metadata$metadata$`subgroup/a`$codecs[[2]]$configuration
+      $consolidated_metadata$metadata$`subgroup/a`$codecs[[2]]$configuration$level
+      [1] 0
+      
+      $consolidated_metadata$metadata$`subgroup/a`$codecs[[2]]$configuration$checksum
+      [1] FALSE
+      
+      
+      
+      
+      $consolidated_metadata$metadata$`subgroup/a`$attributes
+      named list()
+      
+      $consolidated_metadata$metadata$`subgroup/a`$zarr_format
+      [1] 3
+      
+      $consolidated_metadata$metadata$`subgroup/a`$node_type
+      [1] "array"
+      
+      $consolidated_metadata$metadata$`subgroup/a`$storage_transformers
+      list()
+      
+      
+      
+      
+

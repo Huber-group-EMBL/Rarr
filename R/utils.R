@@ -27,7 +27,7 @@ check_index <- function(index, metadata) {
         # Converting to integer and checking for equality doesn't work here
         # because large integers are stored as doubles but still valid index
         # values.
-        !(is.integer(index[[i]]) || is.wholenumber(index[[i]]))
+        !is_integerish(index[[i]])
     ) {
       failed[i] <- TRUE
     }
@@ -35,11 +35,11 @@ check_index <- function(index, metadata) {
 
   if (any(failed)) {
     stop(
-      "Selected indices for dimension(s) ",
+      "Invalid indices for dimension(s) ",
       paste(which(failed), collapse = " & "),
       " are out of range. ",
-      "Each dimension of `index` must contain values between 1 and the ",
-      "size of that dimension of the array (",
+      "Each dimension of `index` must contain integerish values between ",
+      "1 and the size of that dimension of the array (",
       toString(shape),
       ").",
       call. = FALSE
@@ -80,6 +80,17 @@ check_index <- function(index, metadata) {
     }
     if (typestr$name == "struct") {
       internal_types <- lapply(typestr$configuration$fields, function(field) {
+        if (
+          is.list(field$data_type) &&
+            field$data_type$name %in% c("struct", "structured")
+        ) {
+          stop(
+            "Nested structured data types are not supported.\n",
+            "Please open an issue at ",
+            "https://github.com/Huber-group-EMBL/Rarr/issues to request support.",
+            call. = FALSE
+          )
+        }
         .parse_datatype_v3(field$data_type)
       })
       return(
@@ -101,6 +112,17 @@ check_index <- function(index, metadata) {
     }
     if (typestr$name == "structured") {
       internal_types <- lapply(typestr$configuration$fields, function(field) {
+        if (
+          is.list(field$data_type) &&
+            field$data_type$name %in% c("struct", "structured")
+        ) {
+          stop(
+            "Nested structured data types are not supported.\n",
+            "Please open an issue at ",
+            "https://github.com/Huber-group-EMBL/Rarr/issues to request support.",
+            call. = FALSE
+          )
+        }
         .parse_datatype_v3(field[[2L]])
       })
       return(
@@ -159,8 +181,8 @@ check_index <- function(index, metadata) {
   ))
 }
 
-is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
-  all(abs(x - round(x)) < tol)
+is_integerish <- function(x) {
+  .Call("is_integerish", x)
 }
 
 .mode_from_datatype <- function(data_type) {
@@ -184,10 +206,17 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
       "uint16" = "integer",
       "uint32" = "integer",
       "uint64" = "integer",
+      "bfloat16" = "double",
+      "float16" = "double",
       "float32" = "double",
       "float64" = "double",
       "string" = "character"
     )
   }
   return(mode)
+}
+
+int64_to_uint64 <- function(x) {
+  x[!is.na(x) & x < 0L] <- x[!is.na(x) & x < 0L] + 2L^64L
+  return(x)
 }

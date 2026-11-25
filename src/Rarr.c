@@ -21,6 +21,7 @@ static const R_CallMethodDef callMethods[] = {
 
   {"chop_vec", (DL_FUNC) &chop_vec, 2},
   {"is_all_fill", (DL_FUNC) &is_all_fill, 2},
+  {"is_integerish", (DL_FUNC) &is_integerish, 1},
   {NULL, NULL, 0}
 };
 

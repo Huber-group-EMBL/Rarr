@@ -101,6 +101,18 @@ test_that("string zarr arrays can be read correctly", {
   expect_identical(res[, 1], greetings)
   expect_identical(res[1, ], greetings)
 
+  unicode_fixed_length_v3 <- system.file(
+    "extdata",
+    "zarr_examples",
+    "column-first",
+    "Unicode_v3.zarr",
+    package = "Rarr"
+  )
+  expect_identical(
+    expect_no_condition(read_zarr_array(unicode_fixed_length_v3)),
+    read_zarr_array(unicode_fixed_length)
+  )
+
   unicode_var_length <- system.file(
     "extdata",
     "zarr_examples",

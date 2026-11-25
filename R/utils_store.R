@@ -65,6 +65,30 @@
   return(is_present)
 }
 
+.store_check_folder_exist <- function(
+  zarr_array_path,
+  folders,
+  s3_client = NULL
+) {
+  if (is.null(s3_client)) {
+    is_present <- setNames(
+      file.exists(file.path(zarr_array_path, folders), recycle0 = TRUE),
+      folders
+    )
+  } else {
+    parse_url <- parse_s3_path(zarr_array_path)
+    is_present <- vapply(
+      folders,
+      FUN = function(f) {
+        key <- paste0(parse_url$object, f, "/")
+        .s3_folder_exists(s3_client, parse_url$bucket, key)
+      },
+      FUN.VALUE = logical(1L)
+    )
+  }
+  return(is_present)
+}
+
 .store_list <- function(path, recursive, s3_client = NULL) {
   if (is.null(s3_client)) {
     list.files(
@@ -75,22 +99,48 @@
       no.. = TRUE
     )
   } else {
-    s3_client$list_objects(path, recursive = recursive)
+    # FIXME: recursive is ignored on this branch
+    parse_url <- parse_s3_path(path)
+    s3_client$list_objects_v2(
+      Bucket = parse_url$bucket,
+      Prefix = parse_url$object
+    )$Contents |>
+      vapply(
+        FUN = function(x) x$Key,
+        FUN.VALUE = character(1L)
+      ) |>
+      # Convert to relative path within the S3 bucket prefix.
+      # According to paws.storage docs, the prefix may or may not be included
+      # depending on the bucket type
+      sub(paste0("^", parse_url$object), "", x = _)
   }
 }
 
-.store_get_bytes <- function(path, s3_client = NULL, s3_bucket = NULL) {
+.store_get_bytes <- function(
+  path,
+  s3_client = NULL,
+  s3_bucket = NULL,
+  length = NULL
+) {
   if (is.null(s3_client)) {
     # It's faster to calculate the theoretical max chunk size from the
     # data type and chunk dims but it can fail in some pathological cases where
     # the compression algorithm produces a larger output than the input.
-    size <- file.info(path, extra_cols = FALSE)$size
-    readBin(con = path, what = "raw", n = size)
+    length <- length %||% file.info(path, extra_cols = FALSE)$size
+    readBin(con = path, what = "raw", n = length)
   } else {
     s3_client$get_object(
       Bucket = s3_bucket,
       Key = path
     )$Body
+  }
+}
+
+.store_get_size <- function(path, files, s3_client = NULL) {
+  if (is.null(s3_client)) {
+    file.info(paste0(path, files), extra_cols = FALSE)$size
+  } else {
+    NULL
   }
 }
 

@@ -282,3 +282,18 @@ test_that("is.consecutive() accepts only increasing runs of consecutive values",
   expect_false(is.consecutive(c(5L, NA, 7L)))
   expect_false(is.consecutive(integer(0)))
 })
+
+test_that("update_zarr_array() warn when clamping input", {
+  zarr_path <- tempfile(fileext = ".zarr")
+  create_empty_zarr_array(
+    zarr_path,
+    dim = c(4, 4),
+    chunk_dim = c(2, 2),
+    data_type = "uint8",
+    fill_value = 0L
+  )
+  expect_warning(
+    update_zarr_array(zarr_path, matrix(1000L, 4, 4), index = list(1:4, 1:4)),
+    "truncated"
+  )
+})

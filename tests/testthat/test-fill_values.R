@@ -19,6 +19,25 @@ test_that("Inf fill-values are understood correctly", {
   # Read a chunk that isn't on disk, only generated from fill value
   expect_silent(data2 <- read_zarr_array(zarr, index = list(19:20, 1:10)))
   expect_equal(as.vector(data2), rep(fill_val, length(data2)))
+
+  expect_identical(
+    expect_no_condition(
+      read_zarr_array(system.file(
+        "extdata",
+        "zarr_examples",
+        "fill-values",
+        "double-inf_v3.zarr",
+        package = "Rarr"
+      ))
+    ),
+    read_zarr_array(system.file(
+      "extdata",
+      "zarr_examples",
+      "fill-values",
+      "double-inf.zarr",
+      package = "Rarr"
+    ))
+  )
 })
 
 test_that("-Inf fill-values are understood correctly", {
@@ -42,6 +61,25 @@ test_that("-Inf fill-values are understood correctly", {
   # Read a chunk that isn't on disk, only generated from fill value
   expect_silent(data2 <- read_zarr_array(zarr, index = list(19:20, 1:10)))
   expect_equal(as.vector(data2), rep(fill_val, length(data2)))
+
+  expect_identical(
+    expect_no_condition(
+      read_zarr_array(system.file(
+        "extdata",
+        "zarr_examples",
+        "fill-values",
+        "double-neginf_v3.zarr",
+        package = "Rarr"
+      ))
+    ),
+    read_zarr_array(system.file(
+      "extdata",
+      "zarr_examples",
+      "fill-values",
+      "double-neginf.zarr",
+      package = "Rarr"
+    ))
+  )
 })
 
 test_that("NA fill-values are understood correctly", {

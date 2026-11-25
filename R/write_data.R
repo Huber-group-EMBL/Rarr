@@ -564,6 +564,7 @@ update_zarr_array <- function(zarr_array_path, x, index) {
   chunk_positions,
   chunk_dim,
   metadata
+  # FIXME: add chunk_size so we can use a vectorized file.info() call
 ) {
   ## determine which elements of x are being used and where in this specific
   ## chunk they should be inserted
