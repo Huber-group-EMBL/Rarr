@@ -23,7 +23,6 @@ rest of the package:
 \enumerate{
 \item Parse the \code{data_type} string into an R-friendly \code{datatype} list.
 \item Name \code{codecs} by their \code{name} field for O(1) lookup.
-\item Normalise scalar arrays (empty \code{shape}) to shape \code{1}.
 \item Inject a default \code{transpose} codec when absent (R uses F-order so we
 always need to know the intended order).
 \item Replicate the \code{endian} field across all fields of struct datatypes so

@@ -1,3 +1,24 @@
+# Rarr 2.3
+
+## Minor improvements
+
+* Working with integerish doubles (e.g., `1.0`, `103.0`, etc.) indices is now
+  faster. Using integers is still faster and the recommended choice when
+  possible.
+* Performance on arrays with a very large number of chunks is greatly improved
+  (~2.5x faster on an array with 100,000 chunks).
+* Reading sharded arrays is now slightly faster, following a report from
+  Robrecht Cannoodt.
+
+## Build changes
+
+* The zstd library that ships with Rtools is now used on Windows, matching how
+  Linux and macOS already used a system installation when available. The
+  bundled zstd library is only compiled when no system copy can be found, or
+  when `--with-bundled-libraries` is passed to `configure`.
+* Bundled BLOSC is compiled against the headers of whichever zstd library it is
+  linked with, rather than always the bundled headers.
+
 # Rarr 2.1
 
 ## Breaking changes
@@ -159,8 +180,9 @@
   Jeroen Ooms (#224).
 * `use_gzip()` now uses GZIP (RFC 1952) instead of ZLIB (RFC 1950). Thanks to a
   report from Patrick Ellis.
-* Zarr v3 arrays compressed with Python's `numcodecs.zlib` can now be read by
-  Rarr. Thanks to a report from Patrick Ellis.
+* Zarr v3 arrays compressed with Python's `numcodecs.zlib`, `numcodecs.lz4`,
+  `numcodecs.bz2` and `numcodecs.lzma` can now be read by Rarr. Thanks to a
+  report from Patrick Ellis.
 * Large arrays (at least one `shape` element larger `Machine$integer.max`) 
   **and** arrays with large chunks can now be written and read correctly. 
   Thanks to a report and reproducible example from Robrecht Cannoodt.

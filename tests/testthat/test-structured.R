@@ -30,6 +30,24 @@ test_that("unicode structured data types", {
   expect_shape(res, dim = c(10, 10))
 })
 
+test_that("inconsistent endian structured data types", {
+  inconsistent_endian_file <- system.file(
+    "extdata",
+    "zarr_examples",
+    "structured",
+    "inconsistent_endian.zarr",
+    package = "Rarr"
+  )
+
+  expect_no_condition(
+    res <- read_zarr_array(inconsistent_endian_file)
+  )
+
+  expect_shape(res, dim = c(10, 10))
+  expect_length(res[[1]], 6)
+  expect_type(res[[1]], "list")
+})
+
 test_that("v3 structured data types", {
   v3_struct_file <- system.file(
     "extdata",
@@ -71,4 +89,19 @@ test_that("v3 structured data types", {
     expect_length(el, 6L)
     expect_all_true(vapply(el, is.double, FUN.VALUE = logical(1)))
   }
+})
+
+test_that("nested structured data types are not supported", {
+  nested_struct_file <- system.file(
+    "extdata",
+    "zarr_examples",
+    "structured",
+    "nested_structured_v3.zarr",
+    package = "Rarr"
+  )
+
+  expect_error(
+    read_zarr_array(nested_struct_file),
+    "not supported"
+  )
 })

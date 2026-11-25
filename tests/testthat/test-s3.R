@@ -11,7 +11,7 @@ test_that("Anonymous S3 access is detected properly", {
 })
 
 test_that("Authenticated S3 access works", {
-  skip_if_offline("s3.embl.de")
+  skip_if_offline("huber.buckets.embl.de")
 
   withr::with_envvar(
     c(
@@ -30,11 +30,11 @@ test_that("Authenticated S3 access works", {
 })
 
 test_that("Denied access errors return clear error messages", {
-  skip_if_offline("s3.embl.de")
+  skip_if_offline("huber.buckets.embl.de")
 
   # This is a real zarr store, but we don't have access
   expect_error(
-    zarr_overview("https://huber.buckets.embl.de/rarr-testing/lzma.zarr"),
+    zarr_overview("https://huber.buckets.embl.de/rarr-testing/private.zarr"),
     "Forbidden"
   )
 })

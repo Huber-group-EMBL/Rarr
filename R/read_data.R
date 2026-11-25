@@ -112,13 +112,17 @@ read_data <- function(
   )
 
   chunk_names <- names(chunk_positions)
-  # In the DelayedArray framework, we can have integer(0) indices
-  # https://github.com/Huber-group-EMBL/Rarr/issues/112
-  chunk_paths <- paste0(root, chunk_names, recycle0 = TRUE)
 
   ## Vectorized check for chunk existence
   chunk_exists <- .store_check_exist(zarr_array_path, chunk_names, s3_client)
-  existing_idx <- which(chunk_exists)
+
+  existing_chunks <- chunk_names[chunk_exists]
+
+  # In the DelayedArray framework, we can have integer(0) indices
+  # https://github.com/Huber-group-EMBL/Rarr/issues/112
+  chunk_paths <- paste0(root, existing_chunks, recycle0 = TRUE)
+
+  chunk_sizes <- .store_get_size(zarr_array_path, existing_chunks, s3_client)
 
   if (
     length(chunk_names) == 1L &&
@@ -130,13 +134,14 @@ read_data <- function(
     # This saves us from having to allocate a new array and copy the chunk into it.
     # This is a common scenario in anndata.
     return(.extract_elements(
-      chunk_name = chunk_names[existing_idx[1L]],
-      current_chunk_path = chunk_paths[existing_idx[1L]],
+      chunk_name = existing_chunks[1L],
+      current_chunk_path = chunk_paths[1L],
       metadata = metadata,
       chunk_dim = chunk_dim,
       s3_client = s3_client,
       s3_bucket = bucket,
-      chunk_positions = chunk_positions
+      chunk_positions = chunk_positions,
+      chunk_size = chunk_sizes[1L]
     )[[1L]])
   }
 
@@ -147,7 +152,7 @@ read_data <- function(
     metadata$data_type$name %in% c("struct", "structured")
 
   if (requireNamespace("progressr", quietly = TRUE)) {
-    p <- progressr::progressor(along = existing_idx)
+    p <- progressr::progressor(steps = min(length(existing_chunks), 100L))
   } else {
     p <- function(...) NULL
   }
@@ -157,17 +162,18 @@ read_data <- function(
   ## approach since we cannot write to `output` in parallel.  For now, we just use a single thread.
   withCallingHandlers(
     {
-      for (i in existing_idx) {
+      for (i in seq_along(existing_chunks)) {
         chunk_and_idx <- .extract_elements(
           # We skip missing chunks here since they will just be filled with the fill value
           # when initializing the consolidated array.
-          chunk_name = chunk_names[i],
+          chunk_name = existing_chunks[i],
           current_chunk_path = chunk_paths[i],
           metadata = metadata,
           chunk_dim = chunk_dim,
           s3_client = s3_client,
           s3_bucket = bucket,
-          chunk_positions = chunk_positions
+          chunk_positions = chunk_positions,
+          chunk_size = chunk_sizes[i]
         )
         index_in_result <- chunk_and_idx[[2L]]
         rlang::inject(output[!!!index_in_result] <- chunk_and_idx[[1L]]) # nolint: implicit_assignment_linter.
@@ -175,7 +181,13 @@ read_data <- function(
           # Assigning a list drops the dim attribute so we have to continuously add it again
           dim(output) <- lengths(index)
         }
-        p(sprintf("Reading chunk %s", chunk_names[i])) # update progress
+        # Do not print progress more than 100 times for large number of chunks
+        if (
+          length(existing_chunks) <= 100L ||
+            i %% (length(existing_chunks) %/% 100L) == 0L
+        ) {
+          p(sprintf("Reading chunk %s", existing_chunks[i])) # update progress
+        }
       }
     },
     warning = function(w) {
@@ -198,12 +210,15 @@ read_data <- function(
   chunk_dim,
   s3_client,
   s3_bucket,
-  chunk_positions
+  chunk_positions,
+  chunk_size
 ) {
   ## find elements to select from the chunk and what in the output we replace
+  # FIXME: avoid copying chunk_info. Pass only the relevant indexed element.
   chunk_info <- chunk_positions[[chunk_name]]
   index_in_result <- chunk_info$positions
   index_in_chunk <- chunk_info$index_in_chunk
+  full_chunk <- chunk_info$full_chunk
 
   # When we get here, we know the chunk exists, so we can read it without worrying about
   # handling missing.
@@ -214,7 +229,8 @@ read_data <- function(
   raw_chunk <- .store_get_bytes(
     path = current_chunk_path,
     s3_client = s3_client,
-    s3_bucket = s3_bucket
+    s3_bucket = s3_bucket,
+    length = chunk_size
   )
 
   ## read this chunk
@@ -229,7 +245,7 @@ read_data <- function(
 
   # Extract the required elements from the chunk if not a full read.
   # If a full read, we save an extra copy of the chunk by not subsetting it.
-  if (!identical(index_in_chunk, lapply(chunk_dim, seq_len))) {
+  if (!full_chunk) {
     chunk <- .extract_chunk(chunk, index_in_chunk)
   }
   return(list(chunk, index_in_result))

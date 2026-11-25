@@ -156,7 +156,7 @@ test_that("read_zarr_attributes errors clearly for invalid mixed arrays", {
 test_that("read_zarr_attributes from s3", {
   expect_snapshot(
     read_zarr_attributes(
-      "https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.3/9836842.zarr/"
+      "https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/"
     )
   )
 })

@@ -361,7 +361,10 @@ zarr_overview <- function(
     # So even when using the implicit default, we need to add it here.
     metadata$codecs[["transpose"]] <- list(
       name = "transpose",
-      configuration = list(order = seq_along(metadata$shape) - 1L)
+      configuration = list(
+        # Better than seq_along() - 1L because it keeps ALTREP compactness
+        order = seq.int(0L, length.out = length(metadata$shape))
+      )
     )
   }
 
@@ -608,7 +611,7 @@ read_zarr_consolidated_metadata <- function(
 #'
 #' @examples
 #' read_zarr_attributes(
-#'   "https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0048A/9846152.zarr"
+#'   "https://livingobjects.ebi.ac.uk/bioimaging-integrator-data/S-BIAD800/f49ada41-43bf-47ff-99b9-bdf8cc311ce3/f49ada41-43bf-47ff-99b9-bdf8cc311ce3.zarr/0/"
 #' )
 #'
 #' @export

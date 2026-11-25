@@ -55,3 +55,20 @@ test_that("zarr_consolidate_metadata() on empty store", {
   write_zarr_group(empty_store, "", zarr_version = 3L)
   expect_no_condition(zarr_consolidate_metadata(empty_store, action = "write"))
 })
+
+test_that("zarr_consolidate_metadata() on S3", {
+  withr::with_envvar(
+    c(
+      "AWS_ACCESS_KEY_ID" = "NFXMU48714DJHNGTB825",
+      "AWS_SECRET_ACCESS_KEY" = "FZ0_p4_NrrB_fnm_e1DEEP7g3772I9uP3igu5D_C"
+    ),
+    {
+      expect_snapshot(
+        zarr_consolidate_metadata(
+          "https://huber.buckets.embl.de/rarr-testing/multiarray_store.zarr",
+          action = "return"
+        )
+      )
+    }
+  )
+})
