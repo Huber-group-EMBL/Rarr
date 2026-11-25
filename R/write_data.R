@@ -404,7 +404,7 @@ write_zarr_array <- function(
   idx_in_array <- chunk_info$positions
   idx_in_chunk <- chunk_info$index_in_chunk
 
-  chunk_in_mem <- .extract_chunk(x, idx_in_array)
+  chunk_in_mem <- extract_array(x, idx_in_array)
 
   if (.is_all_fill(chunk_in_mem, metadata$fill_value)) {
     ## if the chunk only contains the fill value, we can skip writing it

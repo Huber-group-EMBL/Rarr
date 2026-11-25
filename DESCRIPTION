@@ -31,10 +31,10 @@ Imports:
     paws.storage,
     R.utils,
     rlang,
+    S4Arrays,
     utils
 Suggests:
     BiocStyle,
-    DelayedArray,
     knitr,
     progressr,
     rmarkdown,

@@ -22,6 +22,7 @@ importFrom(BiocGenerics,
   type
 )
 importFrom(R.utils,getAbsolutePath)
+importFrom(S4Arrays,extract_array)
 importFrom(grumpy,
   convert_bytes_to_array,
   parse_npy_datatype

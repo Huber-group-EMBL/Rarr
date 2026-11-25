@@ -4,6 +4,7 @@
 
 ## usethis namespace: start
 #' @importFrom BiocGenerics type type<-
+#' @importFrom S4Arrays extract_array
 ## usethis namespace: end
 NULL
 

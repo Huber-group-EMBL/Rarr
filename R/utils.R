@@ -49,25 +49,6 @@ check_index <- function(index, metadata) {
   return(index)
 }
 
-#' Subset extraction for an array with a variable number of dimensions.
-#'
-#' @param x Array to extract from.
-#' @param idx List of index vectors, one per dimension.
-#'
-#' @returns The extracted sub-array (with `drop = FALSE`).
-#'
-#' @keywords internal
-.extract_chunk <- function(x, idx) {
-  # FIXME: use the extract_array() method instead of this?
-  if (inherits(x, "DelayedArray")) {
-    return(DelayedArray::extract_array(x, idx))
-  }
-  # do.call() has the same performance if we ever need to drop rlang dependency
-  # but this is more aesthetically pleasing and rlang is likely to always be
-  # somewhere in the dependency tree.
-  rlang::inject(x[!!!idx, drop = FALSE])
-}
-
 .parse_datatype_v3 <- function(typestr) {
   if (is.list(typestr)) {
     if (typestr$name == "fixed_length_utf32") {

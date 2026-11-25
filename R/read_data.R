@@ -246,7 +246,7 @@ read_data <- function(
   # Extract the required elements from the chunk if not a full read.
   # If a full read, we save an extra copy of the chunk by not subsetting it.
   if (!full_chunk) {
-    chunk <- .extract_chunk(chunk, index_in_chunk)
+    chunk <- extract_array(chunk, index_in_chunk)
   }
   return(list(chunk, index_in_result))
 }
