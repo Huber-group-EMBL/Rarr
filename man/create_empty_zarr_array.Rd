@@ -51,8 +51,8 @@ Does not have to be provided, in which case the default for the specified
 data type will be used.}
 
 \item{nchar}{For \code{datatype = "character"} this parameter gives the maximum
-length of the stored strings. It is an error not to specify this for a
-character array, but it is ignored for other data types.}
+length of the stored strings. Only required for \code{datatype = "|S"} or
+\code{datatype = "<U"}. Ignored in all other cases.}
 
 \item{dimension_separator}{The character used to to separate the dimensions
 in the names of the chunk files.  Valid options are limited to "." and "/".}

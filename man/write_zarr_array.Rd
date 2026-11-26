@@ -12,7 +12,7 @@ write_zarr_array(
   order = c("F", "C"),
   compressor = use_zstd(),
   fill_value = NULL,
-  nchar,
+  nchar = NULL,
   dimension_separator = if (zarr_version == 2L) "." else "/",
   zarr_version = 3L
 )
@@ -49,9 +49,10 @@ Does not have to be provided, in which case the default for the specified
 data type will be used.}
 
 \item{nchar}{For character arrays this parameter gives the maximum length of
-the stored strings. If this argument is not specified the array provided to
-\code{x} will be checked and the length of the longest string found will be used
-so no data are truncated. However this may be slow and providing a value to
+the stored strings. If \code{NULL} (the default), and \code{data_type} is a
+fixed-length string type (\code{"|S"} or \code{"<U"}), the array provided to \code{x}
+will be checked and the length of the longest string found will be used so
+no data are truncated. However this may be slow and providing a value to
 \code{nchar} can provide a modest performance improvement.}
 
 \item{dimension_separator}{The character used to to separate the dimensions
