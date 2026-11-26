@@ -54,20 +54,33 @@ test_that("string zarr arrays can be read correctly", {
       x = column_major,
       zarr_array_path = path,
       chunk_dim = c(5, 2, 1),
+      data_type = "|S",
       nchar = 1
     )
   )
   expect_identical(max(nchar(read_zarr_array(path))), 1L)
 
-  ## check if nchar argument is provided when creating empty character zarr arrays
+  ## check if nchar argument is provided when creating empty fixed-length
+  ## character zarr arrays
   path <- withr::local_tempfile(fileext = ".zarr")
   expect_error(
     create_empty_zarr_array(
       zarr_array_path = path,
       dim = dim(column_major),
       chunk_dim = c(5, 2, 1),
-      data_type = storage.mode(column_major)
+      data_type = "|S"
     )
+  )
+
+  path <- withr::local_tempfile(fileext = ".zarr")
+  expect_warning(
+    write_zarr_array(
+      x = array(1L),
+      zarr_array_path = path,
+      chunk_dim = 1L,
+      nchar = 1
+    ),
+    "ignored"
   )
 
   ########################
@@ -225,7 +238,6 @@ test_that("fill_value is converted to string", {
       chunk_dim = c(2, 2),
       data_type = "character",
       fill_value = 0,
-      nchar = 10,
       zarr_version = 2
     )
   )
@@ -239,7 +251,7 @@ test_that("fill_value too long", {
       zarr_array_path = path,
       dim = c(4, 4),
       chunk_dim = c(2, 2),
-      data_type = "character",
+      data_type = "|S",
       fill_value = "This is too long",
       nchar = 10,
       zarr_version = 2

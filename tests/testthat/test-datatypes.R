@@ -8,10 +8,14 @@ test_that("check_datatype works with data_type argument", {
     "<f8"
   )
   expect_identical(
-    .check_datatype(data_type = "character", nchar = "10")[[
+    .check_datatype(data_type = "|S", nchar = "10")[[
       "data_type"
     ]],
     "|S10"
+  )
+  expect_identical(
+    .check_datatype(data_type = "character")[["data_type"]],
+    "string"
   )
 })
 
@@ -19,8 +23,8 @@ test_that("check_datatype works with fill_value argument", {
   expect_identical(.check_datatype(fill_value = 4L)[["data_type"]], "<i4")
   expect_identical(.check_datatype(fill_value = 4)[["data_type"]], "<f8")
   expect_identical(
-    .check_datatype(fill_value = "Test", nchar = 8)[["data_type"]],
-    "|S8"
+    .check_datatype(fill_value = "Test")[["data_type"]],
+    "string"
   )
 })
 
@@ -40,12 +44,11 @@ test_that("data_type has precedence over fill_value when incompatible", {
   expect_identical(
     .check_datatype(
       data_type = "character",
-      fill_value = 4L,
-      nchar = 4
+      fill_value = 4L
     )[[
       "data_type"
     ]],
-    "|S4"
+    "string"
   )
 })
 
@@ -62,11 +65,7 @@ test_that("check_datatype requires nchar for character types", {
     "The 'nchar' argument must be provided"
   )
   expect_error(
-    .check_datatype(fill_value = "Testing"),
-    "The 'nchar' argument must be provided"
-  )
-  expect_error(
-    .check_datatype(fill_value = "Testing", nchar = -4),
+    .check_datatype(data_type = "|S", nchar = -4),
     "The 'nchar' argument must be provided"
   )
 })

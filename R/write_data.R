@@ -103,7 +103,8 @@
     if (is.null(nchar) || nchar < 1L) {
       stop(
         "The 'nchar' argument must be provided when working with ",
-        "character data types and be a positive integer"
+        "fixed-length character data types (|S or <U)",
+        "and be a positive integer"
       )
     }
     if (nchar(fill_value, allowNA = TRUE) > nchar) {
@@ -114,6 +115,12 @@
       )
     }
     data_type <- paste0(data_type, as.integer(nchar))
+  } else if (!is.null(nchar)) {
+    warning(
+      "The 'nchar' argument is ignored for non fixed-length character data ",
+      "types (|S or <U)",
+      call. = FALSE
+    )
   }
 
   double_types <- c("<f4", "<f8")
