@@ -1,5 +1,11 @@
 # Rarr 2.3
 
+## Breaking changes
+
+* The new default for writing character arrays is VLen-UTF8. Fixed-length 
+  strings can still be written by explicitly specifying `data_type = "|S"` or
+  `data_type = "<U"`.
+
 ## Minor improvements
 
 * Working with integerish doubles (e.g., `1.0`, `103.0`, etc.) indices is now
@@ -9,6 +15,9 @@
   (~2.5x faster on an array with 100,000 chunks).
 * Reading sharded arrays is now slightly faster, following a report from
   Robrecht Cannoodt.
+* Specifying the `nchar` argument in `create_empty_zarr_array()` or 
+  `write_zarr_array()` for any `data_type` that doesn't use it (i.e., all data
+  types excepted `"|S"` and `"<U"`) now gives a warning. 
 
 ## Build changes
 
