@@ -54,7 +54,7 @@
       data_type,
       "integer" = "<i4",
       "double" = "<f8",
-      "character" = "|S",
+      "character" = "string",
       "logical" = "|b1"
     )
   } else if (data_type %in% backward_compatible_v3_types) {
@@ -168,8 +168,8 @@
 #'   Does not have to be provided, in which case the default for the specified
 #'   data type will be used.
 #' @param nchar For `datatype = "character"` this parameter gives the maximum
-#'   length of the stored strings. It is an error not to specify this for a
-#'   character array, but it is ignored for other data types.
+#'   length of the stored strings. Only required for `datatype = "|S"` or
+#'   `datatype = "<U"`. Ignored in all other cases.
 #' @param dimension_separator The character used to to separate the dimensions
 #'   in the names of the chunk files.  Valid options are limited to "." and "/".
 #' @param zarr_version The version of the Zarr specification to use. Currently,
@@ -266,9 +266,10 @@ create_empty_zarr_array <- function(
 #' @param zarr_array_path Character vector of length 1 giving the path to the
 #'   new Zarr array.
 #' @param nchar For character arrays this parameter gives the maximum length of
-#'   the stored strings. If this argument is not specified the array provided to
-#'   `x` will be checked and the length of the longest string found will be used
-#'   so no data are truncated. However this may be slow and providing a value to
+#'   the stored strings. If `NULL` (the default), and `data_type` is a
+#'   fixed-length string type (`"|S"` or `"<U"`), the array provided to `x`
+#'   will be checked and the length of the longest string found will be used so
+#'   no data are truncated. However this may be slow and providing a value to
 #'   `nchar` can provide a modest performance improvement.
 #' @inheritParams create_empty_zarr_array
 #'
@@ -301,7 +302,7 @@ write_zarr_array <- function(
   order = c("F", "C"),
   compressor = use_zstd(),
   fill_value = NULL,
-  nchar,
+  nchar = NULL,
   dimension_separator = if (zarr_version == 2L) "." else "/",
   zarr_version = 3L
 ) {
@@ -313,14 +314,7 @@ write_zarr_array <- function(
     )
   }
 
-  if (data_type == "character" && missing(nchar) && !anyNA(x)) {
-    # VLen-UTF8 is a better way to store strings in general. We avoid it
-    # when there are NAs since we cannot write them, or when the user
-    # specifically requested a fixed length type.
-    data_type <- "string"
-  }
-
-  if (data_type %in% c("character", "|S", "<U") && missing(nchar)) {
+  if (data_type %in% c("|S", "<U") && missing(nchar)) {
     # +1 to add NUL terminator
     # c(0, ) to deal with array full of NAs
     # base::nchar() to avoid collision with var name
