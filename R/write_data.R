@@ -28,11 +28,7 @@
     "<f8",
     "|S",
     "<U",
-    "|b1",
-    # FIXME: once anndataR (and others??) have been migrated to using string,
-    # remove the option to write |O directly.
-    # At least until #111 is implemented.
-    "|O"
+    "|b1"
   )
   backward_compatible_v3_types <- c(
     "int8",
