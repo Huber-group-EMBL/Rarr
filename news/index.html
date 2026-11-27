@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,6 +51,11 @@
 <li>Performance on arrays with a very large number of chunks is greatly improved (~2.5x faster on an array with 100,000 chunks).</li>
 <li>Reading sharded arrays is now slightly faster, following a report from Robrecht Cannoodt.</li>
 <li>Specifying the <code>nchar</code> argument in <code><a href="../reference/create_empty_zarr_array.html">create_empty_zarr_array()</a></code> or <code><a href="../reference/write_zarr_array.html">write_zarr_array()</a></code> for any <code>data_type</code> that doesn’t use it (i.e., all data types excepted <code>"|S"</code> and <code>"&lt;U"</code>) now gives a warning.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-2-3">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-2-3"></a></h3>
+<ul><li>
+<code><a href="../reference/update_zarr_array.html">update_zarr_array()</a></code> correctly removes existing chunks when the update process would make them full of fill values. Thanks to a patch from Chen-Yang Su.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="build-changes-2-3">Build changes<a class="anchor" aria-label="anchor" href="#build-changes-2-3"></a></h3>

@@ -24,6 +24,12 @@
   for any `data_type` that doesn’t use it (i.e., all data types excepted
   `"|S"` and `"<U"`) now gives a warning.
 
+### Bug fixes
+
+- [`update_zarr_array()`](https://huber-group-embl.github.io/Rarr/reference/update_zarr_array.md)
+  correctly removes existing chunks when the update process would make
+  them full of fill values. Thanks to a patch from Chen-Yang Su.
+
 ### Build changes
 
 - The zstd library that ships with Rtools is now used on Windows,
