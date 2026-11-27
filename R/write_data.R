@@ -601,7 +601,11 @@ update_zarr_array <- function(zarr_array_path, x, index) {
     return(invisible(TRUE))
   }
   ## if the chunk only contains the fill value, we can skip writing it
+  ## (and remove any existing chunk file so stale values are not read back)
   if (.is_all_fill(chunk_in_mem, metadata$fill_value)) {
+    if (chunk_exists) {
+      unlink(chunk_path)
+    }
     return(invisible(TRUE))
   }
   ## re-compress updated chunk and write back to disk
