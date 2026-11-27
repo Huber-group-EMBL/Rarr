@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -112,8 +112,8 @@ data type will be used.</p></dd>
 
 <dt id="arg-nchar">nchar<a class="anchor" aria-label="anchor" href="#arg-nchar"></a></dt>
 <dd><p>For <code>datatype = "character"</code> this parameter gives the maximum
-length of the stored strings. It is an error not to specify this for a
-character array, but it is ignored for other data types.</p></dd>
+length of the stored strings. Only required for <code>datatype = "|S"</code> or
+<code>datatype = "&lt;U"</code>. Ignored in all other cases.</p></dd>
 
 
 <dt id="arg-dimension-separator">dimension_separator<a class="anchor" aria-label="anchor" href="#arg-dimension-separator"></a></dt>

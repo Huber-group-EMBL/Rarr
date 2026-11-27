@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,10 +42,15 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.3" id="rarr-23">Rarr 2.3<a class="anchor" aria-label="anchor" href="#rarr-23"></a></h2>
 <div class="section level3">
+<h3 id="breaking-changes-2-3">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-2-3"></a></h3>
+<ul><li>The new default for writing character arrays is VLen-UTF8. Fixed-length strings can still be written by explicitly specifying <code>data_type = "|S"</code> or <code>data_type = "&lt;U"</code>.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="minor-improvements-2-3">Minor improvements<a class="anchor" aria-label="anchor" href="#minor-improvements-2-3"></a></h3>
 <ul><li>Working with integerish doubles (e.g., <code>1.0</code>, <code>103.0</code>, etc.) indices is now faster. Using integers is still faster and the recommended choice when possible.</li>
 <li>Performance on arrays with a very large number of chunks is greatly improved (~2.5x faster on an array with 100,000 chunks).</li>
 <li>Reading sharded arrays is now slightly faster, following a report from Robrecht Cannoodt.</li>
+<li>Specifying the <code>nchar</code> argument in <code><a href="../reference/create_empty_zarr_array.html">create_empty_zarr_array()</a></code> or <code><a href="../reference/write_zarr_array.html">write_zarr_array()</a></code> for any <code>data_type</code> that doesn’t use it (i.e., all data types excepted <code>"|S"</code> and <code>"&lt;U"</code>) now gives a warning.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="build-changes-2-3">Build changes<a class="anchor" aria-label="anchor" href="#build-changes-2-3"></a></h3>

@@ -13,7 +13,7 @@ write_zarr_array(
   order = c("F", "C"),
   compressor = use_zstd(),
   fill_value = NULL,
-  nchar,
+  nchar = NULL,
   dimension_separator = if (zarr_version == 2L) "." else "/",
   zarr_version = 3L
 )
@@ -69,11 +69,11 @@ write_zarr_array(
 - nchar:
 
   For character arrays this parameter gives the maximum length of the
-  stored strings. If this argument is not specified the array provided
-  to `x` will be checked and the length of the longest string found will
-  be used so no data are truncated. However this may be slow and
-  providing a value to `nchar` can provide a modest performance
-  improvement.
+  stored strings. If `NULL` (the default), and `data_type` is a
+  fixed-length string type (`"|S"` or `"<U"`), the array provided to `x`
+  will be checked and the length of the longest string found will be
+  used so no data are truncated. However this may be slow and providing
+  a value to `nchar` can provide a modest performance improvement.
 
 - dimension_separator:
 

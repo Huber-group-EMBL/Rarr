@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rarr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,7 @@
 <span>  order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"F"</span>, <span class="st">"C"</span><span class="op">)</span>,</span>
 <span>  compressor <span class="op">=</span> <span class="fu"><a href="compressors.html">use_zstd</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  fill_value <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">nchar</span>,</span>
+<span>  nchar <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dimension_separator <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="va">zarr_version</span> <span class="op">==</span> <span class="fl">2L</span><span class="op">)</span> <span class="st">"."</span> <span class="kw">else</span> <span class="st">"/"</span>,</span>
 <span>  zarr_version <span class="op">=</span> <span class="fl">3L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -110,9 +110,10 @@ data type will be used.</p></dd>
 
 <dt id="arg-nchar">nchar<a class="anchor" aria-label="anchor" href="#arg-nchar"></a></dt>
 <dd><p>For character arrays this parameter gives the maximum length of
-the stored strings. If this argument is not specified the array provided to
-<code>x</code> will be checked and the length of the longest string found will be used
-so no data are truncated. However this may be slow and providing a value to
+the stored strings. If <code>NULL</code> (the default), and <code>data_type</code> is a
+fixed-length string type (<code>"|S"</code> or <code>"&lt;U"</code>), the array provided to <code>x</code>
+will be checked and the length of the longest string found will be used so
+no data are truncated. However this may be slow and providing a value to
 <code>nchar</code> can provide a modest performance improvement.</p></dd>
 
 

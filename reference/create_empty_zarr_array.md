@@ -71,8 +71,8 @@ create_empty_zarr_array(
 - nchar:
 
   For `datatype = "character"` this parameter gives the maximum length
-  of the stored strings. It is an error not to specify this for a
-  character array, but it is ignored for other data types.
+  of the stored strings. Only required for `datatype = "|S"` or
+  `datatype = "<U"`. Ignored in all other cases.
 
 - dimension_separator:
 
