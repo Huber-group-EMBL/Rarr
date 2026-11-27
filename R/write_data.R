@@ -305,10 +305,10 @@ write_zarr_array <- function(
   dimension_separator = if (zarr_version == 2L) "." else "/",
   zarr_version = 3L
 ) {
-  if (!inherits(x, "DelayedArray") && !(is.array(x) && is.atomic(x))) {
+  if (is.null(dim(x))) {
     stop(
-      "`x` must be an atomic array or DelayedArray. ",
-      "You can maybe coerce your object with `as.array()`.",
+      "`x` must be an atomic array or any array-like object ",
+      "(i.e., it must have a `dim` attribute).",
       call. = FALSE
     )
   }
