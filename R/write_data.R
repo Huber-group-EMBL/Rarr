@@ -567,6 +567,8 @@ update_zarr_array <- function(zarr_array_path, x, index) {
   ## chunk they should be inserted
   chunk_path <- file.path(zarr_array_path, chunk_name)
   chunk_info <- chunk_positions[[chunk_name]]
+  # TODO: optimization: if the entire chunk is going to be overwritten,
+  # we can skip reading it.
   idx_in_x <- chunk_info$positions
   idx_in_chunk <- chunk_info$index_in_chunk
 
