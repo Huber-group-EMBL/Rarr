@@ -301,7 +301,7 @@ write_zarr_array <- function(
   x,
   zarr_array_path,
   chunk_dim,
-  data_type = storage.mode(x),
+  data_type = type(x),
   order = c("F", "C"),
   compressor = use_zstd(),
   fill_value = NULL,
@@ -309,10 +309,10 @@ write_zarr_array <- function(
   dimension_separator = if (zarr_version == 2L) "." else "/",
   zarr_version = 3L
 ) {
-  if (!(is.array(x) && is.atomic(x))) {
+  if (is.null(dim(x))) {
     stop(
-      "`x` must be an atomic array. ",
-      "You can maybe coerce your object with `as.array()`.",
+      "`x` must be an atomic array or any array-like object ",
+      "(i.e., it must have a `dim` attribute).",
       call. = FALSE
     )
   }
@@ -346,9 +346,7 @@ write_zarr_array <- function(
   # Related to https://github.com/Huber-group-EMBL/Rarr/issues/60.
   metadata <- .read_array_metadata(path)
 
-  # FIXME: this is not entirely consistent with `update_zarr_array()` which
-  # errors in case of mismatch. Harmonize?
-  if (storage.mode(x) != .mode_from_datatype(metadata$data_type)) {
+  if (type(x) != .mode_from_datatype(metadata$data_type)) {
     stop(
       "Storage mode of `x` does not match the mode required by `data_type`.\n",
       "Please convert `x` to the appropriate storage mode ",
@@ -373,7 +371,7 @@ write_zarr_array <- function(
   chunk_paths <- paste0(path, chunk_names)
 
   if (requireNamespace("progressr", quietly = TRUE)) {
-    p <- progressr::progressor(along = chunk_names)
+    p <- function(...) NULL
   } else {
     p <- function(...) NULL
   }
@@ -403,10 +401,15 @@ write_zarr_array <- function(
   idx_in_array <- chunk_info$positions
   idx_in_chunk <- chunk_info$index_in_chunk
 
-  chunk_in_mem <- .extract_chunk(x, idx_in_array)
+  chunk_in_mem <- extract_array(x, idx_in_array)
 
+  # Now seems like a good time to realize DelayedArray. We do not benefit from
+  # them being Delayed in array-array codecs but it's still probably the
+  # cleanest moment to do it.
+  # We do NOT want to do it inside .is_all_fill because we would be realizing
+  # it twice since it needs to be realized to be written to raw.
+  chunk_in_mem <- as.array(chunk_in_mem)
   if (.is_all_fill(chunk_in_mem, metadata$fill_value)) {
-    ## if the chunk only contains the fill value, we can skip writing it
     return(invisible(TRUE))
   }
 
@@ -478,7 +481,7 @@ update_zarr_array <- function(zarr_array_path, x, index) {
   index <- check_index(index, metadata = metadata)
 
   existing_storage <- .mode_from_datatype(metadata$data_type)
-  new_storage <- storage.mode(x)
+  new_storage <- type(x)
   if (new_storage != existing_storage) {
     stop(
       "New data is not of the same type as the existing array. ",
@@ -523,7 +526,7 @@ update_zarr_array <- function(zarr_array_path, x, index) {
   )
 
   if (requireNamespace("progressr", quietly = TRUE)) {
-    p <- progressr::progressor(along = chunk_names)
+    p <- function(...) NULL
   } else {
     p <- function(...) NULL
   }

@@ -37,9 +37,9 @@ SEXP chop_vec(SEXP x, SEXP _size) {
 // NA (or NaN), returns TRUE if every element of `x` is NA/NaN. Exits at the
 // first mismatch.
 SEXP is_all_fill(SEXP x, SEXP _fill) {
-  R_xlen_t n = XLENGTH(x);
+  R_xlen_t n = Rf_xlength(x);
   bool result = true;
-
+  
   // It can (rarely) happen that fill and x have different types. In particular,
   // large integers are stored as doubles in R.
   SEXP fill = coerceVector(_fill, TYPEOF(x));

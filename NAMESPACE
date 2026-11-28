@@ -17,7 +17,12 @@ export(write_zarr_attributes)
 export(write_zarr_group)
 export(zarr_consolidate_metadata)
 export(zarr_overview)
+importFrom(BiocGenerics,
+  "type<-",
+  type
+)
 importFrom(R.utils,getAbsolutePath)
+importFrom(S4Arrays,extract_array)
 importFrom(grumpy,
   convert_bytes_to_array,
   parse_npy_datatype

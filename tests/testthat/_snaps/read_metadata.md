@@ -169,306 +169,306 @@
       147                      /quality/probability/r20m/snw           2
       148                        /quality/probability/r20m/x           2
       149                        /quality/probability/r20m/y           2
-                   data_type endianness compressor              dim       chunk_dim
-      1   fixed_length_utf32     little      blosc                2               2
-      2   fixed_length_utf32     little      blosc               13              13
-      3                int64     little      blosc                6               6
-      4              float64     little      blosc                2               2
-      5              float64     little      blosc            13, 2           13, 2
-      6              float64     little      blosc        2, 23, 23       2, 23, 23
-      7              float64     little      blosc 13, 6, 2, 23, 23 7, 3, 2, 23, 23
-      8                int64     little      blosc               23              23
-      9                int64     little      blosc               23              23
-      10               uint8       <NA>      blosc     10980, 10980      1830, 1830
-      11               uint8       <NA>      blosc     10980, 10980      1830, 1830
-      12               uint8       <NA>      blosc     10980, 10980      1830, 1830
-      13               uint8       <NA>      blosc     10980, 10980      1830, 1830
-      14               int64     little      blosc            10980           10980
-      15               int64     little      blosc            10980           10980
-      16               uint8       <NA>      blosc       5490, 5490        915, 915
-      17               uint8       <NA>      blosc       5490, 5490        915, 915
-      18               uint8       <NA>      blosc       5490, 5490        915, 915
-      19               uint8       <NA>      blosc       5490, 5490        915, 915
-      20               uint8       <NA>      blosc       5490, 5490        915, 915
-      21               uint8       <NA>      blosc       5490, 5490        915, 915
-      22               int64     little      blosc             5490            5490
-      23               int64     little      blosc             5490            5490
-      24               uint8       <NA>      blosc       1830, 1830        305, 305
-      25               uint8       <NA>      blosc       1830, 1830        305, 305
-      26               uint8       <NA>      blosc       1830, 1830        305, 305
-      27               int64     little      blosc             1830            1830
-      28               int64     little      blosc             1830            1830
-      29               uint8       <NA>      blosc       1830, 1830        305, 305
-      30               int64     little      blosc             1830            1830
-      31               int64     little      blosc             1830            1830
-      32               uint8       <NA>      blosc       5490, 5490        915, 915
-      33               int64     little      blosc             5490            5490
-      34               int64     little      blosc             5490            5490
-      35               uint8       <NA>      blosc       1830, 1830        305, 305
-      36               int64     little      blosc             1830            1830
-      37               int64     little      blosc             1830            1830
-      38             float32     little      blosc             9, 9            9, 9
-      39             float32     little      blosc             9, 9            9, 9
-      40             float32     little      blosc             9, 9            9, 9
-      41             float32     little      blosc             9, 9            9, 9
-      42             float32     little      blosc             9, 9            9, 9
-      43             float32     little      blosc             9, 9            9, 9
-      44             float32     little      blosc             9, 9            9, 9
-      45             float64     little       <NA>             NULL            NULL
-      46             float64     little      blosc                9               9
-      47             float64     little      blosc                9               9
-      48               int64     little       <NA>             NULL            NULL
-      49             float32     little      blosc             9, 9            9, 9
-      50             float32     little      blosc             9, 9            9, 9
-      51               int64     little       <NA>             NULL            NULL
-      52             float32     little      blosc             9, 9            9, 9
-      53             float64     little       <NA>             NULL            NULL
-      54               int64     little       <NA>             NULL            NULL
-      55               int64     little       <NA>             NULL            NULL
-      56             float32     little      blosc             9, 9            9, 9
-      57             float64     little       <NA>             NULL            NULL
-      58             float64     little      blosc                9               9
-      59             float64     little      blosc                9               9
-      60             float32     little      blosc             9, 9            9, 9
-      61               int64     little       <NA>             NULL            NULL
-      62             float32     little      blosc             9, 9            9, 9
-      63               int64     little       <NA>             NULL            NULL
-      64             float64     little       <NA>             NULL            NULL
-      65             float32     little      blosc             9, 9            9, 9
-      66             float32     little      blosc             9, 9            9, 9
-      67               int64     little       <NA>             NULL            NULL
-      68             float32     little      blosc             9, 9            9, 9
-      69             float32     little      blosc             9, 9            9, 9
-      70               int64     little       <NA>             NULL            NULL
-      71              uint16     little      blosc     10980, 10980      1830, 1830
-      72              uint16     little      blosc     10980, 10980      1830, 1830
-      73              uint16     little      blosc     10980, 10980      1830, 1830
-      74              uint16     little      blosc     10980, 10980      1830, 1830
-      75               int64     little      blosc            10980           10980
-      76               int64     little      blosc            10980           10980
-      77              uint16     little      blosc       5490, 5490        915, 915
-      78              uint16     little      blosc       5490, 5490        915, 915
-      79              uint16     little      blosc       5490, 5490        915, 915
-      80              uint16     little      blosc       5490, 5490        915, 915
-      81              uint16     little      blosc       5490, 5490        915, 915
-      82              uint16     little      blosc       5490, 5490        915, 915
-      83              uint16     little      blosc       5490, 5490        915, 915
-      84              uint16     little      blosc       5490, 5490        915, 915
-      85              uint16     little      blosc       5490, 5490        915, 915
-      86              uint16     little      blosc       5490, 5490        915, 915
-      87               int64     little      blosc             5490            5490
-      88               int64     little      blosc             5490            5490
-      89              uint16     little      blosc       1830, 1830        305, 305
-      90              uint16     little      blosc       1830, 1830        305, 305
-      91              uint16     little      blosc       1830, 1830        305, 305
-      92              uint16     little      blosc       1830, 1830        305, 305
-      93              uint16     little      blosc       1830, 1830        305, 305
-      94              uint16     little      blosc       1830, 1830        305, 305
-      95              uint16     little      blosc       1830, 1830        305, 305
-      96              uint16     little      blosc       1830, 1830        305, 305
-      97              uint16     little      blosc       1830, 1830        305, 305
-      98              uint16     little      blosc       1830, 1830        305, 305
-      99              uint16     little      blosc       1830, 1830        305, 305
-      100              int64     little      blosc             1830            1830
-      101              int64     little      blosc             1830            1830
-      102             uint16     little      blosc     10980, 10980      1830, 1830
-      103             uint16     little      blosc     10980, 10980      1830, 1830
-      104              int64     little      blosc            10980           10980
-      105              int64     little      blosc            10980           10980
-      106             uint16     little      blosc       5490, 5490        915, 915
-      107             uint16     little      blosc       5490, 5490        915, 915
-      108              int64     little      blosc             5490            5490
-      109              int64     little      blosc             5490            5490
-      110             uint16     little      blosc       1830, 1830        305, 305
-      111             uint16     little      blosc       1830, 1830        305, 305
-      112              int64     little      blosc             1830            1830
-      113              int64     little      blosc             1830            1830
-      114              int64     little      blosc                3               3
-      115              uint8       <NA>      blosc  3, 10980, 10980   1, 1830, 1830
-      116              int64     little      blosc            10980           10980
-      117              int64     little      blosc            10980           10980
-      118              int64     little      blosc                3               3
-      119              uint8       <NA>      blosc    3, 5490, 5490     1, 915, 915
-      120              int64     little      blosc             5490            5490
-      121              int64     little      blosc             5490            5490
-      122              int64     little      blosc                3               3
-      123              uint8       <NA>      blosc    3, 1830, 1830     1, 305, 305
-      124              int64     little      blosc             1830            1830
-      125              int64     little      blosc             1830            1830
-      126              uint8       <NA>      blosc     10980, 10980      1830, 1830
-      127              uint8       <NA>      blosc     10980, 10980      1830, 1830
-      128              uint8       <NA>      blosc     10980, 10980      1830, 1830
-      129              uint8       <NA>      blosc     10980, 10980      1830, 1830
-      130              int64     little      blosc            10980           10980
-      131              int64     little      blosc            10980           10980
-      132              uint8       <NA>      blosc       5490, 5490        915, 915
-      133              uint8       <NA>      blosc       5490, 5490        915, 915
-      134              uint8       <NA>      blosc       5490, 5490        915, 915
-      135              uint8       <NA>      blosc       5490, 5490        915, 915
-      136              uint8       <NA>      blosc       5490, 5490        915, 915
-      137              uint8       <NA>      blosc       5490, 5490        915, 915
-      138              int64     little      blosc             5490            5490
-      139              int64     little      blosc             5490            5490
-      140              uint8       <NA>      blosc       1830, 1830        305, 305
-      141              uint8       <NA>      blosc       1830, 1830        305, 305
-      142              uint8       <NA>      blosc       1830, 1830        305, 305
-      143              int64     little      blosc             1830            1830
-      144              int64     little      blosc             1830            1830
-      145              int64     little       <NA>             NULL            NULL
-      146              uint8       <NA>      blosc       5490, 5490        915, 915
-      147              uint8       <NA>      blosc       5490, 5490        915, 915
-      148              int64     little      blosc             5490            5490
-      149              int64     little      blosc             5490            5490
-                nchunks attributes
-      1               1       TRUE
-      2               1       TRUE
-      3               1       TRUE
-      4               1       TRUE
-      5            1, 1       TRUE
-      6         1, 1, 1       TRUE
-      7   2, 2, 1, 1, 1       TRUE
-      8               1       TRUE
-      9               1       TRUE
-      10           6, 6       TRUE
-      11           6, 6       TRUE
-      12           6, 6       TRUE
-      13           6, 6       TRUE
-      14              1       TRUE
-      15              1       TRUE
-      16           6, 6       TRUE
-      17           6, 6       TRUE
-      18           6, 6       TRUE
-      19           6, 6       TRUE
-      20           6, 6       TRUE
-      21           6, 6       TRUE
-      22              1       TRUE
-      23              1       TRUE
-      24           6, 6       TRUE
-      25           6, 6       TRUE
-      26           6, 6       TRUE
-      27              1       TRUE
-      28              1       TRUE
-      29           6, 6       TRUE
-      30              1       TRUE
-      31              1       TRUE
-      32           6, 6       TRUE
-      33              1       TRUE
-      34              1       TRUE
-      35           6, 6       TRUE
-      36              1       TRUE
-      37              1       TRUE
-      38           1, 1       TRUE
-      39           1, 1       TRUE
-      40           1, 1       TRUE
-      41           1, 1       TRUE
-      42           1, 1       TRUE
-      43           1, 1       TRUE
-      44           1, 1       TRUE
-      45                      TRUE
-      46              1       TRUE
-      47              1       TRUE
-      48                      TRUE
-      49           1, 1       TRUE
-      50           1, 1       TRUE
-      51                      TRUE
-      52           1, 1       TRUE
-      53                      TRUE
-      54                      TRUE
-      55                      TRUE
-      56           1, 1       TRUE
-      57                      TRUE
-      58              1       TRUE
-      59              1       TRUE
-      60           1, 1       TRUE
-      61                      TRUE
-      62           1, 1       TRUE
-      63                      TRUE
-      64                      TRUE
-      65           1, 1       TRUE
-      66           1, 1       TRUE
-      67                      TRUE
-      68           1, 1       TRUE
-      69           1, 1       TRUE
-      70                      TRUE
-      71           6, 6       TRUE
-      72           6, 6       TRUE
-      73           6, 6       TRUE
-      74           6, 6       TRUE
-      75              1       TRUE
-      76              1       TRUE
-      77           6, 6       TRUE
-      78           6, 6       TRUE
-      79           6, 6       TRUE
-      80           6, 6       TRUE
-      81           6, 6       TRUE
-      82           6, 6       TRUE
-      83           6, 6       TRUE
-      84           6, 6       TRUE
-      85           6, 6       TRUE
-      86           6, 6       TRUE
-      87              1       TRUE
-      88              1       TRUE
-      89           6, 6       TRUE
-      90           6, 6       TRUE
-      91           6, 6       TRUE
-      92           6, 6       TRUE
-      93           6, 6       TRUE
-      94           6, 6       TRUE
-      95           6, 6       TRUE
-      96           6, 6       TRUE
-      97           6, 6       TRUE
-      98           6, 6       TRUE
-      99           6, 6       TRUE
-      100             1       TRUE
-      101             1       TRUE
-      102          6, 6       TRUE
-      103          6, 6       TRUE
-      104             1       TRUE
-      105             1       TRUE
-      106          6, 6       TRUE
-      107          6, 6       TRUE
-      108             1       TRUE
-      109             1       TRUE
-      110          6, 6       TRUE
-      111          6, 6       TRUE
-      112             1       TRUE
-      113             1       TRUE
-      114             1       TRUE
-      115       3, 6, 6       TRUE
-      116             1       TRUE
-      117             1       TRUE
-      118             1       TRUE
-      119       3, 6, 6       TRUE
-      120             1       TRUE
-      121             1       TRUE
-      122             1       TRUE
-      123       3, 6, 6       TRUE
-      124             1       TRUE
-      125             1       TRUE
-      126          6, 6       TRUE
-      127          6, 6       TRUE
-      128          6, 6       TRUE
-      129          6, 6       TRUE
-      130             1       TRUE
-      131             1       TRUE
-      132          6, 6       TRUE
-      133          6, 6       TRUE
-      134          6, 6       TRUE
-      135          6, 6       TRUE
-      136          6, 6       TRUE
-      137          6, 6       TRUE
-      138             1       TRUE
-      139             1       TRUE
-      140          6, 6       TRUE
-      141          6, 6       TRUE
-      142          6, 6       TRUE
-      143             1       TRUE
-      144             1       TRUE
-      145                     TRUE
-      146          6, 6       TRUE
-      147          6, 6       TRUE
-      148             1       TRUE
-      149             1       TRUE
+                   data_type endianness compressor          dim    chunk_dim
+      1   fixed_length_utf32     little      blosc            2            2
+      2   fixed_length_utf32     little      blosc           13           13
+      3                int64     little      blosc            6            6
+      4              float64     little      blosc            2            2
+      5              float64     little      blosc        13, 2        13, 2
+      6              float64     little      blosc    2, 23, 23    2, 23, 23
+      7              float64     little      blosc 13, 6, 2.... 7, 3, 2,....
+      8                int64     little      blosc           23           23
+      9                int64     little      blosc           23           23
+      10               uint8       <NA>      blosc 10980, 10980   1830, 1830
+      11               uint8       <NA>      blosc 10980, 10980   1830, 1830
+      12               uint8       <NA>      blosc 10980, 10980   1830, 1830
+      13               uint8       <NA>      blosc 10980, 10980   1830, 1830
+      14               int64     little      blosc        10980        10980
+      15               int64     little      blosc        10980        10980
+      16               uint8       <NA>      blosc   5490, 5490     915, 915
+      17               uint8       <NA>      blosc   5490, 5490     915, 915
+      18               uint8       <NA>      blosc   5490, 5490     915, 915
+      19               uint8       <NA>      blosc   5490, 5490     915, 915
+      20               uint8       <NA>      blosc   5490, 5490     915, 915
+      21               uint8       <NA>      blosc   5490, 5490     915, 915
+      22               int64     little      blosc         5490         5490
+      23               int64     little      blosc         5490         5490
+      24               uint8       <NA>      blosc   1830, 1830     305, 305
+      25               uint8       <NA>      blosc   1830, 1830     305, 305
+      26               uint8       <NA>      blosc   1830, 1830     305, 305
+      27               int64     little      blosc         1830         1830
+      28               int64     little      blosc         1830         1830
+      29               uint8       <NA>      blosc   1830, 1830     305, 305
+      30               int64     little      blosc         1830         1830
+      31               int64     little      blosc         1830         1830
+      32               uint8       <NA>      blosc   5490, 5490     915, 915
+      33               int64     little      blosc         5490         5490
+      34               int64     little      blosc         5490         5490
+      35               uint8       <NA>      blosc   1830, 1830     305, 305
+      36               int64     little      blosc         1830         1830
+      37               int64     little      blosc         1830         1830
+      38             float32     little      blosc         9, 9         9, 9
+      39             float32     little      blosc         9, 9         9, 9
+      40             float32     little      blosc         9, 9         9, 9
+      41             float32     little      blosc         9, 9         9, 9
+      42             float32     little      blosc         9, 9         9, 9
+      43             float32     little      blosc         9, 9         9, 9
+      44             float32     little      blosc         9, 9         9, 9
+      45             float64     little       <NA>                          
+      46             float64     little      blosc            9            9
+      47             float64     little      blosc            9            9
+      48               int64     little       <NA>                          
+      49             float32     little      blosc         9, 9         9, 9
+      50             float32     little      blosc         9, 9         9, 9
+      51               int64     little       <NA>                          
+      52             float32     little      blosc         9, 9         9, 9
+      53             float64     little       <NA>                          
+      54               int64     little       <NA>                          
+      55               int64     little       <NA>                          
+      56             float32     little      blosc         9, 9         9, 9
+      57             float64     little       <NA>                          
+      58             float64     little      blosc            9            9
+      59             float64     little      blosc            9            9
+      60             float32     little      blosc         9, 9         9, 9
+      61               int64     little       <NA>                          
+      62             float32     little      blosc         9, 9         9, 9
+      63               int64     little       <NA>                          
+      64             float64     little       <NA>                          
+      65             float32     little      blosc         9, 9         9, 9
+      66             float32     little      blosc         9, 9         9, 9
+      67               int64     little       <NA>                          
+      68             float32     little      blosc         9, 9         9, 9
+      69             float32     little      blosc         9, 9         9, 9
+      70               int64     little       <NA>                          
+      71              uint16     little      blosc 10980, 10980   1830, 1830
+      72              uint16     little      blosc 10980, 10980   1830, 1830
+      73              uint16     little      blosc 10980, 10980   1830, 1830
+      74              uint16     little      blosc 10980, 10980   1830, 1830
+      75               int64     little      blosc        10980        10980
+      76               int64     little      blosc        10980        10980
+      77              uint16     little      blosc   5490, 5490     915, 915
+      78              uint16     little      blosc   5490, 5490     915, 915
+      79              uint16     little      blosc   5490, 5490     915, 915
+      80              uint16     little      blosc   5490, 5490     915, 915
+      81              uint16     little      blosc   5490, 5490     915, 915
+      82              uint16     little      blosc   5490, 5490     915, 915
+      83              uint16     little      blosc   5490, 5490     915, 915
+      84              uint16     little      blosc   5490, 5490     915, 915
+      85              uint16     little      blosc   5490, 5490     915, 915
+      86              uint16     little      blosc   5490, 5490     915, 915
+      87               int64     little      blosc         5490         5490
+      88               int64     little      blosc         5490         5490
+      89              uint16     little      blosc   1830, 1830     305, 305
+      90              uint16     little      blosc   1830, 1830     305, 305
+      91              uint16     little      blosc   1830, 1830     305, 305
+      92              uint16     little      blosc   1830, 1830     305, 305
+      93              uint16     little      blosc   1830, 1830     305, 305
+      94              uint16     little      blosc   1830, 1830     305, 305
+      95              uint16     little      blosc   1830, 1830     305, 305
+      96              uint16     little      blosc   1830, 1830     305, 305
+      97              uint16     little      blosc   1830, 1830     305, 305
+      98              uint16     little      blosc   1830, 1830     305, 305
+      99              uint16     little      blosc   1830, 1830     305, 305
+      100              int64     little      blosc         1830         1830
+      101              int64     little      blosc         1830         1830
+      102             uint16     little      blosc 10980, 10980   1830, 1830
+      103             uint16     little      blosc 10980, 10980   1830, 1830
+      104              int64     little      blosc        10980        10980
+      105              int64     little      blosc        10980        10980
+      106             uint16     little      blosc   5490, 5490     915, 915
+      107             uint16     little      blosc   5490, 5490     915, 915
+      108              int64     little      blosc         5490         5490
+      109              int64     little      blosc         5490         5490
+      110             uint16     little      blosc   1830, 1830     305, 305
+      111             uint16     little      blosc   1830, 1830     305, 305
+      112              int64     little      blosc         1830         1830
+      113              int64     little      blosc         1830         1830
+      114              int64     little      blosc            3            3
+      115              uint8       <NA>      blosc 3, 10980.... 1, 1830,....
+      116              int64     little      blosc        10980        10980
+      117              int64     little      blosc        10980        10980
+      118              int64     little      blosc            3            3
+      119              uint8       <NA>      blosc 3, 5490,....  1, 915, 915
+      120              int64     little      blosc         5490         5490
+      121              int64     little      blosc         5490         5490
+      122              int64     little      blosc            3            3
+      123              uint8       <NA>      blosc 3, 1830,....  1, 305, 305
+      124              int64     little      blosc         1830         1830
+      125              int64     little      blosc         1830         1830
+      126              uint8       <NA>      blosc 10980, 10980   1830, 1830
+      127              uint8       <NA>      blosc 10980, 10980   1830, 1830
+      128              uint8       <NA>      blosc 10980, 10980   1830, 1830
+      129              uint8       <NA>      blosc 10980, 10980   1830, 1830
+      130              int64     little      blosc        10980        10980
+      131              int64     little      blosc        10980        10980
+      132              uint8       <NA>      blosc   5490, 5490     915, 915
+      133              uint8       <NA>      blosc   5490, 5490     915, 915
+      134              uint8       <NA>      blosc   5490, 5490     915, 915
+      135              uint8       <NA>      blosc   5490, 5490     915, 915
+      136              uint8       <NA>      blosc   5490, 5490     915, 915
+      137              uint8       <NA>      blosc   5490, 5490     915, 915
+      138              int64     little      blosc         5490         5490
+      139              int64     little      blosc         5490         5490
+      140              uint8       <NA>      blosc   1830, 1830     305, 305
+      141              uint8       <NA>      blosc   1830, 1830     305, 305
+      142              uint8       <NA>      blosc   1830, 1830     305, 305
+      143              int64     little      blosc         1830         1830
+      144              int64     little      blosc         1830         1830
+      145              int64     little       <NA>                          
+      146              uint8       <NA>      blosc   5490, 5490     915, 915
+      147              uint8       <NA>      blosc   5490, 5490     915, 915
+      148              int64     little      blosc         5490         5490
+      149              int64     little      blosc         5490         5490
+               nchunks attributes
+      1              1       TRUE
+      2              1       TRUE
+      3              1       TRUE
+      4              1       TRUE
+      5           1, 1       TRUE
+      6        1, 1, 1       TRUE
+      7   2, 2, 1,....       TRUE
+      8              1       TRUE
+      9              1       TRUE
+      10          6, 6       TRUE
+      11          6, 6       TRUE
+      12          6, 6       TRUE
+      13          6, 6       TRUE
+      14             1       TRUE
+      15             1       TRUE
+      16          6, 6       TRUE
+      17          6, 6       TRUE
+      18          6, 6       TRUE
+      19          6, 6       TRUE
+      20          6, 6       TRUE
+      21          6, 6       TRUE
+      22             1       TRUE
+      23             1       TRUE
+      24          6, 6       TRUE
+      25          6, 6       TRUE
+      26          6, 6       TRUE
+      27             1       TRUE
+      28             1       TRUE
+      29          6, 6       TRUE
+      30             1       TRUE
+      31             1       TRUE
+      32          6, 6       TRUE
+      33             1       TRUE
+      34             1       TRUE
+      35          6, 6       TRUE
+      36             1       TRUE
+      37             1       TRUE
+      38          1, 1       TRUE
+      39          1, 1       TRUE
+      40          1, 1       TRUE
+      41          1, 1       TRUE
+      42          1, 1       TRUE
+      43          1, 1       TRUE
+      44          1, 1       TRUE
+      45                     TRUE
+      46             1       TRUE
+      47             1       TRUE
+      48                     TRUE
+      49          1, 1       TRUE
+      50          1, 1       TRUE
+      51                     TRUE
+      52          1, 1       TRUE
+      53                     TRUE
+      54                     TRUE
+      55                     TRUE
+      56          1, 1       TRUE
+      57                     TRUE
+      58             1       TRUE
+      59             1       TRUE
+      60          1, 1       TRUE
+      61                     TRUE
+      62          1, 1       TRUE
+      63                     TRUE
+      64                     TRUE
+      65          1, 1       TRUE
+      66          1, 1       TRUE
+      67                     TRUE
+      68          1, 1       TRUE
+      69          1, 1       TRUE
+      70                     TRUE
+      71          6, 6       TRUE
+      72          6, 6       TRUE
+      73          6, 6       TRUE
+      74          6, 6       TRUE
+      75             1       TRUE
+      76             1       TRUE
+      77          6, 6       TRUE
+      78          6, 6       TRUE
+      79          6, 6       TRUE
+      80          6, 6       TRUE
+      81          6, 6       TRUE
+      82          6, 6       TRUE
+      83          6, 6       TRUE
+      84          6, 6       TRUE
+      85          6, 6       TRUE
+      86          6, 6       TRUE
+      87             1       TRUE
+      88             1       TRUE
+      89          6, 6       TRUE
+      90          6, 6       TRUE
+      91          6, 6       TRUE
+      92          6, 6       TRUE
+      93          6, 6       TRUE
+      94          6, 6       TRUE
+      95          6, 6       TRUE
+      96          6, 6       TRUE
+      97          6, 6       TRUE
+      98          6, 6       TRUE
+      99          6, 6       TRUE
+      100            1       TRUE
+      101            1       TRUE
+      102         6, 6       TRUE
+      103         6, 6       TRUE
+      104            1       TRUE
+      105            1       TRUE
+      106         6, 6       TRUE
+      107         6, 6       TRUE
+      108            1       TRUE
+      109            1       TRUE
+      110         6, 6       TRUE
+      111         6, 6       TRUE
+      112            1       TRUE
+      113            1       TRUE
+      114            1       TRUE
+      115      3, 6, 6       TRUE
+      116            1       TRUE
+      117            1       TRUE
+      118            1       TRUE
+      119      3, 6, 6       TRUE
+      120            1       TRUE
+      121            1       TRUE
+      122            1       TRUE
+      123      3, 6, 6       TRUE
+      124            1       TRUE
+      125            1       TRUE
+      126         6, 6       TRUE
+      127         6, 6       TRUE
+      128         6, 6       TRUE
+      129         6, 6       TRUE
+      130            1       TRUE
+      131            1       TRUE
+      132         6, 6       TRUE
+      133         6, 6       TRUE
+      134         6, 6       TRUE
+      135         6, 6       TRUE
+      136         6, 6       TRUE
+      137         6, 6       TRUE
+      138            1       TRUE
+      139            1       TRUE
+      140         6, 6       TRUE
+      141         6, 6       TRUE
+      142         6, 6       TRUE
+      143            1       TRUE
+      144            1       TRUE
+      145                    TRUE
+      146         6, 6       TRUE
+      147         6, 6       TRUE
+      148            1       TRUE
+      149            1       TRUE
 
 # zarr_overview console output matches snapshot for consolidated store
 

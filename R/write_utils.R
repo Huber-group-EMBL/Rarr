@@ -81,7 +81,7 @@
       ")",
       call. = FALSE
     )
-    storage.mode(max_value) <- storage.mode(x)
+    type(max_value) <- type(x)
     x[positive_overflow] <- max_value
   }
   if (has_negative_overflow) {
@@ -94,7 +94,7 @@
       ")",
       call. = FALSE
     )
-    storage.mode(min_value) <- storage.mode(x)
+    type(min_value) <- type(x)
     x[negative_overflow] <- min_value
   }
   return(x)
@@ -184,6 +184,7 @@
 #' Implemented in C so it exits at the first mismatch without allocating.
 #'
 #' @keywords internal
+#' @noRd
 .is_all_fill <- function(x, fill) {
   .Call("is_all_fill", x, fill, PACKAGE = "Rarr")
 }
