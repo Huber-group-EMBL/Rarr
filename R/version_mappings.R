@@ -68,6 +68,12 @@
     metadata_v3$codecs[[filter$id]] <- list(
       name = filter$id
     )
+    # Has config
+    if (length(filter) > 1L) {
+      metadata_v3$codecs[[filter$id]]$configuration <- filter[
+        names(filter) != "id"
+      ]
+    }
   }
 
   if (!is.null(metadata_v3$codecs[["vlen-utf8"]])) {

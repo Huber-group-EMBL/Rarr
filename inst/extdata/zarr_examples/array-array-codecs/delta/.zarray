@@ -1,0 +1,27 @@
+{
+  "zarr_format": 2,
+  "shape": [
+    11
+  ],
+  "chunks": [
+    11
+  ],
+  "dtype": "<u2",
+  "compressor": {
+    "blocksize": 0,
+    "clevel": 1,
+    "cname": "zstd",
+    "shuffle": 1,
+    "id": "blosc"
+  },
+  "fill_value": null,
+  "order": "C",
+  "filters": [
+    {
+      "id": "delta",
+      "dtype": "<u2",
+      "astype": "<i2"
+    }
+  ],
+  "dimension_separator": "."
+}

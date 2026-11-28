@@ -25,7 +25,7 @@
       "), but found ",
       length(array_bytes_codecs),
       " in the array metadata: ",
-      toString(codecs_names),
+      toString(array_bytes_codecs),
       call. = FALSE
     )
   }
@@ -38,6 +38,10 @@
       array_bytes_codecs
     )
   )
+  if (operation == "encode" && "delta" %in% array_array_codecs) {
+    # delta does not have a spec so we reject it for writing data
+    unsupported_codecs <- c(unsupported_codecs, "delta")
+  }
   if (length(unsupported_codecs) > 0L) {
     stop(
       "The following codecs are not supported: ",
@@ -53,30 +57,48 @@
   array_array_env <- list()
   array_bytes_env <- list()
 
-  if ("transpose" %in% array_array_codecs) {
-    # R is already F ordered, so we reverse the order in config
-    cfg <- unlist(codecs$transpose$configuration$order) + 1L
-    if (length(cfg) > 1L && !is.consecutive(cfg, direction = "either")) {
-      stop(
-        "This transpose configuration is currently unsupported. ",
-        "Please open an issue requesting support at ",
-        "https://github.com/Huber-group-EMBL/Rarr/issues.",
-        call. = FALSE
+  for (candidate_codec in array_array_codecs) {
+    cfg <- codecs[[candidate_codec]]$configuration
+    if (candidate_codec == "delta") {
+      # Encoding is already rejected above; only decoding reaches here
+      dt <- parse_npy_datatype(cfg$dtype)
+      data_type <- .convert_dtype_version(
+        dt$base_type,
+        dt$nbytes,
+        dt$endian,
+        2L,
+        3L
+      )
+      array_array_env[["delta"]] <- Partial(
+        codec_delta_decode,
+        data_type = data_type
       )
     }
-    if ("sharding_indexed" %notin% array_bytes_codecs) {
-      # For sharding_indexed, the bytes->array function already transposes the
-      # array, so we don't need to reverse the order here.
-      # FIXME: I'm probably overcomplicating this. A better process within the
-      # sharding codec would avoid the special case here.
-      cfg <- rev(cfg)
-    }
-    if (is.unsorted(cfg)) {
-      array_array_env[["transpose"]] <- switch(
-        operation,
-        "encode" = Partial(codec_transpose_encode, indices = cfg),
-        "decode" = Partial(codec_transpose_decode, indices = cfg)
-      )
+    if (candidate_codec == "transpose") {
+      # R is already F ordered, so we reverse the order in config
+      order <- unlist(cfg$order) + 1L
+      if (length(order) > 1L && !is.consecutive(order, direction = "either")) {
+        stop(
+          "This transpose configuration is currently unsupported. ",
+          "Please open an issue requesting support at ",
+          "https://github.com/Huber-group-EMBL/Rarr/issues.",
+          call. = FALSE
+        )
+      }
+      if ("sharding_indexed" %notin% array_bytes_codecs) {
+        # For sharding_indexed, the bytes->array function already transposes the
+        # array, so we don't need to reverse the order here.
+        # FIXME: I'm probably overcomplicating this. A better process within the
+        # sharding codec would avoid the special case here.
+        order <- rev(order)
+      }
+      if (is.unsorted(order)) {
+        array_array_env[["transpose"]] <- switch(
+          operation,
+          "encode" = Partial(codec_transpose_encode, indices = order),
+          "decode" = Partial(codec_transpose_decode, indices = order)
+        )
+      }
     }
   }
 
